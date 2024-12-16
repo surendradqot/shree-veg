@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "404524453253",
+    "project_id": "shree-veg",
+    "storage_bucket": "shree-veg.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404524453253:android:cc9178904f8a20effc48ec",
+        "android_client_info": {
+          "package_name": "com.shreeveg.customerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "404524453253-3912jtmqjkn0spgdb4qm5rrms524eh1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shreeveg.customerapp",
+            "certificate_hash": "f2c1d1946a86f19395d62ac75c971c785091cd48"
+          }
+        },
+        {
+          "client_id": "404524453253-t2p8tibeu3fhvfd9d37gkorvhgm60i3g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChudsceXUo9JOwWIbCV_3R8MKpF7zymdM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "404524453253-t2p8tibeu3fhvfd9d37gkorvhgm60i3g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "404524453253-ildac0vmac6hsr1jtehbabdgovp9ob6r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.shreeveg.customerapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

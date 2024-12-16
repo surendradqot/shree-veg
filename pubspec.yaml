@@ -1,0 +1,96 @@
+name: shreeveg
+description: A new Flutter application.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.1.0+2
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+
+  cupertino_icons:
+  get_it:
+  provider:
+  http:
+  freezed:
+  shared_preferences:
+  photo_view:
+  dio:
+  image_picker:
+  image_cropper:
+  pin_code_fields:
+  google_maps_flutter_web:
+  google_maps_flutter:
+  geocoding:
+  geolocator:
+  shimmer_animation:
+  url_launcher:
+  firebase_core:
+  firebase_auth:
+  firebase_app_check:
+  firebase_messaging:
+  flutter_local_notifications:
+  path_provider:
+  connectivity:
+  carousel_slider:
+  fluro:
+  url_strategy:
+  universal_html:
+  flutter_widget_from_html_core:
+  phone_number:
+  country_code_picker:
+  flutter_typeahead:
+  flutter_inappwebview:
+  cached_network_image:
+  audioplayers:
+  flutter_facebook_auth:
+  google_sign_in:
+  expandable_bottom_sheet:
+  dotted_border:
+  share_plus:
+  scroll_to_index:
+  simple_speed_dial:
+  flutter_lints:
+  permission_handler:
+  dropdown_button2:
+  sms_autofill:
+  pinput:
+  flutter_xlider:
+  razorpay_flutter:
+  timeago:
+  flutter_plugin_android_lifecycle: ^2.0.23
+  google_api_headers: ^1.6.0
+  flutter_google_places:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/image/
+    - assets/language/
+    - assets/payment/
+    - assets/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/font/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/font/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/font/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/font/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/font/Poppins-Bold.ttf
+          weight: 700
