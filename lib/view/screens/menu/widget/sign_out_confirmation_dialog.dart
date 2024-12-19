@@ -25,7 +25,7 @@ class SignOutConfirmationDialog extends StatelessWidget {
               CircleAvatar(
                 radius: 30,
                 backgroundColor: Theme.of(context).primaryColor,
-                child: const Icon(Icons.contact_support, size: 50),
+                child: const Icon(Icons.contact_support, size: 50,color: Colors.white,),
               ),
               Padding(
                 padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
@@ -40,21 +40,18 @@ class SignOutConfirmationDialog extends StatelessWidget {
                       Expanded(
                           child: InkWell(
                         onTap: () {
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .clearSharedData();
-                          Provider.of<SplashProvider>(context, listen: false)
-                              .setPageIndex(0);
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .firebaseLogout();
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .socialLogout();
-                          if (ResponsiveHelper.isWeb()) {
-                            Navigator.pushNamedAndRemoveUntil(context,
-                                RouteHelper.getMainRoute(), (route) => false);
-                          } else {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, RouteHelper.splash, (route) => false);
-                          }
+
+                          Provider.of<AuthProvider>(context, listen: false).logoutNewMethod();
+                          //     .firebaseLogout();
+                          // Provider.of<AuthProvider>(context, listen: false)
+                          //     .socialLogout();
+                          // if (ResponsiveHelper.isWeb()) {
+                          //   Navigator.pushNamedAndRemoveUntil(context,
+                          //       RouteHelper.getMainRoute(), (route) => false);
+                          // } else {
+                          //   Navigator.pushNamedAndRemoveUntil(
+                          //       context, RouteHelper.splash, (route) => false);
+                          // }
                         },
                         child: Container(
                           padding:

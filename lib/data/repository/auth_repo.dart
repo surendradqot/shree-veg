@@ -28,12 +28,69 @@ class AuthRepo {
     }
   }
 
+  Future<ApiResponse> registrationNew(SignUpModel signUpModel) async {
+    try {
+      Response? response = await dioClient!.post(
+        AppConstants.registerUriNew,
+        data: signUpModel.toJson(),
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+  Future<ApiResponse> logoutNew() async {
+    try {
+      Response? response = await dioClient!.post(
+        AppConstants.logoutUriNew,
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
   Future<ApiResponse> loginOtp({String? emailOrPhone}) async {
     print('emailOrPhone is: $emailOrPhone');
     try {
       Response response = await dioClient!.post(
         AppConstants.loginOtpUri,
         data: {"email_or_phone": emailOrPhone},
+      );
+      print('responseee is: $response');
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      print('errroor: $e');
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+  Future<ApiResponse> loginOtpSend({String? emailOrPhone}) async {
+    print('emailOrPhone is: $emailOrPhone');
+    try {
+      Response response = await dioClient!.post(
+        AppConstants.loginOtpSendNew,
+        data: {"mobile": emailOrPhone},
+      );
+      print('responseee is: $response');
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      print('errroor: $e');
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+
+  Future<ApiResponse> otpVerification({String? emailOrPhone,String? otp}) async {
+    print('emailOrPhone is: $emailOrPhone');
+    try {
+      Response response = await dioClient!.post(
+        AppConstants.loginOtpUriNew,
+        data: {
+          "mobile": emailOrPhone,
+          "otp":otp,
+        },
       );
       print('responseee is: $response');
       return ApiResponse.withSuccess(response);

@@ -86,7 +86,7 @@ class ProductWidget extends StatelessWidget {
         if (product.variations!.isNotEmpty) {
           for (int index = 0; index < product.variations!.length; index++) {
             price = double.parse(product.variations!.isNotEmpty
-                ? product.variations![index].offerPrice!
+                ? product.variations![index].offerPrice??"0.0"
                 : product.price!);
             stock = product.variations!.isNotEmpty
                 ? product.variations![index].stock
@@ -275,7 +275,7 @@ class ProductWidget extends StatelessWidget {
                                       rating: product.rating!.isNotEmpty
                                           ? double.parse(
                                               product.rating![0].average!)
-                                          : 0.0,
+                                          : 4.0,
                                       size: 10),
                                 )
                               : const SizedBox(),

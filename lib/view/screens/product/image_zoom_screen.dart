@@ -66,12 +66,12 @@ class _ProductImageScreenState extends State<ProductImageScreen> {
                         width: 20.0,
                         height: 20.0,
                         child: CircularProgressIndicator(
-                          value: event == null
-                              ? 0
-                              : event.cumulativeBytesLoaded /
-                                  event.expectedTotalBytes!,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).primaryColor),
+                          // value: event == null
+                          //     ? 0
+                          //     : event.cumulativeBytesLoaded /
+                          //         (event.expectedTotalBytes??1),
+                          // valueColor: AlwaysStoppedAnimation<Color>(
+                          //     Theme.of(context).primaryColor),
                         ),
                       ),
                     ),

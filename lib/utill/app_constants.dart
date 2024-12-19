@@ -11,8 +11,8 @@ class AppConstants {
       // 'http://192.168.29.160/shreeveg';
       // 'http://192.168.29.51/shreeveg';
       // 'http://192.168.29.160/2024/Admin-shreeveg';
-  "http://192.168.0.122/sheeveg/admin";
-      // 'https://shreeveg.dqot.solutions';
+  // "http://192.168.29.59/sheeveg/admin";
+      'https://shreeveg.dqot.solutions';
   //http://shreevegcrm.dqotsolutions.com
   // 'https://dashboard.indianayurveda.shop';
   // 'https://indianayurveda.shop';
@@ -38,7 +38,11 @@ class AppConstants {
   static const String messageUri = '/api/v1/customer/message/get';
   static const String notificationUri = '/api/v1/notifications';
   static const String registerUri = '/api/v1/auth/register';
+  static const String registerUriNew = '/api/v1/auth/register_new';
+  static const String logoutUriNew = '/api/v1/auth/logout_new';
   static const String loginOtpUri = '/api/v1/auth/login-otp';
+  static const String loginOtpSendNew = '/api/v1/auth/login_new';
+  static const String loginOtpUriNew = '/api/v1/auth/verifyOtp';
   static const String loginUri = '/api/v1/auth/login';
   static const String forgetPasswordUri = '/api/v1/auth/forgot-password';
   static const String resetPasswordUri = '/api/v1/auth/reset-password';

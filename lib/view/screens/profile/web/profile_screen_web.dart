@@ -94,7 +94,7 @@ class _ProfileScreenWebState extends State<ProfileScreenWeb> {
                               children: [
                                 profileProvider.userInfoModel != null
                                     ? Text(
-                                        '${profileProvider.userInfoModel!.fName ?? ''} ${profileProvider.userInfoModel!.lName ?? ''}',
+                                        '${profileProvider.userInfoModel!.userInfo!.fName ?? ''} ${profileProvider.userInfoModel!.userInfo!.lName ?? ''}',
                                         style: poppinsRegular.copyWith(
                                             fontSize:
                                                 Dimensions.fontSizeExtraLarge,
@@ -111,7 +111,7 @@ class _ProfileScreenWebState extends State<ProfileScreenWeb> {
                                     height: Dimensions.paddingSizeSmall),
                                 profileProvider.userInfoModel != null
                                     ? Text(
-                                        profileProvider.userInfoModel!.email ??
+                                        profileProvider.userInfoModel!.userInfo!.email ??
                                             '',
                                         style: poppinsRegular.copyWith(
                                             color: Theme.of(context)
@@ -208,7 +208,7 @@ class _ProfileScreenWebState extends State<ProfileScreenWeb> {
                                             height:
                                                 Dimensions.paddingSizeLarge),
 
-                                        if (widget.userInfoModel!.loginMedium ==
+                                        if (widget.userInfoModel!.userInfo!.loginMedium ==
                                             'general')
                                           Column(
                                             crossAxisAlignment:
@@ -331,7 +331,7 @@ class _ProfileScreenWebState extends State<ProfileScreenWeb> {
                                             height:
                                                 Dimensions.paddingSizeLarge),
 
-                                        if (widget.userInfoModel!.loginMedium ==
+                                        if (widget.userInfoModel!.userInfo!.loginMedium ==
                                             'general')
                                           Column(
                                             crossAxisAlignment:
@@ -405,16 +405,16 @@ class _ProfileScreenWebState extends State<ProfileScreenWeb> {
                                                 .confirmPasswordController!.text
                                                 .trim();
                                             if (profileProvider
-                                                        .userInfoModel!.fName ==
+                                                        .userInfoModel!.userInfo!.fName ==
                                                     firstName &&
                                                 profileProvider
-                                                        .userInfoModel!.lName ==
+                                                        .userInfoModel!.userInfo!.lName ==
                                                     lastName &&
                                                 profileProvider
-                                                        .userInfoModel!.phone ==
+                                                        .userInfoModel!.userInfo!.phone ==
                                                     phoneNumber &&
                                                 profileProvider
-                                                        .userInfoModel!.email ==
+                                                        .userInfoModel!.userInfo!.email ==
                                                     widget.emailController!
                                                         .text &&
                                                 widget.file == null &&
@@ -451,11 +451,11 @@ class _ProfileScreenWebState extends State<ProfileScreenWeb> {
                                               UserInfoModel
                                                   updateUserInfoModel =
                                                   UserInfoModel();
-                                              updateUserInfoModel.fName =
+                                              updateUserInfoModel.userInfo!.fName =
                                                   firstName;
-                                              updateUserInfoModel.lName =
+                                              updateUserInfoModel.userInfo!.lName =
                                                   lastName;
-                                              updateUserInfoModel.phone =
+                                              updateUserInfoModel.userInfo!.phone =
                                                   phoneNumber;
                                               String pass = password;
 
@@ -542,7 +542,7 @@ class _ProfileScreenWebState extends State<ProfileScreenWeb> {
                                             fit: BoxFit.cover,
                                             image:
                                                 '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/'
-                                                '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.image : widget.image}',
+                                                '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.userInfo!.image : widget.image}',
                                             imageErrorBuilder: (c, o, s) =>
                                                 Image.asset(
                                                     Images.placeholder(context),

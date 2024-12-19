@@ -581,7 +581,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                     context,
                                                     listen: false)
                                                 .userInfoModel!
-                                                .id;
+                                                .userInfo!.id;
 
                                         ActiveReview? myReview;
 
@@ -643,7 +643,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                       ? double.parse(
                                               product.rating![0].average!) -
                                           1
-                                      : 0.0,
+                                      : 4.0,
                                   size: 20,
                                   color: Colors.deepOrange,
                                 ),

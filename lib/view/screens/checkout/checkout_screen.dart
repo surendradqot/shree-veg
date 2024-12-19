@@ -295,7 +295,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                               style: payTitleStyle),
                                                                         ),
                                                                         Text(
-                                                                            '  (${PriceConverter.convertPrice(context, Provider.of<ProfileProvider>(context, listen: true).userInfoModel!.walletBalance ?? 0)})',
+                                                                            '  (${PriceConverter.convertPrice(context, Provider.of<ProfileProvider>(context, listen: true).userInfoModel!.userInfo!.walletBalance!.toDouble() ?? 0)})',
                                                                             style:
                                                                                 payTitleStyle.copyWith(fontSize: Dimensions.fontSizeExtraSmall, fontWeight: FontWeight.w500)),
                                                                       ],

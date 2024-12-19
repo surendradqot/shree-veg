@@ -108,7 +108,7 @@ class WebProductInformation extends StatelessWidget {
                 ? RatingBar(
                     rating: product!.rating!.isNotEmpty
                         ? double.parse(product!.rating![0].average!)
-                        : 0.0,
+                        : 4.0,
                     size: Dimensions.paddingSizeDefault,
                   )
                 : const SizedBox(),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shreeveg/helper/email_checker.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
+import 'package:shreeveg/helper/toast_service.dart';
 import 'package:shreeveg/localization/language_constraints.dart';
 import 'package:shreeveg/provider/auth_provider.dart';
 import 'package:shreeveg/provider/splash_provider.dart';
@@ -220,24 +221,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           context),
                       isShowPrefixIcon: authProvider.isLoginWithPhone,
                       prefixAssetUrl: Images.flag,
-                      isShowSuffixIcon: true,
+                      isShowSuffixIcon: false,
                       isloginWithPhone: authProvider.isLoginWithPhone,
                       islogin: true,
                       inputType: !authProvider.isLoginWithPhone
                           ? TextInputType.emailAddress
                           : TextInputType.emailAddress,
-                      onSuffixTap: () async {
-                        authProvider.phoneEmailController.clear();
-                        if (authProvider.isLoginWithPhone) {
-                          final SmsAutoFill _autoFill = SmsAutoFill();
-                          String? hint = await _autoFill.hint;
-
-                          print('hint is: $hint');
-                          authProvider.phoneEmailController.text = hint ?? '';
-                        }
-                        authProvider
-                            .setLoginWithPhone(!authProvider.isLoginWithPhone);
-                      },
+                      // onSuffixTap: () async {
+                      //   authProvider.phoneEmailController.clear();
+                      //   if (authProvider.isLoginWithPhone) {
+                      //     final SmsAutoFill _autoFill = SmsAutoFill();
+                      //     String? hint = await _autoFill.hint;
+                      //
+                      //     print('hint is: $hint');
+                      //     authProvider.phoneEmailController.text = hint ?? '';
+                      //   }
+                      //   authProvider
+                      //       .setLoginWithPhone(!authProvider.isLoginWithPhone);
+                      // },
                     ),
 
                     const SizedBox(height: Dimensions.paddingSizeLarge),
@@ -377,27 +378,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 //     CountryCode.fromCountryCode(
                                 //             countryCode!)
                                 //         .dialCode;
-                                if (!Provider.of<SplashProvider>(context,
-                                        listen: false)
-                                    .configModel!
-                                    .emailVerification!) {
-                                  // email = dialCode! +
-                                  //     _emailController!.text.trim();
-                                }
+                                // if (!Provider.of<SplashProvider>(context,
+                                //         listen: false)
+                                //     .configModel!
+                                //     .emailVerification!) {
+                                //   // email = dialCode! +
+                                //   //     _emailController!.text.trim();
+                                // }
                                 // String password =
                                 //     _passwordController!.text.trim();
                                 if (email.isEmpty) {
-                                  if (!authProvider.isLoginWithPhone) {
-                                    showCustomSnackBar(getTranslated(
-                                        'enter_email_address', context)!);
-                                  } else {
                                     showCustomSnackBar(getTranslated(
                                         'enter_phone_number', context)!);
-                                  }
-                                } else if ((!authProvider.isLoginWithPhone) &&
-                                    EmailChecker.isNotValid(email)) {
-                                  showCustomSnackBar(getTranslated(
-                                      'enter_valid_email', context)!);
                                 } else if (authProvider.isLoginWithPhone &&
                                     authProvider
                                             .phoneEmailController.text.length !=
@@ -410,39 +402,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                   showNumberConfirmPopup(context)
                                       .then((value) async {
-                                    if (kDebugMode) {
-                                      print('confirm value is: $value');
-                                    }
                                     if (value == true) {
                                       if (authProvider.isLoginWithPhone) {
                                         await authProvider
-                                            .verifyPhoneNumber(context, email)
+                                            .loginPhoneNumber(context, email)
                                             .then((val) {
                                           if (kDebugMode) {
                                             print(
                                                 'phone verification vallllll is: $val');
                                           }
-                                          if (val != null) {
+                                          if (val != null && val['success']=="true") {
                                             Navigator.pushNamedAndRemoveUntil(
                                                 context,
                                                 RouteHelper.otp,
                                                 (route) => false,
                                                 arguments: const OTPScreen());
                                           }
-                                        });
-                                      } else {
-                                        authProvider
-                                            .loginOtp(email.toString())
-                                            .then((status) async {
-                                          print('resp status is: $status');
-                                          if (status.isSuccess) {
-                                            Navigator.pushNamedAndRemoveUntil(
-                                                context,
-                                                RouteHelper.otp,
-                                                (route) => false,
-                                                arguments: const OTPScreen());
-                                          } else {
-                                            print('login failed');
+                                          else{
+                                            setState(() {
+                                              _isLoading = false;
+                                            });
+                                            ToastService().show("User not found OR Invalid credential.");
                                           }
                                         });
                                       }
@@ -455,37 +435,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       });
                                     }
                                   });
-
-                                  // authProvider
-                                  //     .login(email, password)
-                                  //     .then((status) async {
-                                  //   if (status.isSuccess) {
-                                  //     if (authProvider.isActiveRememberMe) {
-                                  //       authProvider
-                                  //           .saveUserNumberAndPassword(
-                                  //               UserLogData(
-                                  //         countryCode: dialCode,
-                                  //         phoneNumber:
-                                  //             configModel.emailVerification!
-                                  //                 ? null
-                                  //                 : _emailController!.text,
-                                  //         email:
-                                  //             configModel.emailVerification!
-                                  //                 ? _emailController!.text
-                                  //                 : null,
-                                  //         password: password,
-                                  //       ));
-                                  //     } else {
-                                  //       authProvider.clearUserLogData();
-                                  //     }
-                                  //
-                                  //     Navigator.pushNamedAndRemoveUntil(
-                                  //         context,
-                                  //         RouteHelper.menu,
-                                  //         (route) => false,
-                                  //         arguments: const MenuScreen());
-                                  //   }
-                                  // });
                                 }
                               },
                             ),

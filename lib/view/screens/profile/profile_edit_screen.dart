@@ -56,10 +56,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     emailFocus = FocusNode();
     phoneFocus = FocusNode();
 
-    _firstNameController!.text = widget.userInfoModel!.fName ?? '';
-    _lastNameController!.text = widget.userInfoModel!.lName ?? '';
-    _emailController!.text = widget.userInfoModel!.email ?? '';
-    _phoneController!.text = widget.userInfoModel!.phone ?? '';
+    _firstNameController!.text = widget.userInfoModel!.userInfo!.fName ?? '';
+    _lastNameController!.text = widget.userInfoModel!.userInfo!.lName ?? '';
+    _emailController!.text = widget.userInfoModel!.userInfo!.email ?? '';
+    _phoneController!.text = widget.userInfoModel!.userInfo!.phone ?? '';
   }
 
   @override
@@ -217,7 +217,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                                           fit: BoxFit.cover,
                                                           image:
                                                               '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}'
-                                                              '/${profileProvider.userInfoModel!.image}',
+                                                              '/${profileProvider.userInfoModel!.userInfo!.image}',
                                                           imageErrorBuilder: (c,
                                                                   o, s) =>
                                                               Image.asset(
@@ -250,14 +250,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${profileProvider.userInfoModel!.fName ?? ''} ${profileProvider.userInfoModel!.lName ?? ''}',
+                                        '${profileProvider.userInfoModel!.userInfo!.fName ?? ''} ${profileProvider.userInfoModel!.userInfo!.lName ?? ''}',
                                         style: poppinsMedium.copyWith(
                                             fontWeight: FontWeight.w600,
                                             fontSize:
                                                 Dimensions.fontSizeExtraLarge),
                                       ),
                                       Text(
-                                        '${getTranslated('user_id', context)} ${profileProvider.userInfoModel!.id ?? ''}',
+                                        '${getTranslated('user_id', context)} ${profileProvider.userInfoModel!.userInfo!.id ?? ''}',
                                         style: poppinsMedium.copyWith(
                                             fontWeight: FontWeight.w400,
                                             color: const Color(0xFF989898),
@@ -522,16 +522,16 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                       //     _confirmPasswordController!.text
                                       //         .trim();
                                       if (profileProvider
-                                                  .userInfoModel!.fName ==
+                                                  .userInfoModel!.userInfo!.fName ==
                                               firstName &&
                                           profileProvider
-                                                  .userInfoModel!.lName ==
+                                                  .userInfoModel!.userInfo!.lName ==
                                               lastName &&
                                           profileProvider
-                                                  .userInfoModel!.phone ==
+                                                  .userInfoModel!.userInfo!.phone ==
                                               phoneNumber &&
                                           profileProvider
-                                                  .userInfoModel!.email ==
+                                                  .userInfoModel!.userInfo!.email ==
                                               _emailController!.text &&
                                           profileProvider.file == null &&
                                           profileProvider.data == null) {
@@ -562,13 +562,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                       else {
                                         UserInfoModel updateUserInfoModel =
                                             profileProvider.userInfoModel!;
-                                        updateUserInfoModel.fName =
+                                        updateUserInfoModel.userInfo!.fName =
                                             _firstNameController!.text;
-                                        updateUserInfoModel.lName =
+                                        updateUserInfoModel.userInfo!.lName =
                                             _lastNameController!.text;
-                                        updateUserInfoModel.phone =
+                                        updateUserInfoModel.userInfo!.phone =
                                             _phoneController!.text;
-                                        updateUserInfoModel.email =
+                                        updateUserInfoModel.userInfo!.email =
                                             _emailController!.text;
 
                                         ResponseModel responseModel =

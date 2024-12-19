@@ -136,7 +136,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                     branchId:
                         Provider.of<ProfileProvider>(context, listen: false)
                             .userInfoModel!
-                            .warehouseId,
+                            .userInfo!.warehouseId,
                     deliveryAddressId: !widget.selfPickUp!
                         ? Provider.of<LocationProvider>(context, listen: false)
                             .addressList![0]
@@ -177,13 +177,13 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                           userId: Provider.of<ProfileProvider>(context,
                                   listen: false)
                               .userInfoModel!
-                              .id
+                              .userInfo!.id
                               .toString(),
                           amount: widget.amount!.ceil().toString(),
                           phone: Provider.of<ProfileProvider>(context,
                                   listen: false)
                               .userInfoModel!
-                              .phone
+                              .userInfo!.phone
                               .toString(),
                           email:
                               Provider.of<AuthProvider>(context, listen: false)
@@ -212,7 +212,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                   } else if (orderProvider.paymentMethod == 'wallet_payment') {
                     if (Provider.of<ProfileProvider>(context, listen: false)
                             .userInfoModel!
-                            .walletBalance! <
+                            .userInfo!.walletBalance! <
                         placeOrderBody.orderAmount!) {
                       showDialog(
                           context: context,

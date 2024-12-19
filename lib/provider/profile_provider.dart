@@ -44,14 +44,14 @@ class ProfileProvider with ChangeNotifier {
   }
 
   List<WarehouseCityList> _items = [];
-  bool _loading = true;
+  bool _isLoadingValue = true;
   String? _error;
   int? _selectedItemId;
   SharedPreferences? sharedPreferences;
 
   List<WarehouseCityList> get items => _items;
 
-  bool get loading => _loading;
+  bool get loadingValue => _isLoadingValue;
 
   String? get error => _error;
 
@@ -59,7 +59,7 @@ class ProfileProvider with ChangeNotifier {
 
   getCityWhereHouse() async {
     try {
-      _isLoading = true;
+      _isLoadingValue = true;
       _items = [];
       ApiResponse apiResponse = await profileRepo!.getCities();
       if (apiResponse.response != null &&
@@ -79,17 +79,17 @@ class ProfileProvider with ChangeNotifier {
             await sharedPreferences!
                 .setInt(AppConstants.selectedCityId, _items[0].cityId!);
           }
-          await Provider.of<CategoryProvider>(Get.context!, listen: false).getCategoryList(
-              Get.context!,
-              "en",
-              true,
-              id: _selectedItemId,
-          );
+          // await Provider.of<CategoryProvider>(Get.context!, listen: false).getCategoryList(
+          //     Get.context!,
+          //     "en",
+          //     true,
+          //     id: _selectedItemId,
+          // );
         }
       } else {
         ApiChecker.checkApi(apiResponse);
       }
-      _isLoading = false;
+      _isLoadingValue = false;
       notifyListeners();
     } catch (error) {
       print(error);
@@ -98,6 +98,7 @@ class ProfileProvider with ChangeNotifier {
 
   void selectItem(int? value) async {
     _selectedItemId = value;
+    print("************* Selected Warehouse id is:- $value { selected id = $_selectedItemId  and final value is:- $selectedItemId } ***************");
     sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!
         .setInt(AppConstants.selectedCityId, _selectedItemId!);
@@ -180,6 +181,8 @@ class ProfileProvider with ChangeNotifier {
       _userInfoModel = updateUserModel;
       responseModel = ResponseModel(true, message);
     } else {
+      _isLoading = false;
+      notifyListeners();
       responseModel = ResponseModel(
         false,
         ErrorResponse.fromJson(
@@ -188,6 +191,7 @@ class ProfileProvider with ChangeNotifier {
             .message,
       );
     }
+    _isLoading = false;
     notifyListeners();
     return responseModel;
   }

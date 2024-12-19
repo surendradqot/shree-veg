@@ -192,7 +192,7 @@ class FlashDealsView extends StatelessWidget {
                                                                             RatingBar(
                                                                           rating: flashDealProvider.dailyFlashDealList[index].rating!.isNotEmpty
                                                                               ? double.parse(flashDealProvider.dailyFlashDealList[index].rating![0].average!)
-                                                                              : 0.0,
+                                                                              : 4.0,
                                                                           size:
                                                                               10,
                                                                         ),

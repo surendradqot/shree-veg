@@ -6,6 +6,7 @@ import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
 import 'package:shreeveg/helper/toast_service.dart';
 import 'package:shreeveg/localization/language_constraints.dart';
+import 'package:shreeveg/provider/auth_provider.dart';
 import 'package:shreeveg/provider/cart_provider.dart';
 import 'package:shreeveg/provider/coupon_provider.dart';
 import 'package:shreeveg/provider/order_provider.dart';
@@ -322,16 +323,18 @@ class CartDeliveryTimeSlot extends StatelessWidget {
       int deliverySlotRows = 0;
       return Consumer<ProfileProvider>(
         builder: (context, profileProvider, child) {
-          int timeSlotsLength =
-              profileProvider.userInfoModel!.deliveryTime!.length;
-          print('time slots length is: $timeSlotsLength');
-          if (timeSlotsLength.isEven) {
-            deliverySlotRows = timeSlotsLength ~/ 2;
-          } else {
-            deliverySlotRows = (timeSlotsLength ~/ 2) + 1;
+          int timeSlotsLength = 0;
+          if(profileProvider.userInfoModel!=null && profileProvider.userInfoModel!.deliveryTime!.isNotEmpty){
+            int timeSlotsLength =
+                profileProvider.userInfoModel!.deliveryTime!.length;
+            print('time slots length is: $timeSlotsLength');
+            if (timeSlotsLength.isEven) {
+              deliverySlotRows = timeSlotsLength ~/ 2;
+            } else {
+              deliverySlotRows = (timeSlotsLength ~/ 2) + 1;
+            }
           }
-
-          return Column(
+          return profileProvider.userInfoModel!=null && profileProvider.userInfoModel!.deliveryTime!.isNotEmpty?Column(
             children: [
               Row(
                 children: [
@@ -360,12 +363,12 @@ class CartDeliveryTimeSlot extends StatelessWidget {
                         (index) => InkWell(
                               onTap: () {
                                 if (isSlotEnabled(profileProvider.userInfoModel!
-                                    .deliveryTime![index].open)) {
+                                    .deliveryTime![index].open!)) {
                                   cartProvider.updateSelectedDeliveryTimeSlot(
                                       '${profileProvider.userInfoModel!.deliveryTime![index].open} - ${profileProvider.userInfoModel!.deliveryTime![index].close}');
                                 } else {
                                   ToastService().show(
-                                      'Time slot closed at: ${getFormattedTimes(profileProvider.userInfoModel!.deliveryTime![index].open, profileProvider.userInfoModel!.deliveryTime![index].close, true, int.parse(profileProvider.userInfoModel!.deliveryTime![index].hideOptionBefore))}');
+                                      'Time slot closed at: ${getFormattedTimes(profileProvider.userInfoModel!.deliveryTime![index].open!, profileProvider.userInfoModel!.deliveryTime![index].close!, true, int.parse(profileProvider.userInfoModel!.deliveryTime![index].hideOptionBefore!))}');
                                 }
                               },
                               child: Padding(
@@ -381,13 +384,13 @@ class CartDeliveryTimeSlot extends StatelessWidget {
                                               isSlotEnabled(profileProvider
                                                   .userInfoModel!
                                                   .deliveryTime![index]
-                                                  .open)
+                                                  .open!)
                                           ? const Color(
                                               0xFFF1FFF4) // Color if the slot is both selected and enabled
                                           : isSlotEnabled(profileProvider
                                                   .userInfoModel!
                                                   .deliveryTime![index]
-                                                  .open)
+                                                  .open!)
                                               ? Colors
                                                   .grey // Color if the slot is enabled but not selected
                                               : Colors.grey.shade200,
@@ -402,13 +405,13 @@ class CartDeliveryTimeSlot extends StatelessWidget {
                                                 isSlotEnabled(profileProvider
                                                     .userInfoModel!
                                                     .deliveryTime![index]
-                                                    .open)
+                                                    .open!)
                                             ? const Color(
                                                 0xFF039800) // Color if the slot is both selected and enabled
                                             : isSlotEnabled(profileProvider
                                                     .userInfoModel!
                                                     .deliveryTime![index]
-                                                    .open)
+                                                    .open!)
                                                 ? Colors
                                                     .grey // Color if the slot is enabled but not selected
                                                 : Colors.grey.shade300,
@@ -422,7 +425,7 @@ class CartDeliveryTimeSlot extends StatelessWidget {
                                             getTimePeriod(profileProvider
                                                 .userInfoModel!
                                                 .deliveryTime![index]
-                                                .open),
+                                                .open!),
                                             style: poppinsRegular.copyWith(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize:
@@ -430,9 +433,9 @@ class CartDeliveryTimeSlot extends StatelessWidget {
                                         Text(
                                             getFormattedTimes(
                                                 profileProvider.userInfoModel!
-                                                    .deliveryTime![index].open,
+                                                    .deliveryTime![index].open!,
                                                 profileProvider.userInfoModel!
-                                                    .deliveryTime![index].close,
+                                                    .deliveryTime![index].close!,
                                                 false,
                                                 0),
                                             style: poppinsRegular.copyWith(
@@ -450,7 +453,7 @@ class CartDeliveryTimeSlot extends StatelessWidget {
                 height: Dimensions.paddingSizeSmall,
               ),
             ],
-          );
+          ):SizedBox();
         },
       );
     });
@@ -521,71 +524,79 @@ class CartButtonView extends StatelessWidget {
                   '${PriceConverter.convertPrice(context, _total)} total',
               buttonText2: getTranslated('place_order', context),
               onPressed: () {
-                if (_itemPrice < _configModel.minimumOrderValue!) {
-                  showCustomSnackBar(
-                      ' ${getTranslated('minimum_order_amount_is', context)} ${PriceConverter.convertPrice(context, _configModel.minimumOrderValue)}, ${getTranslated('you_have', context)} ${PriceConverter.convertPrice(context, _itemPrice)} ${getTranslated('in_your_cart_please_add_more_item', context)}',
-                      isError: true);
-                } else {
-                  if (orderProvider.orderType == 'self_pickup' &&
-                      cartProvider.selectedStoreId == null) {
-                    return ToastService().show('Please select store to pickup');
-                  }
+                bool isLoggedIn =
+                Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
+                if(isLoggedIn){
+                  if (_itemPrice < _configModel.minimumOrderValue!) {
+                    showCustomSnackBar(
+                        ' ${getTranslated('minimum_order_amount_is', context)} ${PriceConverter.convertPrice(context, _configModel.minimumOrderValue)}, ${getTranslated('you_have', context)} ${PriceConverter.convertPrice(context, _itemPrice)} ${getTranslated('in_your_cart_please_add_more_item', context)}',
+                        isError: true);
+                  } else {
+                    if (orderProvider.orderType == 'self_pickup' &&
+                        cartProvider.selectedStoreId == null) {
+                      return ToastService()
+                          .show('Please select store to pickup');
+                    }
 
-                  if (orderProvider.orderType == 'delivery' &&
-                      cartProvider.selectedDeliveryTimeSlot == null) {
-                    return ToastService()
-                        .show('Please select upcoming delivery time slot');
-                  }
+                    if (orderProvider.orderType == 'delivery' &&
+                        cartProvider.selectedDeliveryTimeSlot == null) {
+                      return ToastService()
+                          .show('Please select upcoming delivery time slot');
+                    }
 
-                  if (orderProvider.orderType == 'delivery' &&
-                      Provider.of<LocationProvider>(context, listen: false)
-                          .addressList!
-                          .isEmpty) {
-                    return ToastService().show('Please add delivery address');
-                  }
+                    if (orderProvider.orderType == 'delivery' &&
+                        Provider.of<LocationProvider>(context, listen: false)
+                            .addressList!
+                            .isEmpty) {
+                      return ToastService().show('Please add delivery address');
+                    }
 
-                  if (orderProvider.orderType == 'delivery' &&
-                      orderProvider.addressIndex == -1) {
-                    return ToastService().show(
-                        getTranslated('select_delivery_address', context)!);
-                  }
+                    if (orderProvider.orderType == 'delivery' &&
+                        orderProvider.addressIndex == -1) {
+                      return ToastService().show(
+                          getTranslated('select_delivery_address', context)!);
+                    }
 
-                  if (kDebugMode) {
-                    print(
-                        'navigate to payment options================================================');
-                    print('total amount to pay: $_total');
-                    print('type of order: ${orderProvider.orderType}');
-                    print(
-                        'time slot: ${cartProvider.selectedDeliveryTimeSlot}');
-                    print('payment method: ${orderProvider.paymentMethod}');
-                    print('is delivery free: $_isFreeDelivery');
-                    print('slected store id: ${cartProvider.selectedStoreId}');
-                    print(
-                        'selected address id: ${Provider.of<LocationProvider>(context, listen: false).addressList![0].id}');
-                    print(
-                        'navigate to payment options================================================');
-                  }
+                    if (kDebugMode) {
+                      print(
+                          'navigate to payment options================================================');
+                      print('total amount to pay: $_total');
+                      print('type of order: ${orderProvider.orderType}');
+                      print(
+                          'time slot: ${cartProvider.selectedDeliveryTimeSlot}');
+                      print('payment method: ${orderProvider.paymentMethod}');
+                      print('is delivery free: $_isFreeDelivery');
+                      print(
+                          'slected store id: ${cartProvider.selectedStoreId}');
+                      print(
+                          'selected address id: ${Provider.of<LocationProvider>(context, listen: false).addressList![0].id}');
+                      print(
+                          'navigate to payment options================================================');
+                    }
 
-                  //  To navigate to payment options
-                  Navigator.pushNamed(
-                    context,
-                    RouteHelper.getCheckoutRoute(
-                      _total,
-                      0,
-                      orderProvider.orderType,
-                      Provider.of<CouponProvider>(context, listen: false).code!,
-                      _isFreeDelivery ? 'free_delivery' : '',
-                    ),
-                    arguments: CheckoutScreen(
-                      amount: _total,
-                      orderType: orderProvider.orderType,
-                      discount: 0,
-                      couponCode:
-                          Provider.of<CouponProvider>(context, listen: false)
-                              .code,
-                      freeDeliveryType: _isFreeDelivery ? 'free_delivery' : '',
-                    ),
-                  );
+                    //  To navigate to payment options
+                    Navigator.pushNamed(
+                      context,
+                      RouteHelper.getCheckoutRoute(
+                        _total,
+                        0,
+                        orderProvider.orderType,
+                        Provider.of<CouponProvider>(context, listen: false)
+                            .code!,
+                        _isFreeDelivery ? 'free_delivery' : '',
+                      ),
+                      arguments: CheckoutScreen(
+                        amount: _total,
+                        orderType: orderProvider.orderType,
+                        discount: 0,
+                        couponCode:
+                            Provider.of<CouponProvider>(context, listen: false)
+                                .code,
+                        freeDeliveryType:
+                            _isFreeDelivery ? 'free_delivery' : '',
+                      ),
+                    );
+                  }
 
                   // String? orderType =
                   //     Provider.of<OrderProvider>(context, listen: false).orderType;
@@ -654,6 +665,9 @@ class CartButtonView extends StatelessWidget {
                   //         isFlip: true);
                   //   }
                   // }
+                }
+                else{
+                  ToastService().show("Please login for place orders");
                 }
               },
             );

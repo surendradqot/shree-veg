@@ -30,20 +30,32 @@ class NotificationProvider extends ChangeNotifier {
         apiResponse.response!.statusCode == 200) {
       print('response data isSSS: ${apiResponse.response!.data}');
       _allNotificationList = [];
-      apiResponse.response!.data['data'].forEach((notificatioModel) =>
-          _allNotificationList!
-              .add(NotificationModel.fromJson(notificatioModel)));
-      _notificationListAlert = [];
-      _notificationListOffer = [];
-      _notificationListAlert = _allNotificationList
-          ?.where((element) => element.type == 'alert')
-          .toList();
-      _notificationListOffer = _allNotificationList
-          ?.where((element) => element.type == 'offer')
-          .toList();
+      if(apiResponse.response!.data!=null && apiResponse.response!.data!=[] && apiResponse.response!.data['data']!=null){
+        apiResponse.response!.data['data'].forEach((notificatioModel) =>
+            _allNotificationList!
+                .add(NotificationModel.fromJson(notificatioModel)));
+        _notificationListAlert = [];
+        _notificationListOffer = [];
+        _notificationListAlert = _allNotificationList
+            ?.where((element) => element.type == 'alert')
+            .toList();
+        _notificationListOffer = _allNotificationList
+            ?.where((element) => element.type == 'offer')
+            .toList();
+      }
+      else{
+        _allNotificationList = [];
+        _notificationListAlert = [];
+        _notificationListOffer = [];
+        notifyListeners();
+      }
     } else {
       ApiChecker.checkApi(apiResponse);
     }
+    _allNotificationList = [];
+    _notificationListAlert = [];
+    _notificationListOffer = [];
     setAlertSelected(true);
+    notifyListeners();
   }
 }

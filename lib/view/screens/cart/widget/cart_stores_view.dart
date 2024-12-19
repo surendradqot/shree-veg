@@ -19,17 +19,20 @@ class CartStoreOptions extends StatelessWidget {
       int storeRows = 0;
       return Consumer<ProfileProvider>(
           builder: (context, profileProvider, child) {
-        int storesLength = profileProvider.userInfoModel!.stores!.length;
-        if (kDebugMode) {
-          print('stores length is: $storesLength');
-        }
-        if (storesLength.isEven) {
-          storeRows = storesLength ~/ 2;
-        } else {
-          storeRows = (storesLength ~/ 2) + 1;
+            int storesLength = 0;
+            if(profileProvider.userInfoModel!=null && profileProvider.userInfoModel!.stores!.isNotEmpty){
+          int storesLength = profileProvider.userInfoModel!.stores!.length;
+          if (kDebugMode) {
+            print('stores length is: $storesLength');
+          }
+          if (storesLength.isEven) {
+            storeRows = storesLength ~/ 2;
+          } else {
+            storeRows = (storesLength ~/ 2) + 1;
+          }
         }
 
-        return Column(
+        return profileProvider.userInfoModel!=null && profileProvider.userInfoModel!.stores!.isNotEmpty?Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -107,14 +110,14 @@ class CartStoreOptions extends StatelessWidget {
                                         ),
                                         Text(
                                             profileProvider.userInfoModel!
-                                                .stores![index].name,
+                                                .stores![index].name!,
                                             style: poppinsRegular.copyWith(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize:
                                                     Dimensions.fontSizeSmall)),
                                         Text(
                                             profileProvider.userInfoModel!
-                                                .stores![index].address,
+                                                .stores![index].address!,
                                             style: poppinsRegular.copyWith(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize:
@@ -123,7 +126,7 @@ class CartStoreOptions extends StatelessWidget {
                                             rating: double.parse(profileProvider
                                                     .userInfoModel!
                                                     .stores![index]
-                                                    .adminRating) -
+                                                    .adminRating!) -
                                                 1),
                                       ],
                                     ),
@@ -137,7 +140,7 @@ class CartStoreOptions extends StatelessWidget {
               height: Dimensions.paddingSizeSmall,
             ),
           ],
-        );
+        ):SizedBox();
       });
     });
   }

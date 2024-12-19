@@ -115,7 +115,7 @@ class ProductTitleView extends StatelessWidget {
                       child: RatingBar(
                         rating: product!.rating!.isNotEmpty
                             ? double.parse(product!.rating![0].average!)
-                            : 0.0,
+                            : 4.0,
                         size: Dimensions.paddingSizeDefault,
                         color: const Color(0xFF0B4619),
                       ),

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shreeveg/data/model/response/config_model.dart';
+import 'package:shreeveg/data/model/response/userinfo_model.dart';
 import 'package:shreeveg/helper/product_type.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
@@ -37,6 +38,7 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
   static Future<void> loadData(bool reload, BuildContext context) async {
+    await Provider.of<ProfileProvider>(Get.context!, listen: false).getCityWhereHouse();
     // final productProvider =
     //     Provider.of<ProductProvider>(context, listen: false);
     final flashDealProvider =
@@ -52,13 +54,13 @@ class HomeScreen extends StatefulWidget {
     if (reload) {
       Provider.of<SplashProvider>(context, listen: false).initConfig();
     }
-    await Provider.of<ProfileProvider>(Get.context!, listen: false).getCityWhereHouse();
-    // await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
-    //   context,
-    //   localizationProvider.locale.languageCode,
-    //   reload,
-    //   id: Provider.of<ProfileProvider>(Get.context!, listen: false).selectedItemId
-    // );
+
+    await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
+      context,
+      localizationProvider.locale.languageCode,
+      reload,
+      id: Provider.of<ProfileProvider>(Get.context!, listen: false).sharedPreferences!.getInt(AppConstants.selectedCityId)
+    );
 
     Provider.of<BannerProvider>(context, listen: false)
         .getBannerList(context, reload);
@@ -126,22 +128,74 @@ SharedPreferences? sharedPreferences;
 class _HomeScreenState extends State<HomeScreen> {
 
   Future apiCall() async{
-    sharedPreferences = await SharedPreferences.getInstance() ;
-   // showCityPopup(Get.context!);
+    sharedPreferences = await SharedPreferences.getInstance();
+    if(sharedPreferences!.getBool("showPopup")!){
+      sharedPreferences!.setBool("showPopup", false);
+      showCityDialog(Get.context!);
+    }
   }
 
 
   @override
   void initState() {
     super.initState();
-    apiCall();
+apiCall();
+  }
+
+  void showCityDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return WillPopScope(
+          onWillPop: () async {
+            // Prevent closing the dialog if no city is selected
+            return false;
+          },
+          child: AlertDialog(
+            title: Text('Select your location'),
+            content: Consumer<ProfileProvider>(
+              builder: (context, provider, child) {
+                if (provider.loadingValue) {
+                  return SizedBox(
+                    height: 80,
+                      child: Center(child: CircularProgressIndicator()));
+                }
+
+                return DropdownButtonFormField<WarehouseCityList>(
+                  items: provider.items.map((WarehouseCityList city) {
+                    return DropdownMenuItem<WarehouseCityList>(
+                      value: city,
+                      child: Text(city.warehousesCity ?? ''),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) async {
+                    provider.selectItem(newValue!.cityId!);
+                    await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
+                      context,
+                      "en",
+                      false,
+                      id: newValue.cityId!,
+                    ).then((onValue){
+                      Navigator.of(Get.context!).pop();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Location',
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final bool isLoggedIn =
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-
     if (kDebugMode) {
       print('home build:     $isLoggedIn');
     }
@@ -162,11 +216,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const PreferredSize(
                   preferredSize: Size.fromHeight(120), child: WebAppBar())
               : AppBar(
-            title: Text(getTranslated('shree Veg', context)!,style: poppinsMedium.copyWith(
+            title: Text(getTranslated('Shree Veg', context)!,style: poppinsMedium.copyWith(
                 fontSize: Dimensions.fontSizeLarge,
                 color:
                     Colors.white)),
             actions: [
+              IconButton(onPressed: (){
+                Navigator.pushNamed(
+                    context, RouteHelper.searchProduct);
+              }, icon: Icon(Icons.search,color: Colors.white,)),
               Padding(
                 padding: const EdgeInsets.only(right: 18.0),
                 child: Consumer<ProfileProvider>(
@@ -189,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Images.placeholder(context),
                             image:
                             '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/'
-                                '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.image : ''}',
+                                '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.userInfo!.image : ''}',
                             height: 40,
                             width: 40,
                             fit: BoxFit.cover,
@@ -424,13 +482,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         int? selectedValue = sharedPreferences!.getInt(AppConstants.selectedCityId);
                         print("************** $selectedValue  ****************");
                         return provider.items.isNotEmpty?Container(
-                          padding: EdgeInsets.all(15),
+                          padding: EdgeInsets.all(08),
+                          margin: EdgeInsets.all(15),
                           width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           // height: MediaQuery.of(context).size.height*0.08,
                           child: DropdownButton<int>(
                               value: selectedValue,
                               dropdownColor: Colors.white,
                               underline: SizedBox(),
+                              isExpanded: true,
                               items: provider.items.map((item) {
                                 return DropdownMenuItem<int>(
                                   value: item.cityId,
@@ -470,12 +534,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               }).toList(),
                               onChanged: (int? newValue) async {
                                 provider.selectItem(newValue);
-                               await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
-                                    context,
-                                    "en",
-                                    false,
-                                    id: newValue,
-                                );
+                                await HomeScreen.loadData(true, context);
+                               // await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
+                               //      context,
+                               //      "en",
+                               //      false,
+                               //      id: newValue,
+                               //  );
                               },
                             ),
                         ):const LocationView(locationColor: Colors.black54);
@@ -487,7 +552,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: Dimensions.paddingSizeSmall),
 
-
+// const SearchWidget(),
                     //Offer Banners
                     if (splashProvider.configModel!=null && splashProvider.configModel!.flashDealProductStatus!)
                       Consumer<FlashDealProvider>(
@@ -498,7 +563,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: Dimensions.paddingSizeSmall),
 
                     //Search Widget
-                    const SearchWidget(),
+
 
                     // Category
                     const CategoryView(),
@@ -532,24 +597,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                     height: Dimensions.paddingSizeDefault),
                                 !ResponsiveHelper.isDesktop(context)
                                     ? SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                .65,
-                                        child: const Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: Dimensions
-                                                  .paddingSizeDefault),
-                                          child: FlashDealsView(
-                                              isHomeScreen: true,
-                                              productType:
-                                                  ProductType.flashSaleSpecial),
-                                        ),
-                                      )
+                                  height:
+                                  MediaQuery.of(context).size.width *
+                                      .75,
+                                  child: const Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: Dimensions
+                                            .paddingSizeDefault),
+                                    child: FlashDealsView(
+                                        isHomeScreen: true,
+                                        productType:
+                                        ProductType.flashSaleSpecial),
+                                  ),
+                                )
                                     : HomeItemView(
                                         productList: flashDealProvider
                                             .specialFlashDealList,
                                         productType:
                                             ProductType.flashSaleSpecial)
+                                    // : SizedBox(child: Text("data"),)
                               ]);
                       }),
 
@@ -575,7 +641,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ? SizedBox(
                                         height:
                                             MediaQuery.of(context).size.width *
-                                                .65,
+                                                .75,
                                         child: const Padding(
                                           padding: EdgeInsets.only(
                                               bottom: Dimensions

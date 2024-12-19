@@ -187,7 +187,7 @@ class Product {
     _productCode = json['product_code'];
     _description = json['description'];
     _hindiDescription = json['hn_description'];
-    _image = json['image'].cast<String>();
+    _image = json['image']!=null?json['image'].cast<String>():[];
     _price = json['price'];
     _marketPrice = json['market_price']!=null?json['market_price'].toDouble():0.0;
     _groupIds = (json['group_ids'] as List?)?.cast<String>() ?? [];

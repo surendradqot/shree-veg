@@ -37,7 +37,8 @@ class FlashDealProvider extends ChangeNotifier {
           List<dynamic> _flashResponse = apiResponse.response!.data;
 
           _flashResponseList = [];
-
+          // _dailyFlashDealList = [];
+          // _specialFlashDealList = [];
           for (int i = 0; i < _flashResponse.length; i++) {
             _flashDeal = FlashDealModel.fromJson(_flashResponse[i]);
             print('flashDeal isss: $_flashDeal');
@@ -80,7 +81,8 @@ class FlashDealProvider extends ChangeNotifier {
                 } else {
                   ApiChecker.checkApi(megaDealResponse);
                 }
-              } else {
+              }
+              else {
                 // if (_flashDeal!.id != null) {
                 DateTime endTime = DateFormat("yyyy-MM-dd")
                     .parse(_flashDeal!.endDate!)

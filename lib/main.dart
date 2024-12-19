@@ -162,7 +162,11 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (context) => di.sl<WalletProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<FlashDealProvider>()),
     ],
-    child: MyApp(orderID: orderID, isWeb: !kIsWeb),
+    child: GestureDetector(
+      onTap: (){
+        FocusScope.of(Get.context!).requestFocus(FocusNode());
+      },
+        child: MyApp(orderID: orderID, isWeb: !kIsWeb)),
   ));
 }
 

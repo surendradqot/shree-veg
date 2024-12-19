@@ -106,6 +106,68 @@ class AuthProvider with ChangeNotifier {
     return responseModel;
   }
 
+  Future<ResponseModel> registrationNew(SignUpModel signUpModel) async {
+    _isLoading = true;
+    _registrationErrorMessage = '';
+    notifyListeners();
+    ApiResponse apiResponse = await authRepo!.registrationNew(signUpModel);
+    ResponseModel responseModel;
+    String? token;
+    if (apiResponse.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      /*Map map = apiResponse.response!.data;
+      try {
+        if (map["token"] == null || map["token"] == 'null') {
+          token = map["temporary_token"];
+        } else {
+          token = map["token"];
+        }
+      } catch (e) {
+        token = map["temporary_token"];
+      }
+
+      // login(signUpModel.email, signUpModel.password);
+
+      authRepo!.saveUserToken(token!);
+      await authRepo!.updateToken();*/
+      responseModel = ResponseModel(true, 'successful');
+    } else {
+      _registrationErrorMessage =
+          ErrorResponse.fromJson(apiResponse.error).errors![0].message;
+      responseModel = ResponseModel(false, _registrationErrorMessage);
+      ToastService().show(_registrationErrorMessage!);
+    }
+    _isLoading = false;
+    notifyListeners();
+    return responseModel;
+  }
+
+  Future<ResponseModel> logoutNewMethod() async {
+    _isLoading = true;
+    _registrationErrorMessage = '';
+    notifyListeners();
+    ApiResponse apiResponse = await authRepo!.logoutNew();
+    ResponseModel responseModel;
+    if (apiResponse.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      Provider.of<AuthProvider>(Get.context!, listen: false)
+          .clearSharedData();
+      Provider.of<SplashProvider>(Get.context!, listen: false)
+          .setPageIndex(0);
+      Navigator.pushNamedAndRemoveUntil(
+          Get.context!, RouteHelper.splash, (route) => false);
+      responseModel = ResponseModel(true, 'successful');
+    } else {
+      _registrationErrorMessage =
+          ErrorResponse.fromJson(apiResponse.error).errors![0].message;
+      responseModel = ResponseModel(false, _registrationErrorMessage);
+      ToastService().show(_registrationErrorMessage!);
+    }
+    _isLoading = false;
+    notifyListeners();
+    return responseModel;
+  }
+
   // for login section
   String? _loginErrorMessage = '';
 
@@ -166,6 +228,35 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<Map<String, String>?> loginPhoneNumber(
+      BuildContext context, String number) async {
+    _isLoading = true;
+    String phone = '+91${number.toString().trim()}';
+    if (kDebugMode) {
+      print('verifying phone number please wait..........$phone');
+    }
+
+    setLoginWithPhone(true);
+    try{
+      Map<String, String>? responseData;
+      await sendLoginOtp(number.trim())
+          .then((loginOtpStatus) async {
+        print('login otp resp status is: $loginOtpStatus');
+        if (loginOtpStatus.isSuccess) {
+          responseData = {"success": "true"};
+          return {"success": "true"};
+        } else {
+          print('login otp failed');
+          responseData = {"success": "false"};
+          return {"success": "false"};
+        }
+      });
+      return responseData;
+    }catch(error){
+      return {"success": "false"};
+    }
+  }
+
   Future<void> signInWithPhoneNumber(BuildContext context) async {
     // Create a PhoneAuthCredential with the code
     String smsCode = _otpCode;
@@ -223,12 +314,103 @@ class AuthProvider with ChangeNotifier {
         print('####err $err');
       }
     }).catchError((onError) {
-      // ToastService().show('Invalid otp or phone');
-      Navigator.pushNamedAndRemoveUntil(
-          context, RouteHelper.main, (route) => false,
-          arguments: const MainScreen());
+      ToastService().show('Invalid otp or phone');
+      // Navigator.pushNamedAndRemoveUntil(
+      //     context, RouteHelper.main, (route) => false,
+      //     arguments: const MainScreen());
       return null;
     });
+    //   print('resp status is: $status');
+    //   if (status.isSuccess) {);
+  }
+
+  Future<void> verificationMethod(BuildContext context) async {
+    // Create a PhoneAuthCredential with the code
+    // String smsCode = _otpCode;
+    // String verificationId = getVerificationId();
+    // PhoneAuthCredential credential = PhoneAuthProvider.credential(
+    //     verificationId: verificationId, smsCode: smsCode);
+    try {
+      await verifyLoginOtp(phoneEmailController.text.toString().trim(),_otpCode)
+          .then((loginOtpStatus) async {
+        print('login otp resp status is: $loginOtpStatus');
+        if (loginOtpStatus.isSuccess) {
+          String email = getUserEmailOrPhone();
+          String otp = getUserOtp();
+          Navigator.pushNamedAndRemoveUntil(
+              context, RouteHelper.main, (route) => false,
+              arguments: const MainScreen());
+          // await login(email, otp).then((loginStatus) async {
+          //   print('login status is: $loginStatus');
+          //   if (loginStatus.isSuccess) {
+          //     Navigator.pushNamedAndRemoveUntil(
+          //         context, RouteHelper.main, (route) => false,
+          //         arguments: const MainScreen());
+          //   }
+          // });
+        } else {
+          print('login otp failed');
+        }
+      });
+    } catch (err) {
+      print('####err $err');
+    }
+    // Sign the user in (or link) with the credential
+    /*await FirebaseAuth.instance
+        .signInWithCredential(credential)
+        .then((value) async {
+      try {
+        await loginOtp(phoneEmailController.text.toString().trim())
+            .then((loginOtpStatus) async {
+          print(
+              'phone login successful in firebase authentication:::::::: $value');
+          print('login otp resp status is: $loginOtpStatus');
+          if (loginOtpStatus.isSuccess) {
+            String email = getUserEmailOrPhone();
+            String otp = getUserOtp();
+            await login(email, otp).then((loginStatus) async {
+              print('login status is: $loginStatus');
+              if (loginStatus.isSuccess) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RouteHelper.main, (route) => false,
+                    arguments: const MainScreen());
+              }
+            });
+          } else {
+            print('login otp failed');
+          }
+        });
+
+        await loginOtp(phoneEmailController.text.toString().trim())
+            .then((loginOtpStatus) async {
+          print(
+              'phone login successful in firebase authentication:::::::: $value');
+          print('login otp resp status is: $loginOtpStatus');
+          if (loginOtpStatus.isSuccess) {
+            String email = getUserEmailOrPhone();
+            String otp = getUserOtp();
+            await login(email, otp).then((loginStatus) async {
+              print('login status is: $loginStatus');
+              if (loginStatus.isSuccess) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RouteHelper.main, (route) => false,
+                    arguments: const MainScreen());
+              }
+            });
+          } else {
+            print('login otp failed');
+          }
+        });
+      } catch (err) {
+        print('####err $err');
+      }
+    }).catchError((onError) {
+      ToastService().show('Invalid otp or phone');
+      // Navigator.pushNamedAndRemoveUntil(
+      //     context, RouteHelper.main, (route) => false,
+      //     arguments: const MainScreen());
+      return null;
+    });*/
     //   print('resp status is: $status');
     //   if (status.isSuccess) {);
   }
@@ -266,6 +448,66 @@ class AuthProvider with ChangeNotifier {
     _isLoading = false;
     notifyListeners();
     return responseModel;
+  }
+
+  Future<ResponseModel> sendLoginOtp(String? emailOrPhone) async {
+    _isLoading = true;
+    _loginErrorMessage = '';
+    notifyListeners();
+    ApiResponse apiResponse =
+    await authRepo!.loginOtpSend(emailOrPhone: emailOrPhone);
+    ResponseModel responseModel;
+    if (apiResponse.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      // Map map = apiResponse.response!.data;
+      // String otp = map["otp"].toString();
+      // authRepo!.saveUserOTP(otp);
+      // authRepo!.saveUserEmailOrPhone(emailOrPhone!);
+      // showCustomSnackBar(otp);
+      responseModel = ResponseModel(true, 'successful');
+    } else {
+      _loginErrorMessage =
+          ErrorResponse.fromJson(apiResponse.error).errors![0].message;
+      responseModel = ResponseModel(false, _loginErrorMessage);
+    }
+    _isLoading = false;
+    notifyListeners();
+    return responseModel;
+  }
+
+  Future<ResponseModel> verifyLoginOtp(String? emailOrPhone,String? otp) async {
+    _isLoading = true;
+    _loginErrorMessage = '';
+    notifyListeners();
+    ApiResponse apiResponse =
+        await authRepo!.otpVerification(emailOrPhone: emailOrPhone,otp: otp );
+    ResponseModel responseModel;
+    if (apiResponse.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      Map map = apiResponse.response!.data;
+      String otp = map['data']["otp"].toString();
+      authRepo!.saveUserOTP(otp);
+      authRepo!.saveUserEmailOrPhone(emailOrPhone!);
+      String token = map['data']["token"];
+      authRepo!.saveUserToken(token);
+      await authRepo!.updateToken();
+      // showCustomSnackBar(otp);
+      _isLoading = false;
+      notifyListeners();
+      responseModel = ResponseModel(true, 'successful');
+      return responseModel;
+    } else {
+      // _loginErrorMessage =
+      //     ErrorResponse.fromJson(apiResponse.error).errors![0].message;
+      // responseModel = ResponseModel(false, _loginErrorMessage);
+      _isLoading = false;
+      notifyListeners();
+      Map map = apiResponse.response!.data;
+      ToastService().show(map['message']);
+      responseModel = ResponseModel(false, map['message']);
+      return responseModel;
+    }
+
   }
 
   Future<ResponseModel> login(String? email, String? otp) async {

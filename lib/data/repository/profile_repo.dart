@@ -35,7 +35,9 @@ class ProfileRepo {
 
   Future<ApiResponse> getUserInfo() async {
     try {
-      final response = await dioClient!.get(AppConstants.customerInfoUri);
+      SharedPreferences? sharedPreferences  = await SharedPreferences.getInstance();
+      int? whId = sharedPreferences.getInt(AppConstants.selectedCityId);
+      final response = await dioClient!.get("${AppConstants.customerInfoUri}?warehouse_id=${whId!}");
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
@@ -68,9 +70,9 @@ class ProfileRepo {
     }
     Map<String, String> fields = {};
     fields.addAll(<String, String>{
-      'full_name': '${userInfoModel.fName!} ${userInfoModel.lName!}',
-      'phone': userInfoModel.phone!,
-      'email': userInfoModel.email!
+      'full_name': '${userInfoModel.userInfo!.fName!} ${userInfoModel.userInfo!.lName!}',
+      'phone': userInfoModel.userInfo!.phone!,
+      'email': userInfoModel.userInfo!.email!
     });
     request.fields.addAll(fields);
     http.StreamedResponse response = await request.send();

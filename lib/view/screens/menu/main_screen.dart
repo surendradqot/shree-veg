@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shreeveg/helper/html_type.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
@@ -118,6 +119,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Future apiCall()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setBool("showPopup", true);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -129,6 +135,7 @@ class _MainScreenState extends State<MainScreen> {
     } else {
       Provider.of<CartProvider>(context, listen: false).getCartData();
     }
+    apiCall();
     HomeScreen.loadData(true, Get.context!);
   }
 

@@ -154,7 +154,7 @@ class DetailsView extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: Dimensions.paddingSizeDefault),
                               child: Text(
-                                profileProvider.userInfoModel!.referCode
+                                profileProvider.userInfoModel!.userInfo!.referralCode
                                         ?.toUpperCase() ??
                                     '',
                                 style: poppinsRegular.copyWith(
@@ -164,13 +164,13 @@ class DetailsView extends StatelessWidget {
                             InkWell(
                               borderRadius: BorderRadius.circular(10),
                               onTap: () {
-                                if (profileProvider.userInfoModel!.referCode !=
+                                if (profileProvider.userInfoModel!.userInfo!.referralCode !=
                                         null &&
-                                    profileProvider.userInfoModel!.referCode !=
+                                    profileProvider.userInfoModel!.userInfo!.referralCode !=
                                         '') {
                                   Clipboard.setData(ClipboardData(
                                       text:
-                                          '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.referCode : ''}'));
+                                          '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.userInfo!.referralCode : ''}'));
                                   ToastService().show(getTranslated(
                                       'referral_code_copied', context)!);
                                 }
@@ -218,7 +218,7 @@ class DetailsView extends StatelessWidget {
                           .map((item) => InkWell(
                                 onTap: () {
                                   String shareText =
-                                      'Hey, I\'m using ShreeVeg App to purchase daily fresh fruits and vegetables at cheaper prices than market and earn lot of referral money to purchase again. Please use my referral code and get bonus: ${profileProvider.userInfoModel!.referCode!}';
+                                      'Hey, I\'m using ShreeVeg App to purchase daily fresh fruits and vegetables at cheaper prices than market and earn lot of referral money to purchase again. Please use my referral code and get bonus: ${profileProvider.userInfoModel!.userInfo!.referralCode!}';
                                   Share.share(shareText);
                                 },
                                 child: Container(

@@ -143,9 +143,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                                         context,
                                                         profileProvider
                                                                 .userInfoModel!
-                                                                .walletBalance ??
+                                                                .userInfo!.walletBalance!.toDouble() ??
                                                             0)
-                                                    : '${Provider.of<ProfileProvider>(context, listen: false).userInfoModel!.point ?? 0}',
+                                                    : '${Provider.of<ProfileProvider>(context, listen: false).userInfoModel!.userInfo!.points ?? 0}',
                                                 style: poppinsBold.copyWith(
                                                     fontSize: Dimensions
                                                         .fontSizeOverLarge,
@@ -254,7 +254,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                                 context,
                                                                 listen: false)
                                                             .userInfoModel!
-                                                            .id
+                                                            .userInfo!.id
                                                             .toString(),
                                                         amount: walletProvider
                                                             .selectedMoneyTab
@@ -264,7 +264,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                                 context,
                                                                 listen: false)
                                                             .userInfoModel!
-                                                            .phone
+                                                            .userInfo!.phone
                                                             .toString(),
                                                         email: Provider.of<
                                                                     AuthProvider>(

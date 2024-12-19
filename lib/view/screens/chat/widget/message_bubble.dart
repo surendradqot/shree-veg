@@ -190,7 +190,7 @@ class MessageBubble extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '${profileProvider.userInfoModel!.fName} ${profileProvider.userInfoModel!.lName}',
+                          '${profileProvider.userInfoModel!.userInfo!.fName} ${profileProvider.userInfoModel!.userInfo!.lName}',
                           style: poppinsRegular.copyWith(
                               fontSize: Dimensions.fontSizeLarge),
                         ),
@@ -309,7 +309,7 @@ class MessageBubble extends StatelessWidget {
                                     width: 40,
                                     height: 40,
                                     image:
-                                        '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/${profileProvider.userInfoModel!.image}',
+                                        '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/${profileProvider.userInfoModel!.userInfo!.image}',
                                     imageErrorBuilder: (c, o, s) => Image.asset(
                                         Images.placeholder(context),
                                         width: 40,
@@ -505,7 +505,7 @@ class MessageBubble extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              '${profileController.userInfoModel != null ? profileController.userInfoModel!.fName ?? '' : ''} ${profileController.userInfoModel != null ? profileController.userInfoModel!.lName ?? '' : ''}',
+                              '${profileController.userInfoModel != null ? profileController.userInfoModel!.userInfo!.fName ?? '' : ''} ${profileController.userInfoModel != null ? profileController.userInfoModel!.userInfo!.lName ?? '' : ''}',
                               style: poppinsRegular.copyWith(
                                   fontSize: Dimensions.fontSizeLarge),
                             ),
@@ -658,7 +658,7 @@ class MessageBubble extends StatelessWidget {
                                         image: profileController
                                                     .userInfoModel !=
                                                 null
-                                            ? '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/${profileController.userInfoModel!.image}'
+                                            ? '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/${profileController.userInfoModel!.userInfo!.image}'
                                             : '',
                                         imageErrorBuilder: (c, o, s) =>
                                             Image.asset(

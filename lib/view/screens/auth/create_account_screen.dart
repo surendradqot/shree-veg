@@ -610,8 +610,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         .phoneEmailController
                                         .text = number;
                                   }
-
-                                  authProvider
+                                  await authProvider.registrationNew(signUpModel).then((status){
+                                    if (status.isSuccess) {
+                                      Navigator.pushNamed(
+                                          context, RouteHelper.otp);
+                                    } else {
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                    }
+                                  });
+                                  /*authProvider
                                       .verifyPhoneNumber(context, number)
                                       .then((value) async {
                                     print(
@@ -636,7 +645,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         _isLoading = false;
                                       });
                                     }
-                                  });
+                                  });*/
 
                                   // await authProvider.registration(signUpModel).then((status) async {
                                   //   if (status.isSuccess) {

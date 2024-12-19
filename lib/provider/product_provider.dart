@@ -363,6 +363,7 @@ class ProductProvider extends ChangeNotifier {
         apiResponse.response!.statusCode == 200) {
       _categoryProductList = [];
       _categoryAllProductList = [];
+      print("lenth:- ${apiResponse.response!.data}");
       apiResponse.response!.data.forEach((product) {
         var prod = Product.fromJson(product);
 

@@ -103,7 +103,7 @@ class MenuScreenWeb extends StatelessWidget {
           Consumer<ProfileProvider>(builder: (context, profileProvider, child) {
         if (splashProvider.configModel!.referEarnStatus! &&
             profileProvider.userInfoModel != null &&
-            profileProvider.userInfoModel!.referCode != null) {
+            profileProvider.userInfoModel!.userInfo!.referralCode != null) {
           final MenuModel referMenu = MenuModel(
             icon: Images.referralIcon,
             title: getTranslated('referAndEarn', context),
@@ -136,7 +136,7 @@ class MenuScreenWeb extends StatelessWidget {
                         isLoggedIn
                             ? profileProvider.userInfoModel != null
                                 ? Text(
-                                    '${profileProvider.userInfoModel!.fName ?? ''} ${profileProvider.userInfoModel!.lName ?? ''}',
+                                    '${profileProvider.userInfoModel!.userInfo!.fName ?? ''} ${profileProvider.userInfoModel!.userInfo!.lName ?? ''}',
                                     style: poppinsRegular.copyWith(
                                         fontSize: Dimensions.fontSizeExtraLarge,
                                         color: Theme.of(context)
@@ -169,7 +169,7 @@ class MenuScreenWeb extends StatelessWidget {
                               const SizedBox(
                                   height: Dimensions.paddingSizeSmall),
                               Text(
-                                profileProvider.userInfoModel!.email ?? '',
+                                profileProvider.userInfoModel!.userInfo!.email ?? '',
                                 style: poppinsRegular.copyWith(
                                     color: Theme.of(context)
                                         .textTheme
@@ -224,7 +224,7 @@ class MenuScreenWeb extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 image:
                                     '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/'
-                                    '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.image : ''}',
+                                    '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.userInfo!.image : ''}',
                                 imageErrorBuilder: (c, o, s) => Image.asset(
                                     Images.placeholder(context),
                                     height: 170,

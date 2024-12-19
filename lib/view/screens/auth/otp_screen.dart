@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:shreeveg/data/model/response/signup_model.dart';
+import 'package:shreeveg/helper/toast_service.dart';
 import 'package:shreeveg/view/screens/menu/main_screen.dart';
 import '../../../helper/email_checker.dart';
 import '../../../helper/responsive_helper.dart';
@@ -326,38 +327,46 @@ class _OTPScreenState extends State<OTPScreen> {
                                       buttonText:
                                           getTranslated('login', context),
                                       onPressed: () async {
-                                        var otp = pinController.text;
-                                        var veri =
-                                            authProvider.getVerificationId();
-                                        print(otp);
-                                        print(veri);
+                                        if(pinController.text.isEmpty){
+                                          ToastService().show("Please enter otp");
+                                        }else if(pinController.text.length<6){
+                                          ToastService().show("Please enter valid otp");
+                                        }
+                                        else{
+                                          var otp = pinController.text;
+                                          var veri =
+                                              authProvider.getVerificationId();
+                                          print(otp);
+                                          print(veri);
 
-                                        if (authProvider.isLoginWithPhone) {
-                                          authProvider
-                                              .setOtpCode(pinController.text);
-                                          await authProvider
-                                              .signInWithPhoneNumber(context);
-                                        } else {
-                                          String email = authProvider
-                                              .getUserEmailOrPhone();
-                                          String otp =
-                                              pinController.text.length == 6
-                                                  ? pinController.text
-                                                  : authProvider.getUserOtp();
-                                          await authProvider
-                                              .login(email, otp)
-                                              .then((loginStatus) async {
-                                            print(
-                                                'login status is: $loginStatus');
-                                            if (loginStatus.isSuccess) {
-                                              Navigator.pushNamedAndRemoveUntil(
-                                                  context,
-                                                  RouteHelper.main,
-                                                  (route) => false,
-                                                  arguments:
-                                                      const MainScreen());
-                                            }
-                                          });
+                                          if (authProvider.isLoginWithPhone) {
+                                            authProvider
+                                                .setOtpCode(pinController.text);
+                                            await authProvider
+                                                .verificationMethod(context);
+                                          } else {
+                                            String email = authProvider
+                                                .getUserEmailOrPhone();
+                                            String otp =
+                                                pinController.text.length == 6
+                                                    ? pinController.text
+                                                    : authProvider.getUserOtp();
+                                            await authProvider
+                                                .login(email, otp)
+                                                .then((loginStatus) async {
+                                              print(
+                                                  'login status is: $loginStatus');
+                                              if (loginStatus.isSuccess) {
+                                                Navigator
+                                                    .pushNamedAndRemoveUntil(
+                                                        context,
+                                                        RouteHelper.main,
+                                                        (route) => false,
+                                                        arguments:
+                                                            const MainScreen());
+                                              }
+                                            });
+                                          }
                                         }
                                       },
                                     ),

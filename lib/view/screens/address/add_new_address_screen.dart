@@ -94,9 +94,9 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
       }
     } else {
       _contactPersonNameController.text =
-          userModel == null ? '' : '${userModel.fName}' ' ${userModel.lName}';
+          userModel == null ? '' : '${userModel.userInfo!.fName}' ' ${userModel.userInfo!.lName}';
       _contactPersonNumberController.text =
-          userModel == null ? '' : userModel.phone!;
+          userModel == null ? '' : userModel.userInfo!.phone!;
     }
   }
 

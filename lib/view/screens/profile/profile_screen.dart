@@ -133,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         fit: BoxFit.cover,
                                                         image:
                                                             '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/'
-                                                            '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.image : ''}',
+                                                            '${profileProvider.userInfoModel != null ? profileProvider.userInfoModel!.userInfo!.image : ''}',
                                                         imageErrorBuilder: (c,
                                                                 o, s) =>
                                                             Image.asset(
@@ -241,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         const SizedBox(
                                                             height: 6),
                                                         Text(
-                                                          '${profileProvider.userInfoModel!.fName ?? ''} ${profileProvider.userInfoModel!.lName ?? ''}',
+                                                          '${profileProvider.userInfoModel!.userInfo!.fName ?? ''} ${profileProvider.userInfoModel!.userInfo!.lName ?? ''}',
                                                           style: poppinsRegular
                                                               .copyWith(
                                                                   fontSize:
@@ -269,7 +269,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                             height: 6),
                                                         Text(
                                                           profileProvider
-                                                                  .userInfoModel!
+                                                                  .userInfoModel!.userInfo!
                                                                   .phone ??
                                                               '',
                                                           style: poppinsRegular
@@ -299,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                             height: 6),
                                                         Text(
                                                           profileProvider
-                                                                  .userInfoModel!
+                                                                  .userInfoModel!.userInfo!
                                                                   .email ??
                                                               '',
                                                           style: poppinsRegular
@@ -350,7 +350,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       width: 100,
                                                       height: 100,
                                                       fit: BoxFit.cover,
-                                                      image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/${profileProvider.userInfoModel!.image}',
+                                                      image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.customerImageUrl}/${profileProvider.userInfoModel!.userInfo!.image}',
                                                       imageErrorBuilder: (c, o,
                                                               s) =>
                                                           Image.asset(
@@ -376,7 +376,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         // for name
                                         Center(
                                             child: Text(
-                                          '${profileProvider.userInfoModel!.fName ?? ''} ${profileProvider.userInfoModel!.lName ?? ''}',
+                                          '${profileProvider.userInfoModel!.userInfo!.fName ?? ''} ${profileProvider.userInfoModel!.userInfo!.lName ?? ''}',
                                           style: poppinsMedium.copyWith(
                                               fontWeight: FontWeight.w500,
                                               fontSize:
@@ -387,7 +387,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         Center(
                                             child: Text(
                                           profileProvider
-                                                  .userInfoModel!.email ??
+                                                  .userInfoModel!.userInfo!.email ??
                                               '',
                                           style: poppinsMedium.copyWith(
                                               fontSize:
