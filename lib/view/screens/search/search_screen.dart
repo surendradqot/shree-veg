@@ -108,6 +108,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                   //     arguments: SearchResultScreen(
                                   //         searchString: searchText));
                                 }
+                                else{
+                                  Provider.of<SearchProvider>(context, listen: false).updateList();
+                                }
                               },
                               isShowSuffixIcon: true,
                             ),
@@ -442,7 +445,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 ),
                                                 const SizedBox(height: 10),
                                                 searchProvider.searchProductList != null
-                                                    ? searchProvider.searchProductList!.isNotEmpty
+                                                   && searchProvider.searchProductList!.isNotEmpty
                                                     ? GridView.builder(
                                                   gridDelegate:
                                                   SliverGridDelegateWithFixedCrossAxisCount(
@@ -488,8 +491,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                                         productType: ProductType.searchItem,
                                                       ),
                                                 )
-                                                    : const NoDataScreen(isSearch: true)
-                                                    : GridView.builder(
+                                                    : const NoDataScreen(isSearch: true),
+                                                    /*: GridView.builder(
                                                   gridDelegate:
                                                   SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisSpacing:
@@ -525,7 +528,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       isEnabled: searchProvider
                                                           .searchProductList ==
                                                           null),
-                                                ),
+                                                )*/
                                               ],
                                             )),
                                       )),

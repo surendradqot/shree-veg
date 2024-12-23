@@ -290,9 +290,11 @@ class OrderProvider extends ChangeNotifier {
       callback(true, message, orderID);
       debugPrint('-------- Order placed successfully $orderID ----------');
     } else {
-      callback(
-          false, ApiChecker.getError(apiResponse).errors![0].message, '-1');
+      _isLoading = true;
+      notifyListeners();
+      // callback(false, ApiChecker.getError(apiResponse).errors![0].message, '-1');
     }
+    _isLoading = false;
     notifyListeners();
   }
 

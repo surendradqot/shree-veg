@@ -44,8 +44,22 @@ class CategoryListingProduct extends StatelessWidget {
         CartModel? cartModel;
         bool isExistInCart = false;
         int? cardIndex;
+        double? minDiscount;
 
         if (product.variations!.isNotEmpty) {
+          if (product.variations != null) {
+            for (int index = 0; index < product.variations!.length; index++) {
+              Variations variationData = product.variations![index];
+              if(minDiscount==null){
+                minDiscount= double.parse(variationData.discount!.replaceAll("-", ""));
+              }
+              else{
+                if(minDiscount>=double.parse(variationData.discount!.replaceAll("-", ""))){
+                  minDiscount=double.parse(variationData.discount!.replaceAll("-", ""));
+                }
+              }
+            }
+          }
           price = double.parse(
               product.variations![product.selectedVariation ?? 0].price!);
           stock = product.totalStock;
@@ -123,7 +137,7 @@ class CategoryListingProduct extends StatelessWidget {
             ),
             1,
             product.variations!.isNotEmpty ? product.variations![0] : null,
-            (price! -
+            (price -
                 PriceConverter.convertWithDiscount(price,
                     double.parse(product.discount!), product.discountType)!),
             (price -
@@ -181,7 +195,7 @@ class CategoryListingProduct extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child:  product.variations!.isNotEmpty?Banner(
-                          message:'${product.variations![0].discount}% off',
+                          message:'${minDiscount!}% off',
                           location: BannerLocation.topStart,
                           color: const Color(0xFF0B4619),
                           child: CachedNetworkImage(

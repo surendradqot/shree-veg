@@ -37,29 +37,37 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+
+}
+SharedPreferences? sharedPreferences;
+class _HomeScreenState extends State<HomeScreen> {
+
+
   static Future<void> loadData(bool reload, BuildContext context) async {
-    await Provider.of<ProfileProvider>(Get.context!, listen: false).getCityWhereHouse();
+    await Provider.of<ProfileProvider>(Get.context!, listen: false).getCityWhereHouse().then((onValue){
+
+    });
     // final productProvider =
     //     Provider.of<ProductProvider>(context, listen: false);
     final flashDealProvider =
-        Provider.of<FlashDealProvider>(context, listen: false);
+    Provider.of<FlashDealProvider>(context, listen: false);
     // final authProvider = Provider.of<AuthProvider>(context, listen: false);
     // final withLListProvider =
     //     Provider.of<WishListProvider>(context, listen: false);
     final localizationProvider =
-        Provider.of<LocalizationProvider>(context, listen: false);
+    Provider.of<LocalizationProvider>(context, listen: false);
 
     ConfigModel config =
-        Provider.of<SplashProvider>(context, listen: false).configModel!;
+    Provider.of<SplashProvider>(context, listen: false).configModel!;
     if (reload) {
       Provider.of<SplashProvider>(context, listen: false).initConfig();
     }
 
     await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
-      context,
-      localizationProvider.locale.languageCode,
-      reload,
-      id: Provider.of<ProfileProvider>(Get.context!, listen: false).sharedPreferences!.getInt(AppConstants.selectedCityId)
+        context,
+        localizationProvider.locale.languageCode,
+        reload,
+        id: Provider.of<ProfileProvider>(Get.context!, listen: false).sharedPreferences!.getInt(AppConstants.selectedCityId)
     );
 
     Provider.of<BannerProvider>(context, listen: false)
@@ -123,74 +131,19 @@ class HomeScreen extends StatefulWidget {
       await flashDealProvider.getFlashDealList(true, false);
     }
   }
-}
-SharedPreferences? sharedPreferences;
-class _HomeScreenState extends State<HomeScreen> {
 
-  Future apiCall() async{
+  Future apiCallNew() async{
     sharedPreferences = await SharedPreferences.getInstance();
-    if(sharedPreferences!.getBool("showPopup")!){
-      sharedPreferences!.setBool("showPopup", false);
-      showCityDialog(Get.context!);
-    }
   }
 
 
   @override
   void initState() {
     super.initState();
-apiCall();
+    apiCallNew();
+    loadData(true, context);
   }
 
-  void showCityDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return WillPopScope(
-          onWillPop: () async {
-            // Prevent closing the dialog if no city is selected
-            return false;
-          },
-          child: AlertDialog(
-            title: Text('Select your location'),
-            content: Consumer<ProfileProvider>(
-              builder: (context, provider, child) {
-                if (provider.loadingValue) {
-                  return SizedBox(
-                    height: 80,
-                      child: Center(child: CircularProgressIndicator()));
-                }
-
-                return DropdownButtonFormField<WarehouseCityList>(
-                  items: provider.items.map((WarehouseCityList city) {
-                    return DropdownMenuItem<WarehouseCityList>(
-                      value: city,
-                      child: Text(city.warehousesCity ?? ''),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) async {
-                    provider.selectItem(newValue!.cityId!);
-                    await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
-                      context,
-                      "en",
-                      false,
-                      id: newValue.cityId!,
-                    ).then((onValue){
-                      Navigator.of(Get.context!).pop();
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Location',
-                  ),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +161,7 @@ apiCall();
           Provider.of<ProductProvider>(context, listen: false).offset = 1;
           Provider.of<ProductProvider>(context, listen: false).popularOffset =
               1;
-          await HomeScreen.loadData(true, context);
+          await loadData(true, context);
         },
         backgroundColor: Theme.of(context).primaryColor,
         child: Scaffold(
@@ -481,6 +434,7 @@ apiCall();
                       builder: (context, provider, child) {
                         int? selectedValue = sharedPreferences!.getInt(AppConstants.selectedCityId);
                         print("************** $selectedValue  ****************");
+                        // show();
                         return provider.items.isNotEmpty?Container(
                           padding: EdgeInsets.all(08),
                           margin: EdgeInsets.all(15),
@@ -534,7 +488,7 @@ apiCall();
                               }).toList(),
                               onChanged: (int? newValue) async {
                                 provider.selectItem(newValue);
-                                await HomeScreen.loadData(true, context);
+                                await loadData(true, context);
                                // await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
                                //      context,
                                //      "en",

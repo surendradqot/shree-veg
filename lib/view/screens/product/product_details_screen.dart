@@ -85,8 +85,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
           double? priceWithQuantity = 0;
           CartModel? cartModel;
 
-          price = double.parse(widget.product
-              .variations![widget.product.selectedVariation ?? 0].price!);
+          price = widget.product
+              .variations!.isNotEmpty?double.parse(widget.product
+              .variations![widget.product.selectedVariation ?? 0].price!):0.00;
           stock = widget.product.totalStock;
 
           if (widget.product.variations != null) {
@@ -136,10 +137,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
               (price -
                   PriceConverter.convertWithDiscount(
                       price, widget.product.tax, widget.product.taxType)!),
-              double.parse(widget
+              widget
+                  .product
+                  .variations!.isNotEmpty?double.parse(widget
                   .product
                   .variations![widget.product.selectedVariation ?? 0]
-                  .quantity!),
+                  .quantity!):0.00,
               widget.product.unit,
               stock,
               widget.product);

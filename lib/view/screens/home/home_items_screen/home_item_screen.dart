@@ -116,7 +116,7 @@ class _HomeItemScreenState extends State<HomeItemScreen> {
                       child: Column(children: [
                         Consumer<FlashDealProvider>(
                             builder: (context, flashDealProvider, _) {
-                          return flashDealProvider.specialFlashDealList != null
+                          return flashDealProvider.flashDeal!=null && flashDealProvider.specialFlashDealList.isNotEmpty
                               ? Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: ClipRRect(

@@ -27,21 +27,24 @@ class _SortingFiltersState extends State<SortingFilters> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body:
-        Consumer<ProductProvider>(builder: (context, productProvider, child) {
-      return Column(
-        children: [
-          const Expanded(
-            child: SortOptions(),
-          ),
-          FilterActions(
-            clearSelected: clearSelected,
-            clearFilters: clearSortingFilters,
-            applyFilters: applySortingFilters,
-          ),
-        ],
-      );
-    }));
+    return Scaffold(
+      body: Consumer<ProductProvider>(
+        builder: (context, productProvider, child) {
+          return Column(
+            children: [
+              const Expanded(
+                child: SortOptions(),
+              ),
+              FilterActions(
+                clearSelected: clearSelected,
+                clearFilters: clearSortingFilters,
+                applyFilters: applySortingFilters,
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -56,9 +59,14 @@ class SortOptions extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Column(
-        children: List.generate(sortingOptions.length, (index) {
-          return SortOptionsList(tileName: sortingOptions[index]);
-        }),
+        children: List.generate(
+          sortingOptions.length,
+          (index) {
+            return SortOptionsList(
+              tileName: sortingOptions[index],
+            );
+          },
+        ),
       ),
     );
   }
@@ -66,8 +74,9 @@ class SortOptions extends StatelessWidget {
 
 class SortOptionsList extends StatelessWidget {
   final String tileName;
+
   const SortOptionsList({Key? key, required this.tileName}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     List<String> optionsList = tileName == 'Price'
@@ -80,7 +89,7 @@ class SortOptionsList extends StatelessWidget {
         : tileName == 'Rating'
             ? ['Low to High', 'High to Low']
             : ['Low to High', 'High to Low'];
-    
+
     return Consumer<ProductProvider>(
       builder: (context, productProvider, child) {
         return SingleChildScrollView(
@@ -95,35 +104,50 @@ class SortOptionsList extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(tileName),
                 )),
-            children: List.generate(optionsList.length, (index) {
-              String _selectedOption = optionsList[index];
+            children: List.generate(
+              optionsList.length,
+              (index) {
+                String _selectedOption = optionsList[index];
 
-              return InkWell(
-                onTap: () => productProvider.updateSelectedSortingOption(tileName, _selectedOption),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 24, right: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _selectedOption,
-                        style: poppinsRegular.copyWith(
-                          color: getColor(_selectedOption, tileName == 'Price' ? productProvider.selectedPriceSort : tileName == 'Rating' ? productProvider.selectedRatingSort : productProvider.selectedDiscountSort ),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
+                return InkWell(
+                  onTap: () => productProvider.updateSelectedSortingOption(
+                      tileName, _selectedOption),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 24, right: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _selectedOption,
+                          style: poppinsRegular.copyWith(
+                            color: getColor(
+                                _selectedOption,
+                                tileName == 'Price'
+                                    ? productProvider.selectedPriceSort
+                                    : tileName == 'Rating'
+                                        ? productProvider.selectedRatingSort
+                                        : productProvider.selectedDiscountSort),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                      Radio<String>(
+                        Radio<String>(
                           activeColor: const Color(0xFF0B4619),
                           value: _selectedOption,
-                          groupValue: tileName == 'Price' ? productProvider.selectedPriceSort : tileName == 'Rating' ? productProvider.selectedRatingSort : productProvider.selectedDiscountSort,
-                          onChanged: (value) =>
-                              productProvider.updateSelectedSortingOption!(tileName, value!)),
-                    ],
+                          groupValue: tileName == 'Price'
+                              ? productProvider.selectedPriceSort
+                              : tileName == 'Rating'
+                                  ? productProvider.selectedRatingSort
+                                  : productProvider.selectedDiscountSort,
+                          onChanged: (value) => productProvider
+                              .updateSelectedSortingOption(tileName, value!),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              },
+            ),
           ),
         );
       },

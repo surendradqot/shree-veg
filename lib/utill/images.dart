@@ -80,7 +80,7 @@ class Images {
 
   // Image
   static const String appLogo = 'assets/image/app_logo.png';
-  static const String shreeLogo = 'assets/image/shree_logo.jpeg';
+  static const String shreeLogo = 'assets/image/shree_logo.png';
   static const String appWhiteLogo = 'assets/image/white_logo_appbar.png';
   static const String onBoarding1 = 'assets/image/on_boarding_1.png';
   static const String onBoarding2 = 'assets/image/on_boarding_2.png';

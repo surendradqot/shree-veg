@@ -7,7 +7,6 @@ import 'package:shreeveg/view/base/custom_app_bar.dart';
 import 'package:shreeveg/view/screens/filters/refine_filters.dart';
 import 'package:shreeveg/view/screens/filters/sort_filters.dart';
 import '../../../provider/product_provider.dart';
-import '../../base/custom_snackbar.dart';
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({Key? key}) : super(key: key);
@@ -34,9 +33,10 @@ class _FilterScreenState extends State<FilterScreen> {
           return Column(
             children: [
               RefineSortToggle(
-                  isRefineSelected: isRefineSelected,
-                  onTapRefine: () => setState(() => isRefineSelected = true),
-                  onTapSort: () => setState(() => isRefineSelected = false)),
+                isRefineSelected: isRefineSelected,
+                onTapRefine: () => setState(() => isRefineSelected = true),
+                onTapSort: () => setState(() => isRefineSelected = false),
+              ),
               Expanded(
                 child: isRefineSelected
                     ? const RefineFilters()
@@ -160,88 +160,93 @@ class FilterActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ProductProvider>(
-        builder: (context, productProvider, child) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Total items: ${productProvider.categoryProductList.length}',
-                  style: poppinsBold.copyWith(color: AppConstants.primaryColor))
-            ],
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: clearFilters,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border:
-                        Border.all(width: 1, color: const Color(0xFF0B4619)),
-                    color: clearSelected
-                        ? const Color(0xFF0B4619)
-                        : const Color(0xFFFFFFFF),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 5.0,
-                      horizontal: 10.0,
+      builder: (context, productProvider, child) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Total items: ${productProvider.categoryProductList.length}',
+                  style: poppinsBold.copyWith(color: AppConstants.primaryColor),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: clearFilters,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border:
+                          Border.all(width: 1, color: const Color(0xFF0B4619)),
+                      color: clearSelected
+                          ? const Color(0xFF0B4619)
+                          : const Color(0xFFFFFFFF),
                     ),
-                    child: Text(
-                      'Clear All',
-                      style: poppinsRegular.copyWith(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: clearSelected
-                            ? const Color(0xFFFFFFFF)
-                            : const Color(0xFF000000),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5.0,
+                        horizontal: 10.0,
+                      ),
+                      child: Text(
+                        'Clear All',
+                        style: poppinsRegular.copyWith(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          color: clearSelected
+                              ? const Color(0xFFFFFFFF)
+                              : const Color(0xFF000000),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                width: Dimensions.paddingSizeDefault,
-              ),
-              InkWell(
-                onTap: applyFilters,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border:
-                        Border.all(width: 1, color: const Color(0xFF0B4619)),
-                    color: !clearSelected
-                        ? const Color(0xFF0B4619)
-                        : const Color(0xFFFFFFFF),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 5.0,
-                      horizontal: 10.0,
+                const SizedBox(
+                  width: Dimensions.paddingSizeDefault,
+                ),
+                InkWell(
+                  onTap: applyFilters,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: const Color(0xFF0B4619),
+                      ),
+                      color: !clearSelected
+                          ? const Color(0xFF0B4619)
+                          : const Color(0xFFFFFFFF),
                     ),
-                    child: Text(
-                      'Done',
-                      style: poppinsRegular.copyWith(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: !clearSelected
-                            ? const Color(0xFFFFFFFF)
-                            : const Color(0xFF000000),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5.0,
+                        horizontal: 10.0,
+                      ),
+                      child: Text(
+                        'Done',
+                        style: poppinsRegular.copyWith(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          color: !clearSelected
+                              ? const Color(0xFFFFFFFF)
+                              : const Color(0xFF000000),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      );
-    });
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 

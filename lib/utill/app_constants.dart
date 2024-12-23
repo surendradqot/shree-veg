@@ -53,7 +53,7 @@ class AppConstants {
   static const String verifyTokenUri = '/api/v1/auth/verify-token';
   static const String productDetailsUri = '/api/v1/products/details/';
   static const String activeReviewUri = '/api/v1/products/reviews/';
-  static const String allActiveReviewUri = '/api/v1/products/all-reviews/';
+  static const String allActiveReviewUri = '/api/v1/products/all-reviews';
   static const String submitReviewUri = '/api/v1/products/reviews/submit';
   static const String couponUri = '/api/v1/coupon/list';
   static const String couponApplyUri = '/api/v1/coupon/apply?code=';

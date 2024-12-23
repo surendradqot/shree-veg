@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shreeveg/data/model/response/userinfo_model.dart';
 import 'package:shreeveg/helper/html_type.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
@@ -8,6 +9,7 @@ import 'package:shreeveg/helper/toast_service.dart';
 import 'package:shreeveg/localization/language_constraints.dart';
 import 'package:shreeveg/main.dart';
 import 'package:shreeveg/provider/cart_provider.dart';
+import 'package:shreeveg/provider/category_provider.dart';
 import 'package:shreeveg/provider/location_provider.dart';
 import 'package:shreeveg/provider/profile_provider.dart';
 import 'package:shreeveg/provider/splash_provider.dart';
@@ -136,8 +138,9 @@ class _MainScreenState extends State<MainScreen> {
       Provider.of<CartProvider>(context, listen: false).getCartData();
     }
     apiCall();
-    HomeScreen.loadData(true, Get.context!);
+    // HomeScreen.loadData(true, Get.context!);
   }
+
 
   @override
   Widget build(BuildContext context) {

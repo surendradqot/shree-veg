@@ -74,14 +74,14 @@ class GroupsView extends StatelessWidget {
                                               width: 2),
                                           color: Colors.white,
                                           borderRadius:
-                                              BorderRadius.circular(35)),
+                                              BorderRadius.circular(35),),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(35),
                                         child: Image.asset(
                                             categoryModel.name == 'Fruits'
                                                 ? Images.allFruits
                                                 : Images.allVegetables,
-                                            fit: BoxFit.cover),
+                                            fit: BoxFit.cover,),
                                       ),
                                     ),
                                     const SizedBox(
@@ -99,7 +99,7 @@ class GroupsView extends StatelessWidget {
                                                     .primaryColorDark
                                                 : Colors.black,
                                             fontSize: 10,
-                                            fontWeight: FontWeight.w500),
+                                            fontWeight: FontWeight.w500,),
                                         textAlign: TextAlign.center,
                                       ),
                                     )

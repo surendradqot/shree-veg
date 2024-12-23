@@ -57,7 +57,7 @@ class ProfileProvider with ChangeNotifier {
 
   int? get selectedItemId => _selectedItemId;
 
-  getCityWhereHouse() async {
+  Future<void> getCityWhereHouse() async {
     try {
       _isLoadingValue = true;
       _items = [];

@@ -77,8 +77,10 @@ class ProductRepo {
       if (searchQuery == true) {
         params = productID;
       }
+      SharedPreferences? sharedPreferences  = await SharedPreferences.getInstance();
+      int? whId = sharedPreferences.getInt(AppConstants.selectedCityId);
       final response = await dioClient!.get(
-        '${AppConstants.productDetailsUri}$params',
+        '${AppConstants.productDetailsUri}$params/$whId',
         options: Options(headers: {'X-localization': languageCode}),
       );
       return ApiResponse.withSuccess(response);

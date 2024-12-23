@@ -18,13 +18,12 @@ class NoDataScreen extends StatelessWidget {
   final bool isSearch;
   final String? title;
   const NoDataScreen(
-      {Key? key,
+      {super.key,
       this.isCart = false,
       this.isOrder = false,
       this.isProfile = false,
       this.isSearch = false,
-      this.title})
-      : super(key: key);
+      this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -85,20 +84,20 @@ class NoDataScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: height * 0.01),
-          SizedBox(
-            height: 40,
-            width: 150,
-            child: CustomButton(
-              buttonText: 'lets_shop'.tr,
-              onPressed: () {
-                Provider.of<SplashProvider>(context, listen: false)
-                    .setCurrentPageIndex(0);
-                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => MenuScreen()), (route) => false);
-                Navigator.pushNamedAndRemoveUntil(
-                    context, RouteHelper.main, (route) => false);
-              },
-            ),
-          ),
+          // SizedBox(
+          //   height: 40,
+          //   width: 150,
+          //   child: CustomButton(
+          //     buttonText: 'lets_shop'.tr,
+          //     onPressed: () {
+          //       Provider.of<SplashProvider>(context, listen: false)
+          //           .setCurrentPageIndex(0);
+          //       // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => MenuScreen()), (route) => false);
+          //       Navigator.pushNamedAndRemoveUntil(
+          //           context, RouteHelper.main, (route) => false);
+          //     },
+          //   ),
+          // ),
         ]),
       ),
     );

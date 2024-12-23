@@ -45,21 +45,37 @@ class ProductProvider extends ChangeNotifier {
   int popularOffset = 1;
 
   Product? get product => _product;
+
   int? get cartIndex => _cartIndex;
+
   List<Product>? get popularProductList => _popularProductList;
+
   List<Product>? get dailyItemList => _dailyItemList;
+
   List<Product>? get featuredProductList => _featuredProductList;
+
   List<Product>? get mostViewedProductList => _mostViewedProductList;
+
   List<Product>? get latestProductList => _latestProductList;
+
   List<Product>? get recommendProduct => _recommendProduct;
+
   List<Product>? get trendingProduct => _trendingProduct;
+
   List<ActiveReview>? get activeReviews => _activeReviews;
+
   List<ActiveReview>? get allActiveReviews => _allActiveReviews;
+
   bool get isLoading => _isLoading;
+
   int? get popularPageSize => _popularPageSize;
+
   int? get latestPageSize => _latestPageSize;
+
   int get quantity => _quantity;
+
   List<int>? get variationIndex => _variationIndex;
+
   int? get imageSliderIndex => _imageSliderIndex;
 
   Future<void> getItemList(String offset, bool reload, String? languageCode,
@@ -289,6 +305,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   int _rating = 0;
+
   int get rating => _rating;
 
   void setRating(int rate) {
@@ -332,13 +349,21 @@ class ProductProvider extends ChangeNotifier {
   String? _selectedDiscountSort;
 
   double get maxValue => _maxValue;
+
   double get minValue => _minValue;
+
   double get maxFilterRange => _maxFilterRange;
+
   List<double> get filterSelectedPriceRange => _filterSelectedPriceRange;
+
   List<double> get filterSelectedRatings => _filterSelectedRatings;
+
   List<double> get filterSelectedDiscounts => _filterSelectedDiscounts;
+
   String? get selectedPriceSort => _selectedPriceSort;
+
   String? get selectedRatingSort => _selectedRatingSort;
+
   String? get selectedDiscountSort => _selectedDiscountSort;
 
   List<Product> get categoryProductList => _categoryProductList;
@@ -489,12 +514,19 @@ class ProductProvider extends ChangeNotifier {
   void applyDiscountFilter(List<double> minDiscounts) {
     if (minDiscounts.isNotEmpty) {
       minDiscounts.sort();
-      _categoryProductList = _categoryProductList
-          .where((categoryProduct) =>
-              categoryProduct.variations![0].discount != null &&
-              double.parse(categoryProduct.variations![0].discount!) >=
-                  minDiscounts[0])
-          .toList();
+      _categoryProductList = _categoryProductList.where((categoryProduct) {
+        bool? value = false;
+        if (categoryProduct.variations!.isNotEmpty) {
+          if (categoryProduct.variations![0].discount != null &&
+              double.parse(categoryProduct.variations![0].discount!.replaceAll("-", "")) >=
+                  minDiscounts[0]) {
+            value = true;
+          } else {
+            value = false;
+          }
+        }
+        return value;
+      }).toList();
     }
     notifyListeners();
   }

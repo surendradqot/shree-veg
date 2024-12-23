@@ -177,4 +177,9 @@ class SearchProvider with ChangeNotifier {
     _historyList = [];
     notifyListeners();
   }
+
+  void updateList() {
+    _searchProductList!.clear();
+    notifyListeners();
+  }
 }

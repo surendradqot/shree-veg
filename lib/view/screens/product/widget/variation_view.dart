@@ -41,41 +41,77 @@ class VariationView extends StatelessWidget {
                   onTap: () {
                     updateSelectedVariation(context, i);
                   },
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: Dimensions.paddingSizeExtraSmall),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF1FFF4),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                          color: product.selectedVariation == i
-                              ? const Color(0xFF039800)
-                              : ColorResources.getGreyColor(context),
-                          width: 2),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${product.variations![i].quantity!} ${product.unit}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: poppinsRegular.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12),
+                  child: Stack(
+                    alignment: Alignment.topLeft,
+                    fit: StackFit.loose,
+                    clipBehavior: Clip.hardEdge,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Dimensions.paddingSizeExtraSmall),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1FFF4),
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              color: product.selectedVariation == i
+                                  ? const Color(0xFF039800)
+                                  : ColorResources.getGreyColor(context),
+                              width: 2),
                         ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${product.variations![i].quantity!} ${product.unit}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: poppinsRegular.copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12),
+                            ),
 
-                        //prices row
-                        PricesView(
-                            marketPrice: product.variations![i].marketPrice!,
-                            offerPrice: double.parse(
-                                product.variations![i].offerPrice!)),
-                      ],
-                    ),
+                            //prices row
+                            PricesView(
+                                marketPrice: product.variations![i].marketPrice!,
+                                offerPrice: double.parse(
+                                    product.variations![i].offerPrice!)),
+                            if(i!=0)
+                              Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(
+                                    "(₹${product.variations![0].offerPrice!} per kg)",
+                                    style: poppinsRegular.copyWith(
+                                        color:  Color(0xFF848484),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 06,
+                                    ),
+                                  )),
+
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          height: 24,
+                          width: 25,
+                          margin: EdgeInsets.only(left: 05),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              // color: Color(0xFFe73838),
+                              image: DecorationImage(image: AssetImage("assets/image/ribbon.png"),fit: BoxFit.contain)
+                          ),
+                          child: Text("${product.variations![i].discount!.split(".").first.replaceAll("-", "")}%\n Off",style: TextStyle(
+                            fontSize: 07,
+                            color: Colors.white,
+                          ),),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },

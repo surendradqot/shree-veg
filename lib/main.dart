@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
 import 'package:shreeveg/provider/auth_provider.dart';
@@ -134,7 +135,6 @@ Future<void> main() async {
       print('error---> ${e.toString()}');
     }
   }
-
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => di.sl<ThemeProvider>()),
@@ -169,6 +169,7 @@ Future<void> main() async {
         child: MyApp(orderID: orderID, isWeb: !kIsWeb)),
   ));
 }
+
 
 class MyApp extends StatefulWidget {
   final int? orderID;

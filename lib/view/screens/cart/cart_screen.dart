@@ -325,7 +325,7 @@ class CartDeliveryTimeSlot extends StatelessWidget {
         builder: (context, profileProvider, child) {
           int timeSlotsLength = 0;
           if(profileProvider.userInfoModel!=null && profileProvider.userInfoModel!.deliveryTime!.isNotEmpty){
-            int timeSlotsLength =
+            timeSlotsLength =
                 profileProvider.userInfoModel!.deliveryTime!.length;
             print('time slots length is: $timeSlotsLength');
             if (timeSlotsLength.isEven) {
@@ -559,7 +559,7 @@ class CartButtonView extends StatelessWidget {
 
                     if (kDebugMode) {
                       print(
-                          'navigate to payment options================================================');
+                          'navigate to payment options ================================================');
                       print('total amount to pay: $_total');
                       print('type of order: ${orderProvider.orderType}');
                       print(

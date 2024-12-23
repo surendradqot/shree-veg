@@ -1,6 +1,66 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "com.shreeveg.customerapp"
+    compileSdkVersion 34
+
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    lintOptions {
+        warning 'ObsoleteSourceTarget'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:-options"
+    }
+
+    defaultConfig {
+        applicationId = "com.shreeveg.customerapp"
+        targetSdkVersion 34
+        minSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled false   // Enable Proguard/R8
+            shrinkResources false  // Shrink resources as well
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.razorpay:checkout:1.6.41'
+    implementation 'com.google.android.gms:play-services-wallet:18.1.0' // Google Wallet API
+    implementation 'com.google.android.gms:play-services-auth:20.2.0' // Google Auth API (if needed)
+}
+
+/*
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -47,7 +107,7 @@ android {
             signingConfig signingConfigs.debug
 //            minifyEnabled true   // This enables Proguard/R8
             shrinkResources true // This shrinks resources as well
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -57,7 +117,10 @@ flutter {
     source = "../.."
 }
 
-//dependencies {
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.razorpay:checkout:1.6.41'
 //    implementation 'com.android.support:appcompat-v7:28.0.0'
-////    implementation 'com.guardsquare.proguard:proguard-annotations:7.6.0'
-//}
+//    implementation 'com.guardsquare.proguard:proguard-annotations:7.6.0'
+}
+*/

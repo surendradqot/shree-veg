@@ -26,3 +26,12 @@
 -dontwarn java.beans.ConstructorProperties
 -dontwarn java.beans.Transient
 -dontwarn org.w3c.dom.bootstrap.DOMImplementationRegistry
+# Keep Razorpay classes
+-keep class com.razorpay.** { *; }
+
+# Keep ProGuard annotations
+-keep @proguard.annotation.Keep class *
+-keep @proguard.annotation.KeepClassMembers class *
+
+# Keep Google Wallet classes
+-keep class com.google.android.apps.nbu.paisa.** { *; }
