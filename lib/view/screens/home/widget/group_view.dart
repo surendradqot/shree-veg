@@ -40,8 +40,8 @@ class GroupsView extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 print('all fruits');
-                                categoryProvider.changeSelectedIndex(-1);
-                                group.setCurrentIndex(-1);
+                                categoryProvider.changeSelectedIndex(0);
+                                group.setCurrentIndex(0);
                                 Provider.of<ProductProvider>(context,
                                         listen: false)
                                     .filterGroupCategoryProductList('-1');

@@ -77,7 +77,7 @@ class ProfileProvider with ChangeNotifier {
                   .toString()
                   .isEmpty) {
             await sharedPreferences!
-                .setInt(AppConstants.selectedCityId, _items[0].cityId!);
+                .setInt(AppConstants.selectedCityId, _items[0].warehousesId!);
           }
           // await Provider.of<CategoryProvider>(Get.context!, listen: false).getCategoryList(
           //     Get.context!,
@@ -96,12 +96,12 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-  void selectItem(int? value) async {
+  void selectItem(int? value, WarehouseCityList? warehouse) async {
     _selectedItemId = value;
     print("************* Selected Warehouse id is:- $value { selected id = $_selectedItemId  and final value is:- $selectedItemId } ***************");
     sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!
-        .setInt(AppConstants.selectedCityId, _selectedItemId!);
+    await sharedPreferences!.setInt(AppConstants.selectedCityId, _selectedItemId!);
+    await sharedPreferences!.setString(AppConstants.selectedCityName, warehouse!.warehousesCity!);
     notifyListeners();
   }
 

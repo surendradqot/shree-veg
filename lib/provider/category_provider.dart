@@ -12,7 +12,7 @@ class CategoryProvider extends ChangeNotifier {
 
   CategoryProvider({required this.categoryRepo});
 
-  int _categorieselectedIndex = -1;
+  int _categorieselectedIndex = 0;
   int _categoryIndex = 0;
 
   int get categorieselectedIndex => _categorieselectedIndex;
@@ -43,7 +43,7 @@ class CategoryProvider extends ChangeNotifier {
       apiResponse.response!.data.forEach(
           (category) {
             _categoryList!.add(CategoryModel.fromJson(category));});
-      _categorieselectedIndex = -1;
+      _categorieselectedIndex = 0;
       _categoryIndex = 0;
     } else {
       ApiChecker.checkApi(apiResponse);

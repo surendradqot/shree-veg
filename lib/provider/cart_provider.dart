@@ -19,9 +19,11 @@ class CartProvider extends ChangeNotifier {
   }
 
   List<CartModel> _cartList = [];
+  List<int?> _cartAddedList = [];
   double _amount = 0.0;
 
   List<CartModel> get cartList => _cartList;
+  List<int?> get cartAddedList => _cartAddedList;
   double get amount => _amount;
 
   Future<void> getCartData() async {
@@ -31,6 +33,11 @@ class CartProvider extends ChangeNotifier {
     for (var cart in _cartList) {
       _amount = _amount + (cart.discountedPrice! * cart.quantity!);
     }
+    notifyListeners();
+  }
+
+  Future addedCartListMethod(int? addedId) async{
+    _cartAddedList.add(addedId);
     notifyListeners();
   }
 
@@ -61,6 +68,11 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  removeCartAddedList(int? addedId){
+    _cartAddedList.remove(addedId);
+    notifyListeners();
+  }
+
   void removeFromCart(int index, BuildContext context) {
     _amount = _amount -
         (cartList[index].discountedPrice! * cartList[index].quantity!);
@@ -81,7 +93,7 @@ class CartProvider extends ChangeNotifier {
     for (int index = 0; index < _cartList.length; index++) {
       if (_cartList[index].id == cartModel!.id &&
           (_cartList[index].variation != null
-              ? _cartList[index].variation!.type == cartModel.variation!.type
+              ? _cartList[index].variation!.quantity == cartModel.variation!.quantity
               : true)) {
         return index;
       }

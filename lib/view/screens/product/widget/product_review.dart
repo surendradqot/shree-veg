@@ -51,7 +51,7 @@ class ReviewWidget extends StatelessWidget {
           Column(
             children: [
               Text(
-                customerName!.toCapitalized(),
+                customerName!,
                 style: poppinsRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault),
                 maxLines: 1,

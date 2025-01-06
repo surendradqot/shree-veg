@@ -63,7 +63,7 @@ Widget wishListItem(
                     child: Column(
                       children: [
                         Text(
-                          product.name!.toCapitalized(),
+                          product.name!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: poppinsRegular.copyWith(

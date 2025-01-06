@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shreeveg/data/model/new_flash_modal.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
 import 'package:shreeveg/localization/language_constraints.dart';
@@ -504,18 +505,18 @@ class MyDrawer extends StatelessWidget {
                             const SizedBox(height: 30),
                             if (!ResponsiveHelper.isDesktop(context))
                               Column(
-                                  children: menuScreenList
+                                  children: isLoggedIn?menuScreenListUser
                                       .map((model) => ListTile(
                                             onTap: () {
                                               Navigator.of(context).pop();
                                               if (!ResponsiveHelper.isDesktop(
                                                   context)) {
-                                                int menuIndex = menuScreenList
+                                                int menuIndex = menuScreenListUser
                                                     .indexOf(model);
                                                 splash.setPageIndex(menuIndex);
 
                                                 String menuTitle =
-                                                    (menuScreenList[menuIndex]
+                                                    (menuScreenListUser[menuIndex]
                                                         .title);
 
                                                 print(menuTitle);
@@ -552,8 +553,11 @@ class MyDrawer extends StatelessWidget {
                                                           context,
                                                           RouteHelper
                                                               .getHomeItemRoute(
-                                                                  ProductType
-                                                                      .flashSale));
+                                                                  productType: NewFlashDealModal(
+                                                                    productType: ProductType
+                                                                        .flashSale,
+                                                                    productImage: "",
+                                                                  ),),);
                                                       break;
                                                     case 'rate_review':
                                                       Navigator.of(context).push(
@@ -574,7 +578,7 @@ class MyDrawer extends StatelessWidget {
                                               }
                                             },
                                             selected: splash.pageIndex ==
-                                                menuScreenList.indexOf(model),
+                                                menuScreenListUser.indexOf(model),
                                             selectedTileColor:
                                                 Colors.black.withAlpha(30),
                                             trailing: model.icon != null
@@ -617,6 +621,122 @@ class MyDrawer extends StatelessWidget {
                                                   //             .canvasColor,
                                                 )),
                                           ))
+                                      .toList():menuScreenList
+                                      .map((model) => ListTile(
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                      if (!ResponsiveHelper.isDesktop(
+                                          context)) {
+                                        int menuIndex = menuScreenList
+                                            .indexOf(model);
+                                        splash.setPageIndex(menuIndex);
+
+                                        String menuTitle =
+                                        (menuScreenList[menuIndex]
+                                            .title);
+
+                                        print(menuTitle);
+
+                                        bool isMainRoute = false;
+
+                                        screenList.forEach((screen) {
+                                          if (menuTitle ==
+                                              screen.title) {
+                                            splash.setCurrentPageIndex(
+                                                screenList
+                                                    .indexOf(screen));
+                                            isMainRoute = true;
+                                            return;
+                                          }
+                                        });
+
+                                        if (!isMainRoute) {
+                                          switch (menuTitle) {
+                                            case 'my_account':
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                      const ProfileScreen()));
+                                              break;
+                                            case 'my_wishlist':
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                      const WishListScreen()));
+                                              break;
+                                            case 'offers':
+                                              Navigator.pushNamed(
+                                                context,
+                                                RouteHelper
+                                                    .getHomeItemRoute(
+                                                  productType: NewFlashDealModal(
+                                                    productType: ProductType
+                                                        .flashSale,
+                                                    productImage: "",
+                                                  ),),);
+                                              break;
+                                            case 'rate_review':
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                      const AllProductsRateReviewScreen()));
+                                              break;
+                                            case 'notifications':
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                      const NotificationScreen()));
+                                              break;
+                                            default:
+                                              break;
+                                          }
+                                        }
+                                      }
+                                    },
+                                    selected: splash.pageIndex ==
+                                        menuScreenList.indexOf(model),
+                                    selectedTileColor:
+                                    Colors.black.withAlpha(30),
+                                    trailing: model.icon != null
+                                        ? Image.asset(
+                                      model.icon!,
+                                      color: ResponsiveHelper
+                                          .isDesktop(context)
+                                          ? ColorResources
+                                          .getDarkColor(
+                                          context)
+                                          : Colors.black,
+                                      width: 20,
+                                      height: 20,
+                                    )
+                                        : null,
+                                    title: Text(
+                                        getTranslated(
+                                            model.title, context)!,
+                                        style: poppinsRegular.copyWith(
+                                          fontSize:
+                                          Dimensions.fontSizeLarge,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                          // color: Provider.of<
+                                          //                 ThemeProvider>(
+                                          //             context)
+                                          //         .darkTheme
+                                          //     ? Theme.of(context)
+                                          //         .textTheme
+                                          //         .bodyLarge
+                                          //         ?.color
+                                          //         ?.withOpacity(0.6)
+                                          //     : ResponsiveHelper
+                                          //             .isDesktop(
+                                          //                 context)
+                                          //         ? ColorResources
+                                          //             .getDarkColor(
+                                          //                 context)
+                                          //         : Theme.of(context)
+                                          //             .canvasColor,
+                                        )),
+                                  ))
                                       .toList()),
                             ListTile(
                               onTap: () {

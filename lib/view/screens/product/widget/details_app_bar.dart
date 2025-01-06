@@ -50,12 +50,12 @@ class DetailsAppBarState extends State<DetailsAppBar>
     return AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios,
-            color: Theme.of(context).textTheme.bodyLarge!.color, size: 20),
+            color: Colors.white, size: 20),
         onPressed: () => Navigator.pop(context),
       ),
       elevation: 1,
       shadowColor: Colors.grey.withOpacity(0.3),
-      backgroundColor: Theme.of(context).cardColor,
+      // backgroundColor: Theme.of(context).cardColor,
       actions: [
         widget.product != null
             ? WishButton(product: widget.product)
@@ -72,19 +72,19 @@ class DetailsAppBarState extends State<DetailsAppBar>
                   Image.asset(Images.cartIcon,
                       width: 23,
                       height: 25,
-                      color: Theme.of(context).textTheme.bodyLarge!.color),
+                      color: Colors.white),
                   Positioned(
                     top: -7,
                     right: -2,
                     child: Container(
-                      padding: const EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(05),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Theme.of(context).primaryColor),
+                          color: Colors.white),
                       child: Text(
                           '${Provider.of<CartProvider>(context).cartList.length}',
                           style: TextStyle(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).primaryColor,
                               fontSize: 10)),
                     ),
                   ),

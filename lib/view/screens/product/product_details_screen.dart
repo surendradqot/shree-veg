@@ -188,51 +188,40 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                         VariationView(product: widget.product),
 
                                         Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical:
-                                                  Dimensions.paddingSizeSmall),
-                                          color: const Color(0xFFFFFFFF),
+                                          color: const Color(0xFFFFE1CE),
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: Dimensions
-                                                    .paddingSizeExtraSmall),
-                                            child: Container(
-                                              color: const Color(0xFFFFE1CE),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    Dimensions
-                                                        .paddingSizeSmall),
-                                                child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                          '${getTranslated('total_amount', context)}:',
-                                                          style: poppinsMedium
-                                                              .copyWith(
-                                                                  fontSize:
-                                                                      Dimensions
-                                                                          .fontSizeLarge)),
-                                                      const SizedBox(
-                                                          width: Dimensions
-                                                              .paddingSizeExtraSmall),
-                                                      CustomDirectionality(
-                                                          child: Text(
-                                                        PriceConverter
-                                                            .convertPrice(
-                                                                context,
-                                                                priceWithQuantity),
-                                                        style: poppinsBold
-                                                            .copyWith(
-                                                          color: Colors.black,
-                                                          fontSize: Dimensions
-                                                              .fontSizeLarge,
-                                                        ),
-                                                      )),
-                                                    ]),
-                                              ),
-                                            ),
+                                            padding: const EdgeInsets.all(
+                                                Dimensions
+                                                    .paddingSizeSmall),
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                      '${getTranslated('total_amount', context)}:',
+                                                      style: poppinsMedium
+                                                          .copyWith(
+                                                              fontSize:
+                                                                  Dimensions
+                                                                      .fontSizeLarge)),
+                                                  const SizedBox(
+                                                      width: Dimensions
+                                                          .paddingSizeExtraSmall),
+                                                  CustomDirectionality(
+                                                      child: Text(
+                                                    PriceConverter
+                                                        .convertPrice(
+                                                            context,
+                                                            priceWithQuantity),
+                                                    style: poppinsBold
+                                                        .copyWith(
+                                                      color: Colors.black,
+                                                      fontSize: Dimensions
+                                                          .fontSizeLarge,
+                                                    ),
+                                                  )),
+                                                ]),
                                           ),
                                         ),
                                         // Description

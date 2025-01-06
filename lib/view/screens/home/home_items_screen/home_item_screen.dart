@@ -21,8 +21,9 @@ import 'package:provider/provider.dart';
 
 class HomeItemScreen extends StatefulWidget {
   final String? productType;
+  final String? productImage;
 
-  const HomeItemScreen({Key? key, this.productType}) : super(key: key);
+  const HomeItemScreen({Key? key, this.productType, this.productImage}) : super(key: key);
 
   @override
   State<HomeItemScreen> createState() => _HomeItemScreenState();
@@ -129,8 +130,7 @@ class _HomeItemScreenState extends State<HomeItemScreen> {
                                               0.2,
                                       placeholder: Images.placeholder(context),
                                       image:
-                                          '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl}'
-                                          '/${flashDealProvider.flashDeal!.banner ?? ''}',
+                                          widget.productImage!=null && widget.productImage!.isEmpty?'${Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl}/${flashDealProvider.flashDeal!.banner ?? ''}':widget.productImage!,
                                       fit: BoxFit.fitWidth,
                                       imageErrorBuilder: (c, o, s) =>
                                           Image.asset(

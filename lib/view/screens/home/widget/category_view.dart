@@ -46,10 +46,97 @@ class _CategoryViewState extends State<CategoryView> {
                                         ?.withOpacity(0.6))),
                           ),
                         )
-                      : Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
-                          child: TitleWidget(
-                              title: getTranslated('category', context)),
+                      : Container(
+                          color: Colors.grey.shade400,
+                          // padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TitleWidget(
+                                title: getTranslated('categoryNew', context),
+                                color: Colors.grey.shade400,
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.pushNamed(
+                                      context, RouteHelper.searchProduct);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(04),
+                                  margin: EdgeInsets.all(08),
+                                  width: MediaQuery.of(context).size.width * 0.35,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.04,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    // border: Border.all(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(08),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.search,
+                                        color: Color(0xFF0B4619),
+                                        size: 12,
+                                      ),
+                                      Text(
+                                        getTranslated('search_anything', context)!,
+                                        style: poppinsRegular.copyWith(
+                                            color: Colors.grey,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w400),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                  /*child: DropdownButton<int>(
+                                                        value: selectedValue,
+                                                        dropdownColor: Colors.white,
+                                                        iconEnabledColor: Colors.white,
+                                                        iconDisabledColor: Colors.white,
+                                                        underline: SizedBox(),
+                                                        isExpanded: true,
+                                                        items: provider.items.map((item) {
+                                                          return DropdownMenuItem<int>(
+                                                            value: item.warehousesId,
+                                                            // child: Text(item.warehousesCity!),
+                                                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      child: Icon(Icons.location_on_outlined,
+                                          color: Color(0xFF0B4619),),),
+                                  Text(
+                                    item.warehousesCity!,
+                                    style: poppinsRegular.copyWith(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                        onChanged: (int? newValue) async {
+                                                          provider.selectItem(newValue);
+                                                          await loadData(true, context);
+                                                          // await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
+                                                          //      context,
+                                                          //      "en",
+                                                          //      false,
+                                                          //      id: newValue,
+                                                          //  );
+                                                        },
+                                                      ),*/
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                   ResponsiveHelper.isDesktop(context)
                       ? const CategoriesWebView()
@@ -87,11 +174,11 @@ class _CategoryViewState extends State<CategoryView> {
                                       : const SizedBox();
                                 } else {
                                   Provider.of<GroupProvider>(context,
-                                      listen: false)
+                                          listen: false)
                                       .setCurrentIndex(-1);
                                   Provider.of<CategoryProvider>(context,
                                           listen: false)
-                                      .changeSelectedIndex(-1, notify: false);
+                                      .changeSelectedIndex(0, notify: false);
                                   Navigator.of(context).pushNamed(
                                     RouteHelper.getCategoryProductsRouteNew(
                                         categoryModel:
@@ -123,19 +210,60 @@ class _CategoryViewState extends State<CategoryView> {
                                         ? 7
                                         : 5,
                                     child: Container(
-                                      // height: 180,
-                                      // margin: const EdgeInsets.all(
-                                      //     Dimensions.paddingSizeExtraSmall),
-                                      // padding: const EdgeInsets.symmetric(
-                                      //     horizontal:
-                                      //         Dimensions.paddingSizeDefault),
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         color: const Color(0xFFEBEBEC),
                                       ),
-                                      child: index != 5
-                                          ? ClipRRect(
+                                      child: Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            child: category.categoryList![index].titleGold!=null&& category.categoryList![index].titleGold!.isNotEmpty?Banner(
+                                              message:category.categoryList![index].titleGold!,
+                                              location: BannerLocation.topStart,
+                                              color: const Color(0xFF0B4619),
+                                              child:  index != 5
+                                                  ? ClipRRect(
+                                                // borderRadius:
+                                                //     const BorderRadius.only(
+                                                //         topLeft:
+                                                //             Radius.circular(10),
+                                                //         topRight:
+                                                //             Radius.circular(10)),
+                                                child: FadeInImage.assetNetwork(
+                                                  placeholder:
+                                                  Images.placeholder(context),
+                                                  width: MediaQuery.of(context).size.width*0.45,
+                                                  image:
+                                                  '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/${category.categoryList![index].image}',
+                                                  fit: BoxFit.contain,
+                                                  imageErrorBuilder: (c, o, s) =>
+                                                      Image.asset(
+                                                          Images.placeholder(
+                                                              context),
+                                                          fit: BoxFit.cover),
+                                                ),
+                                              )
+                                                  : Container(
+                                                height: 100,
+                                                width: 100,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                    '${category.categoryList!.length - 5}+',
+                                                    style:
+                                                    poppinsRegular.copyWith(
+                                                        color:
+                                                        Theme.of(context)
+                                                            .cardColor)),
+                                              ),
+                                            ):index != 5
+                                                ? ClipRRect(
                                               // borderRadius:
                                               //     const BorderRadius.only(
                                               //         topLeft:
@@ -144,10 +272,11 @@ class _CategoryViewState extends State<CategoryView> {
                                               //             Radius.circular(10)),
                                               child: FadeInImage.assetNetwork(
                                                 placeholder:
-                                                    Images.placeholder(context),
+                                                Images.placeholder(context),
+                                                width: MediaQuery.of(context).size.width*0.45,
                                                 image:
-                                                    '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/${category.categoryList![index].image}',
-                                                fit: BoxFit.fill,
+                                                '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/${category.categoryList![index].image}',
+                                                fit: BoxFit.contain,
                                                 imageErrorBuilder: (c, o, s) =>
                                                     Image.asset(
                                                         Images.placeholder(
@@ -155,7 +284,7 @@ class _CategoryViewState extends State<CategoryView> {
                                                         fit: BoxFit.cover),
                                               ),
                                             )
-                                          : Container(
+                                                : Container(
                                               height: 100,
                                               width: 100,
                                               decoration: BoxDecoration(
@@ -167,25 +296,142 @@ class _CategoryViewState extends State<CategoryView> {
                                               child: Text(
                                                   '${category.categoryList!.length - 5}+',
                                                   style:
-                                                      poppinsRegular.copyWith(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .cardColor)),
+                                                  poppinsRegular.copyWith(
+                                                      color:
+                                                      Theme.of(context)
+                                                          .cardColor)),
                                             ),
+                                          ),
+                                          category.categoryList![index].titlePlatinum!=null&& category.categoryList![index].titlePlatinum!.isNotEmpty?Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(10),
+                                              child: Banner(message: category.categoryList![index].titlePlatinum!, location: BannerLocation.topEnd,
+                                                child: SizedBox(
+                                                  width: MediaQuery.of(context).size.width * 0.3,
+                                                  height: 180,
+                                                ),),),
+                                          ):SizedBox(),
+                                        ],
+                                      ),
+                                      /*child: Stack(
+                                        children: [
+                                          index != 5
+                                              ? ClipRRect(
+                                            // borderRadius:
+                                            //     const BorderRadius.only(
+                                            //         topLeft:
+                                            //             Radius.circular(10),
+                                            //         topRight:
+                                            //             Radius.circular(10)),
+                                            child: FadeInImage.assetNetwork(
+                                              placeholder:
+                                              Images.placeholder(context),
+                                              image:
+                                              '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/${category.categoryList![index].image}',
+                                              fit: BoxFit.fill,
+                                              imageErrorBuilder: (c, o, s) =>
+                                                  Image.asset(
+                                                      Images.placeholder(
+                                                          context),
+                                                      fit: BoxFit.cover),
+                                            ),
+                                          )
+                                              : Container(
+                                            height: 100,
+                                            width: 100,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                                '${category.categoryList!.length - 5}+',
+                                                style:
+                                                poppinsRegular.copyWith(
+                                                    color:
+                                                    Theme.of(context)
+                                                        .cardColor)),
+                                          ),
+                                          // Left Ribbon
+                                          Positioned(
+                                            top: 0,
+                                            left: 0,
+                                            child: Transform.rotate(
+                                              angle: -0.785398, // 45 degrees in radians
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                color: Colors.green,
+                                                child: Text(
+                                                  'Left Ribbon',
+                                                  style: TextStyle(color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          // Right Ribbon
+                                          Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: Transform.rotate(
+                                              angle: 0.785398, // 45 degrees in radians
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                color: Colors.red,
+                                                child: Text(
+                                                  'Right Ribbon',
+                                                  style: TextStyle(color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                         // Banner(message: "message", location: BannerLocation.topStart),
+                                         // Align(
+                                         //     alignment: Alignment.topRight,
+                                         //     child: Banner(message: "message", location: BannerLocation.topEnd)),
+                                        ],
+                                      ),*/
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(
-                                        Dimensions.paddingSizeExtraSmall),
-                                    child: Text(
-                                      index != 5
-                                          ? category.categoryList![index].name.toCapitalized()
-                                          : getTranslated('view_all', context)!,
-                                      style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeDefault, fontWeight: FontWeight.w400),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        index != 5
+                                            ? category.categoryList![index].name!
+                                            : getTranslated('view_all', context)!,
+                                        style: poppinsRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeDefault,
+                                            fontWeight: FontWeight.w500),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        index != 5
+                                            ? " (${category.categoryList![index].hnName??""})"
+                                            : "",
+                                        style: poppinsRegular.copyWith(
+                                            fontSize: 08,
+                                            fontWeight: FontWeight.w500),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    index != 5
+                                        ? category.categoryList![index].titleSilver??""
+                                        : "",
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeExtraSmall,
+                                        fontWeight: FontWeight.w600,
+                                      color: Color(0XFF600402)
                                     ),
+                                    textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(
                                       height: Dimensions.paddingSizeExtraSmall)

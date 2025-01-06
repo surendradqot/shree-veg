@@ -65,6 +65,9 @@ class Product {
   int? _status;
   String? _createdAt;
   String? _updatedAt;
+  String? _titleSilver;
+  String? _titleGold;
+  String? _titlePlatinum;
   List<String>? _attributes;
   List<CategoryIds>? _categoryIds;
   List<ChoiceOptions>? _choiceOptions;
@@ -98,6 +101,9 @@ class Product {
         int? status,
         String? createdAt,
         String? updatedAt,
+        String? titleSilver,
+        String? titleGold,
+        String? titlePlatinum,
         List<String>? attributes,
         List<CategoryIds>? categoryIds,
         List<ChoiceOptions>? choiceOptions,
@@ -129,6 +135,9 @@ class Product {
     _status = status;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
+    _titleGold = titleGold;
+    _titlePlatinum = titlePlatinum;
+    _titleSilver = titleSilver;
     _attributes = attributes;
     _categoryIds = categoryIds;
     _choiceOptions = choiceOptions;
@@ -164,6 +173,9 @@ class Product {
   int? get status => _status;
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
+  String? get titleGold => _titlePlatinum;
+  String? get titleSilver => _titleSilver;
+  String? get titlePlatinum => _titlePlatinum;
   List<String>? get attributes => _attributes;
   List<CategoryIds>? get categoryIds => _categoryIds;
   List<ChoiceOptions>? get choiceOptions => _choiceOptions;
@@ -202,6 +214,9 @@ class Product {
     _status = json['status'];
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
+    _titleSilver = json['title_silver'];
+    _titleGold = json['title_gold'];
+    _titlePlatinum = json['title_platinum'];
     _attributes = json['attributes'].cast<String>();
     if (json['category_ids'] != null) {
       _categoryIds = [];
@@ -255,6 +270,9 @@ class Product {
     data['image'] = _image;
     data['price'] = _price;
     data['market_price'] = _marketPrice;
+    data['title_silver'] = _titleSilver;
+    data['title_gold'] = _titleGold;
+    data['title_platinum'] = _titlePlatinum;
     data['group_ids'] = _groupIds;
     data['selected_variation'] = _selectedVariation;
     if (_variations != null) {

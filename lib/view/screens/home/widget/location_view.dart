@@ -44,8 +44,8 @@ class LocationView extends StatelessWidget {
                             locationProvider.addressList != null
                                 ? locationProvider.addressList!.isNotEmpty
                                     ? locationProvider.addressList![0].address!
-                                    : ''
-                                : '',
+                                    : 'Select location'
+                                : 'Select location',
                             style: poppinsRegular.copyWith(
                                 color: locationColor,
                                 fontSize: 14,

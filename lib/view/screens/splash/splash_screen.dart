@@ -15,9 +15,11 @@ import 'package:shreeveg/provider/splash_provider.dart';
 import 'package:shreeveg/helper/route_helper.dart';
 import 'package:shreeveg/utill/app_constants.dart';
 import 'package:shreeveg/utill/images.dart';
+import 'package:shreeveg/utill/styles.dart';
 import 'package:shreeveg/view/screens/home/home_screens.dart';
 import 'package:shreeveg/view/screens/onboarding/on_boarding_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shreeveg/view/screens/select%20location%20screen/select_warehouse_screen.dart';
 
 import '../menu/main_screen.dart';
 
@@ -34,7 +36,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void dispose() {
     super.dispose();
-
     _onConnectivityChanged.cancel();
   }
 
@@ -74,55 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   int valueCheck = 1;
 
-  void showCityDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return WillPopScope(
-          onWillPop: () async {
-            // Prevent closing the dialog if no city is selected
-            return false;
-          },
-          child: AlertDialog(
-            title: Text('Select your location'),
-            content: Consumer<ProfileProvider>(
-              builder: (context, provider, child) {
-                if (provider.loadingValue) {
-                  return SizedBox(
-                      height: 80,
-                      child: Center(child: CircularProgressIndicator()));
-                }
 
-                return DropdownButtonFormField<WarehouseCityList>(
-                  items: provider.items.map((WarehouseCityList city) {
-                    return DropdownMenuItem<WarehouseCityList>(
-                      value: city,
-                      child: Text(city.warehousesCity ?? ''),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) async {
-                    provider.selectItem(newValue!.cityId!);
-                    await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
-                      context,
-                      "en",
-                      false,
-                      id: newValue.cityId!,
-                    ).then((onValue){
-                      Navigator.of(Get.context!).pop();
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Location',
-                  ),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   Future apiCallNew() async{
     sharedPreferences = await SharedPreferences.getInstance();
@@ -175,15 +128,17 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.pushNamedAndRemoveUntil(
                 context, RouteHelper.getUpdateRoute(), (route) => false);
           } else {
+            // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> SelectWarehouseScreen(closeButton: false,)), (Route<dynamic> route) => false,);
             if (Provider.of<AuthProvider>(context, listen: false)
                 .isLoggedIn()) {
               print('is login 2');
-              Provider.of<AuthProvider>(context, listen: false).updateToken();
+              // Provider.of<AuthProvider>(context, listen: false).updateToken();
               Navigator.of(context).pushNamedAndRemoveUntil(
                   RouteHelper.main, (route) => false,
                   arguments: const MainScreen());
               apiCallNew();
-            } else {
+            }
+            else {
               // if (!Provider.of<SplashProvider>(context, listen: false)
               //     .showIntro()) {
               //   Navigator.pushNamedAndRemoveUntil(
@@ -229,4 +184,117 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
+}
+
+
+void showCityDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return WillPopScope(
+        onWillPop: () async {
+          // Prevent closing the dialog if no city is selected
+          return false;
+        },
+        child: AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Please choose a location from the list below. This will help us provide you with the best services tailored to your area. Tap on the desired location to proceed.',
+            textAlign: TextAlign.center,
+            style: poppinsRegular.copyWith(
+                color: Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w400),
+          ),
+          content: Container(
+            color: Colors.white,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.6,
+            ),
+            child: Consumer<ProfileProvider>(
+              builder: (context, provider, child) {
+                if (provider.loadingValue) {
+                  return SizedBox(
+                      height: 80,
+                      child: Center(child: CircularProgressIndicator()));
+                }
+                return ListView.separated(
+                  itemCount: provider.items.length,
+                    // itemCount: 50,
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    separatorBuilder: (context, index) {
+                      return Divider();
+                    },
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () async {
+                          provider.selectItem(provider.items[index].warehousesId!,provider.items[index]);
+                          await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
+                            context,
+                            "en",
+                            false,
+                            id: provider.items[index].warehousesId!,
+                          ).then((onValue){
+                            Navigator.of(Get.context!).pop();
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const CircleAvatar(
+                              backgroundColor: Color(0xFF0B4619),
+                              child: Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Text(
+                                provider.items[index].warehousesCity!,
+                                style: poppinsRegular.copyWith(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+                // return DropdownButtonFormField<WarehouseCityList>(
+                //   items: provider.items.map((WarehouseCityList city) {
+                //     return DropdownMenuItem<WarehouseCityList>(
+                //       value: city,
+                //       child: Text(city.warehousesCity ?? ''),
+                //     );
+                //   }).toList(),
+                //   onChanged: (newValue) async {
+                //     provider.selectItem(newValue!.warehousesId!,newValue);
+                //     await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
+                //       context,
+                //       "en",
+                //       false,
+                //       id: newValue.warehousesId!,
+                //     ).then((onValue){
+                //       Navigator.of(Get.context!).pop();
+                //     });
+                //   },
+                //   decoration: InputDecoration(
+                //     labelText: 'Location',
+                //   ),
+                // );
+              },
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }

@@ -34,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           style: poppinsMedium.copyWith(
               fontSize: Dimensions.fontSizeLarge,
               color: buttonTextColor ??
-                  Theme.of(context).textTheme.bodyLarge!.color)),
+                  Colors.white)),
       centerTitle: isCenter ? true : false,
       leading: isBackButtonExist
           ? IconButton(
@@ -42,16 +42,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
                 child: Icon(Icons.arrow_back_ios,
                     color: buttonTextColor ??
-                        Theme.of(context).textTheme.bodyLarge!.color),
+                        Colors.white),
               ),
               color: buttonTextColor ??
-                  Theme.of(context).textTheme.bodyLarge!.color,
+                  Colors.white,
               onPressed: () => onBackPressed != null
                   ? onBackPressed!()
                   : Navigator.pop(context),
             )
           : const SizedBox(),
-      backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
+      backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
       elevation: isElevation ? 2 : 0,
       actions: actions ??
           [

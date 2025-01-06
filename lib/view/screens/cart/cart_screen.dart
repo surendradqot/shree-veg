@@ -114,7 +114,7 @@ class _CartScreenState extends State<CartScreen> {
           return Consumer<CartProvider>(
             builder: (context, cart, child) {
               double? deliveryCharge = 0;
-              (Provider.of<OrderProvider>(context).orderType == 'delivery' &&
+              (Provider.of<OrderProvider>(context).orderType == 'delivery' && //8696491163
                       !kmWiseCharge)
                   ? deliveryCharge = configModel.deliveryCharge
                   : deliveryCharge = 0;
@@ -144,7 +144,7 @@ class _CartScreenState extends State<CartScreen> {
                 unit = cartModel.product!.unit;
                 totalWeight = totalWeight +
                     (cartModel.quantity! *
-                        int.parse((cartModel.variation?.quantity!)!));
+                        double.parse((cartModel.variation?.quantity!)!));
               }
 
               double subTotal =

@@ -258,8 +258,8 @@ class ParticularProductQuantitySelector extends StatelessWidget {
                 children: [
                   Text(
                     product.variations!.isNotEmpty
-                        ? '${product.variations![selectedVariation].quantity} ${product.unit}'
-                        : "${product.unit}",
+                        ? '${product.variations![selectedVariation].quantity!.contains(".") ? product.variations![selectedVariation].quantity!.replaceAll(".", "") : product.variations![selectedVariation].quantity!} ${product.variations![selectedVariation].quantity!.contains(".") ?"gm":product.unit}'
+                        : "",
                     style: poppinsRegular.copyWith(fontSize: 10),
                   ),
                   const Icon(

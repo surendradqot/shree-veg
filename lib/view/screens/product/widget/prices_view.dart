@@ -3,6 +3,7 @@ import '../../../../utill/styles.dart';
 
 class PricesView extends StatelessWidget {
   final bool? firstCut;
+  final bool? centerAlign;
   final int marketPrice;
   final Color? marketColor;
   final double offerPrice;
@@ -13,13 +14,13 @@ class PricesView extends StatelessWidget {
       this.marketColor = const Color(0xFF848484),
       required this.offerPrice,
       this.offerColor = const Color(0xFF0B4619),
-      this.firstCut = true})
+      this.firstCut = true, this.centerAlign=false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: !centerAlign!?MainAxisAlignment.start:MainAxisAlignment.center,
       children: [
         firstCut == true
             ? Text(

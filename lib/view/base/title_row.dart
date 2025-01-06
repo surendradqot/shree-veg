@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shreeveg/data/model/new_flash_modal.dart';
 import 'package:shreeveg/helper/product_type.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
@@ -23,7 +24,12 @@ class TitleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isFlashDealScreen = ModalRoute.of(context)!.settings.name ==
-        RouteHelper.getHomeItemRoute(ProductType.flashSale);
+        RouteHelper.getHomeItemRoute(
+          productType: NewFlashDealModal(
+            productType: ProductType.flashSale,
+            productImage: ""
+          )
+        );
     int? days, hours, minutes, seconds;
     if (eventDuration != null) {
       days = eventDuration!.inDays;
@@ -59,10 +65,12 @@ class TitleRow extends StatelessWidget {
           const SizedBox(width: Dimensions.paddingSizeSmall),
           if (eventDuration != null && !isFlashDealScreen)
             Expanded(
-                child: Row(children: [
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
               const SizedBox(width: 5),
-              TimerBox(time: days, day: 'day'.tr),
-              Text(':', style: TextStyle(color: Theme.of(context).primaryColor)),
+              // TimerBox(time: days, day: 'day'.tr),
+              // Text(':', style: TextStyle(color: Theme.of(context).primaryColor)),
               TimerBox(time: hours, day: 'hour'.tr),
               Text(':', style: TextStyle(color: Theme.of(context).primaryColor)),
               TimerBox(time: minutes, day: 'min'.tr),
@@ -95,8 +103,8 @@ class TitleRow extends StatelessWidget {
             Expanded(
                 child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               const SizedBox(width: 5),
-              TimerBox(time: days, day: 'day'.tr),
-              Text(':', style: TextStyle(color: Theme.of(context).primaryColor)),
+              // TimerBox(time: days, day: 'day'.tr),
+              // Text(':', style: TextStyle(color: Theme.of(context).primaryColor)),
               TimerBox(time: hours, day: 'hour'.tr),
               Text(':', style: TextStyle(color: Theme.of(context).primaryColor)),
               TimerBox(time: minutes, day: 'min'.tr),

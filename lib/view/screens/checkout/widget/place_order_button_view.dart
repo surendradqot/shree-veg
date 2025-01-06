@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shreeveg/data/model/body/place_order_body.dart';
 import 'package:shreeveg/data/model/response/cart_model.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
@@ -84,7 +85,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
             buttonText1:
                 '${PriceConverter.convertPrice(context, widget.amount)} total',
             buttonText2: getTranslated('place_order', context),
-            onPressed: () {
+            onPressed: () async {
               if (orderProvider.paymentOptionRadioGroupValue == null) {
                 ToastService().show(
                   getTranslated('select_payment_method', context)!,
@@ -123,6 +124,8 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                 //   carts.add(cart);
                 // }
 
+                SharedPreferences? sharedPreferences  = await SharedPreferences.getInstance();
+                int? whId = sharedPreferences.getInt(AppConstants.selectedCityId);
                 PlaceOrderBody placeOrderBody = PlaceOrderBody(
                     cart: jsonEncode(cartProvider.cartList),
                     orderAmount: (widget.amount! + widget.deliveryCharge!)
@@ -133,10 +136,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                     storeId: cartProvider.selectedStoreId,
                     // couponCode: widget.couponCode,
                     // orderNote: widget.noteController!.text,
-                    branchId:
-                        Provider.of<ProfileProvider>(context, listen: false)
-                            .userInfoModel!
-                            .userInfo!.warehouseId,
+                    branchId: whId,
                     deliveryAddressId: !widget.selfPickUp!
                         ? Provider.of<LocationProvider>(context, listen: false)
                             .addressList![0]

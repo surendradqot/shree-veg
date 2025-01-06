@@ -108,19 +108,55 @@ class ProductTitleView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    product!.rating != null
-                        ? Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: Dimensions.paddingSizeExtraSmall),
-                      child: RatingBar(
-                        rating: product!.rating!.isNotEmpty
-                            ? double.parse(product!.rating![0].average!)
-                            : 4.0,
-                        size: Dimensions.paddingSizeDefault,
+                    // product!.rating != null
+                    //     ? Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //       vertical: Dimensions.paddingSizeExtraSmall),
+                    //   child: RatingBar(
+                    //     rating: product!.rating!.isNotEmpty
+                    //         ? double.parse(product!.rating![0].average!)
+                    //         : 4.0,
+                    //     size: Dimensions.paddingSizeDefault,
+                    //     color: const Color(0xFF0B4619),
+                    //   ),
+                    // )
+                    //     : const SizedBox(),
+                    Builder(builder: (context) {
+                      return Card(
                         color: const Color(0xFF0B4619),
-                      ),
-                    )
-                        : const SizedBox(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                QuantityButton(
+                                  isIncrement: false,
+                                  quantity: productProvider.quantity,
+                                  stock: stock,
+                                  cartIndex: cartIndex,
+                                  maxOrderQuantity: product!.maximumOrderQuantity,
+                                ),
+                                const SizedBox(width: 15),
+                                Consumer<CartProvider>(builder: (context, cart, child) {
+                                  return Text(
+                                    cartIndex != null
+                                        ? cart.cartList[cartIndex!].quantity.toString()
+                                        : productProvider.quantity.toString(),
+                                    style: poppinsSemiBold.copyWith(color: Colors.white),
+                                  );
+                                }),
+                                const SizedBox(width: 15),
+                                QuantityButton(
+                                  isIncrement: true,
+                                  quantity: productProvider.quantity,
+                                  stock: stock,
+                                  cartIndex: cartIndex,
+                                  maxOrderQuantity: product!.maximumOrderQuantity,
+                                ),
+                              ]),
+                        ),
+                      );
+                    }),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: Dimensions.paddingSizeSmall,
@@ -140,7 +176,15 @@ class ProductTitleView extends StatelessWidget {
                     ),
                   ],
                 ),
-
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'Select Unit',
+                  style: poppinsRegular.copyWith(
+                      color: Colors.black,
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                ),
                 // //Product Price
                 // Row(
                 //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -176,54 +220,6 @@ class ProductTitleView extends StatelessWidget {
                 //         ),
                 //       )
                 //     : const SizedBox(),
-
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Builder(builder: (context) {
-                    return Card(
-                      color: const Color(0xFF0B4619),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                          QuantityButton(
-                            isIncrement: false,
-                            quantity: productProvider.quantity,
-                            stock: stock,
-                            cartIndex: cartIndex,
-                            maxOrderQuantity: product!.maximumOrderQuantity,
-                          ),
-                          const SizedBox(width: 15),
-                          Consumer<CartProvider>(builder: (context, cart, child) {
-                            return Text(
-                              cartIndex != null
-                                  ? cart.cartList[cartIndex!].quantity.toString()
-                                  : productProvider.quantity.toString(),
-                              style: poppinsSemiBold.copyWith(color: Colors.white),
-                            );
-                          }),
-                          const SizedBox(width: 15),
-                          QuantityButton(
-                            isIncrement: true,
-                            quantity: productProvider.quantity,
-                            stock: stock,
-                            cartIndex: cartIndex,
-                            maxOrderQuantity: product!.maximumOrderQuantity,
-                          ),
-                        ]),
-                      ),
-                    );
-                  }),
-                  const SizedBox(height: Dimensions.fontSizeExtraLarge,),
-                  Text(
-                    'Select Unit',
-                    style: poppinsRegular.copyWith(
-                        color: Colors.black,
-                        fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                ]),
               ]);
         },
       ),

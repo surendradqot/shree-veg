@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:shreeveg/data/model/body/place_order_body.dart';
+import 'package:shreeveg/data/model/new_flash_modal.dart';
 import 'package:shreeveg/data/model/response/address_model.dart';
 import 'package:shreeveg/data/model/response/category_model.dart';
 import 'package:shreeveg/data/model/response/order_model.dart';
@@ -263,8 +264,9 @@ class RouteHelper {
     return '$profileEdit?user=$data';
   }
 
-  static String getHomeItemRoute(String productType) {
-    return '$homeItem?item=$productType';
+  static String getHomeItemRoute({NewFlashDealModal? productType}) {
+    String itemFlash = base64Encode(utf8.encode(jsonEncode(productType!.toJson())));
+    return '$homeItem?item=$itemFlash';
   }
 
   static String getmaintenanceRoute() => maintenance;
@@ -600,7 +602,9 @@ class RouteHelper {
 
   static final Handler _homeItemHandler =
       Handler(handlerFunc: (context, Map<String, dynamic> params) {
-    return _routeHandler(child: HomeItemScreen(productType: params['item'][0]));
+        String decodedJson = utf8.decode(base64Decode(params['item'][0]));
+        NewFlashDealModal decodedProduct = newFlashDealModalFromJson(decodedJson);
+    return _routeHandler(child: HomeItemScreen(productType: decodedProduct.productType,productImage: decodedProduct.productImage));
   });
   static final Handler _maintenanceHandler = Handler(
       handlerFunc: (context, Map<String, dynamic> params) =>

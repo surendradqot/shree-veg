@@ -28,10 +28,10 @@ class VariationView extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                childAspectRatio: (1 / 0.5),
+                childAspectRatio: (1.5 / 0.5),
               ),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -78,12 +78,15 @@ class VariationView extends StatelessWidget {
                             PricesView(
                                 marketPrice: product.variations![i].marketPrice!,
                                 offerPrice: double.parse(
-                                    product.variations![i].offerPrice!)),
+                                    product.variations![i].offerPrice!),
+                              centerAlign: true,
+                            ),
                             if(i!=0)
                               Align(
                                   alignment: Alignment.bottomRight,
                                   child: Text(
-                                    "(₹${product.variations![0].offerPrice!} per kg)",
+                                    "(₹${(double.parse(
+                                        product.variations![i].offerPrice!)/double.parse(product.variations![i].quantity!)).toStringAsFixed(2)} per kg)",
                                     style: poppinsRegular.copyWith(
                                         color:  Color(0xFF848484),
                                         fontWeight: FontWeight.w400,

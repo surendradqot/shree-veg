@@ -64,6 +64,7 @@
   "price": "Price",
   "rating": "Rating",
   "category": "Categories",
+  "categoryNew": "Choose Your Choice",
   "sort_by": "Sort by",
   "relevance": "Relevance",
   "low_to_high": "Price: low to high",

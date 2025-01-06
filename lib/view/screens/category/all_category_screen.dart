@@ -3,6 +3,7 @@ import 'package:shreeveg/data/model/response/category_model.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
 import 'package:shreeveg/localization/language_constraints.dart';
+import 'package:shreeveg/provider/cart_provider.dart';
 import 'package:shreeveg/provider/category_provider.dart';
 import 'package:shreeveg/provider/localization_provider.dart';
 import 'package:shreeveg/provider/product_provider.dart';
@@ -27,10 +28,12 @@ class Allcategoriescreen extends StatefulWidget {
   State<Allcategoriescreen> createState() => _AllcategoriescreenState();
 }
 
-class _AllcategoriescreenState extends State<Allcategoriescreen> {
+class _AllcategoriescreenState extends State<Allcategoriescreen> with SingleTickerProviderStateMixin{
   @override
   void initState() {
     super.initState();
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 1000), vsync: this);
     // if (Provider.of<CategoryProvider>(context, listen: false).categoryList !=
     //         null &&
     //     Provider.of<CategoryProvider>(context, listen: false)
@@ -70,8 +73,23 @@ class _AllcategoriescreenState extends State<Allcategoriescreen> {
     }
   }
 
+  late AnimationController controller;
+
+
+  void shake() {
+    controller.forward(from: 0.0);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Animation<double> offsetAnimation = Tween(begin: 0.0, end: 15.0)
+        .chain(CurveTween(curve: Curves.elasticIn))
+        .animate(controller)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          controller.reverse();
+        }
+      });
     return Scaffold(
       appBar: ResponsiveHelper.isDesktop(context)
           ? const MainAppBar()
@@ -80,6 +98,45 @@ class _AllcategoriescreenState extends State<Allcategoriescreen> {
             fontSize: Dimensions.fontSizeLarge,
             color:
             Colors.white)),
+        actions: [
+          AnimatedBuilder(
+            animation: offsetAnimation,
+            builder: (buildContext, child) {
+              return Container(
+                padding: EdgeInsets.only(
+                    left: offsetAnimation.value + 15.0,
+                    right: 15.0 - offsetAnimation.value),
+                child: IconButton(
+                  icon: Stack(clipBehavior: Clip.none, children: [
+                    Image.asset(Images.cartIcon,
+                        width: 23,
+                        height: 25,
+                        color: Colors.white),
+                    Positioned(
+                      top: -7,
+                      right: -2,
+                      child: Container(
+                        padding: const EdgeInsets.all(05),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white),
+                        child: Text(
+                            '${Provider.of<CartProvider>(context).cartList.length}',
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 10),),
+                      ),
+                    ),
+                  ],),
+                  onPressed: () {
+                    Provider.of<SplashProvider>(context, listen: false)
+                        .setCurrentPageIndex(2);
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: SizedBox(
@@ -149,7 +206,7 @@ class _AllcategoriescreenState extends State<Allcategoriescreen> {
                                     return ListTile(
                                       onTap: () {
                                         categoryProvider
-                                            .changeSelectedIndex(-1);
+                                            .changeSelectedIndex(0);
                                         Provider.of<ProductProvider>(context,
                                                 listen: false)
                                             .initCategoryProductList(
@@ -183,7 +240,7 @@ class _AllcategoriescreenState extends State<Allcategoriescreen> {
                                   return ListTile(
                                     onTap: () {
                                       categoryProvider
-                                          .changeSelectedIndex(index - 1);
+                                          .changeSelectedIndex(index );
                                       if (ResponsiveHelper.isMobilePhone()) {}
                                       Provider.of<ProductProvider>(context,
                                               listen: false)

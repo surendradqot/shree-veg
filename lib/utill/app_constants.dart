@@ -11,8 +11,8 @@ class AppConstants {
       // 'http://192.168.29.160/shreeveg';
       // 'http://192.168.29.51/shreeveg';
       // 'http://192.168.29.160/2024/Admin-shreeveg';
-  // "http://192.168.29.59/sheeveg/admin";
-      'https://shreeveg.dqot.solutions';
+  "http://192.168.29.59/sheeveg/admin";
+      // 'https://shreeveg.dqot.solutions';
   //http://shreevegcrm.dqotsolutions.com
   // 'https://dashboard.indianayurveda.shop';
   // 'https://indianayurveda.shop';
@@ -120,6 +120,7 @@ class AppConstants {
   static const String theme = 'theme';
   static const String token = 'token';
   static const String selectedCityId = 'warehouseCityId';
+  static const String selectedCityName = 'warehouseName';
   static const String emailOrPhone = 'email_or_phone';
   static const String otp = 'otp';
   static const String verificationId = 'verificationId';

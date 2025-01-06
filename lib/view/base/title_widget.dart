@@ -8,15 +8,15 @@ import 'package:shreeveg/utill/styles.dart';
 class TitleWidget extends StatelessWidget {
   final String? title;
   final Function? onTap;
-  const TitleWidget({Key? key, required this.title, this.onTap})
-      : super(key: key);
+  final Color? color;
+  const TitleWidget({super.key, required this.title, this.onTap, this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: ResponsiveHelper.isDesktop(context)
           ? ColorResources.getAppBarHeaderColor(context)
-          : Theme.of(context).canvasColor,
+          : color ?? Theme.of(context).canvasColor,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       margin: ResponsiveHelper.isDesktop(context)
           ? const EdgeInsets.symmetric(horizontal: 5)

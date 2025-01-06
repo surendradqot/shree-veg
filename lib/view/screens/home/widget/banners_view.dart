@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:shreeveg/data/model/new_flash_modal.dart';
 import 'package:shreeveg/data/model/response/category_model.dart';
 import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
@@ -90,10 +91,18 @@ class BannersView extends StatelessWidget {
                                         myBanners[index].dealType == 'one_rupee'
                                             ? ProductType.flashSale
                                             : ProductType.dailyItem;
+                                    print(
+                                        '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
+                                        '/${myBanners[index].banner}');
                                     Navigator.pushNamed(
                                         context,
                                         RouteHelper.getHomeItemRoute(
-                                            pageTitle));
+                                           productType: NewFlashDealModal(
+                                             productImage: '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
+                                                 '/${myBanners[index].banner}',
+                                             productType: pageTitle
+                                           ),
+                                            ),);
                                   }
                                   if (bannerType != 'flash') {
                                     if (myBanners[index].productId != null) {
@@ -210,16 +219,16 @@ class BannersView extends StatelessWidget {
                       ],
                     )
                   : SizedBox(),
-                  // : Shimmer(
-                  //     duration: const Duration(seconds: 2),
-                  //     enabled: myBanners.isEmpty,
-                  //     child: Container(
-                  //         margin: const EdgeInsets.symmetric(horizontal: 10),
-                  //         decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(10),
-                  //           color: Colors.grey[300],
-                  //         )),
-                  //   ),
+              // : Shimmer(
+              //     duration: const Duration(seconds: 2),
+              //     enabled: myBanners.isEmpty,
+              //     child: Container(
+              //         margin: const EdgeInsets.symmetric(horizontal: 10),
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(10),
+              //           color: Colors.grey[300],
+              //         )),
+              //   ),
             );
           },
         );

@@ -34,6 +34,14 @@ class _ProductImageScreenState extends State<ProductImageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
+      // appBar: AppBar(
+      //   leading: IconButton(
+      //     icon: Icon(Icons.arrow_back_ios,
+      //         color: Colors.white, size: 20),
+      //     onPressed: () => Navigator.pop(context),
+      //   ),
+      //   // title: ,
+      // ),
       body: Center(
         child: SizedBox(
           width: 1170,

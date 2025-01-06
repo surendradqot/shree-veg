@@ -104,6 +104,39 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Future<void> getOrderList(BuildContext context) async {
+  //   ApiResponse apiResponse = await orderRepo!.getOrderList();
+  //   if (apiResponse.response != null &&
+  //       apiResponse.response!.statusCode == 200) {
+  //     _runningOrderList = [];
+  //     _historyOrderList = [];
+  //     _cancelOrderListMe = [];
+  //     _cancelOrderListDeliveryBoy = [];
+  //     apiResponse.response!.data.forEach((order) {
+  //       OrderModel orderModel = OrderModel.fromJson(order);
+  //       if (orderModel.orderStatus == 'pending' ||
+  //           orderModel.orderStatus == 'processing' ||
+  //           orderModel.orderStatus == 'out_for_delivery' ||
+  //           orderModel.orderStatus == 'confirmed') {
+  //         _runningOrderList!.add(orderModel);
+  //       } else if (orderModel.orderStatus == 'delivered' ||
+  //           orderModel.orderStatus == 'returned' ||
+  //           orderModel.orderStatus == 'failed') {
+  //         _historyOrderList!.add(orderModel);
+  //       } else if (orderModel.orderStatus == 'canceled') {
+  //         if (orderModel.cancelBy == 'user') {
+  //           _cancelOrderListMe!.add(orderModel);
+  //         } else {
+  //           _cancelOrderListDeliveryBoy!.add(orderModel);
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //     ApiChecker.checkApi(apiResponse);
+  //   }
+  //   notifyListeners();
+  // }
+
   Future<void> initializeTimeSlot() async {
     _distance = -1;
     ApiResponse apiResponse = await orderRepo!.getTimeSlot();

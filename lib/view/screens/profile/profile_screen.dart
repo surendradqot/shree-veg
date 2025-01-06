@@ -462,36 +462,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   'addresses', context)!),
                                         ),
 
-                                        InkWell(
-                                          onTap: () {
-                                            // Navigator.pushNamed(context, RouteHelper.ratingReviews);
-                                          },
-                                          child: profileTile(
-                                              Images.rateReviewIcon,
-                                              getTranslated(
-                                                  'rating_review', context)!),
-                                        ),
+                                        // InkWell(
+                                        //   onTap: () {
+                                        //     // Navigator.pushNamed(context, RouteHelper.ratingReviews);
+                                        //   },
+                                        //   child: profileTile(
+                                        //       Images.rateReviewIcon,
+                                        //       getTranslated(
+                                        //           'rating_review', context)!),
+                                        // ),
 
-                                        InkWell(
-                                          onTap: () => Navigator.pushNamed(
-                                              context,
-                                              RouteHelper.getChatRoute(
-                                                  orderModel: null)),
-                                          child: profileTile(
-                                              Images.supportIcon,
-                                              getTranslated(
-                                                  'support', context)!),
-                                        ),
+                                        // InkWell(
+                                        //   onTap: () => Navigator.pushNamed(
+                                        //       context,
+                                        //       RouteHelper.getChatRoute(
+                                        //           orderModel: null)),
+                                        //   child: profileTile(
+                                        //       Images.supportIcon,
+                                        //       getTranslated(
+                                        //           'support', context)!),
+                                        // ),
 
-                                        InkWell(
-                                          onTap: () {
-                                            // Navigator.pushNamed(context, RouteHelper.savedPayments);
-                                          },
-                                          child: profileTile(
-                                              Images.savedPaymentsIcon,
-                                              getTranslated(
-                                                  'saved_payments', context)!),
-                                        ),
+                                        // InkWell(
+                                        //   onTap: () {
+                                        //     // Navigator.pushNamed(context, RouteHelper.savedPayments);
+                                        //   },
+                                        //   child: profileTile(
+                                        //       Images.savedPaymentsIcon,
+                                        //       getTranslated(
+                                        //           'saved_payments', context)!),
+                                        // ),
 
                                         InkWell(
                                           onTap: () {

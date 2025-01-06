@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shreeveg/data/model/new_flash_modal.dart';
 import 'package:shreeveg/data/model/response/config_model.dart';
 import 'package:shreeveg/data/model/response/userinfo_model.dart';
 import 'package:shreeveg/helper/product_type.dart';
@@ -28,6 +29,7 @@ import 'package:shreeveg/view/screens/home/widget/location_view.dart';
 import 'package:shreeveg/view/screens/home/widget/search_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shreeveg/view/screens/home_items_screen/widget/flash_deals_view.dart';
+import 'package:shreeveg/view/screens/splash/splash_screen.dart';
 import '../../../provider/profile_provider.dart';
 import '../../../utill/images.dart';
 import '../profile/profile_screen.dart';
@@ -169,15 +171,99 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const PreferredSize(
                   preferredSize: Size.fromHeight(120), child: WebAppBar())
               : AppBar(
-            title: Text(getTranslated('Shree Veg', context)!,style: poppinsMedium.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
-                color:
-                    Colors.white)),
+            // title: Text(getTranslated('Shree Veg', context)!,
+            //     style: poppinsMedium.copyWith(
+            //     fontSize: Dimensions.fontSizeLarge,
+            //     color:
+            //         Colors.white),
+            // ),
             actions: [
-              IconButton(onPressed: (){
-                Navigator.pushNamed(
-                    context, RouteHelper.searchProduct);
-              }, icon: Icon(Icons.search,color: Colors.white,)),
+              Consumer<ProfileProvider>(
+                builder: (context, provider, child) {
+                  String? selectedValue = sharedPreferences!.getString(AppConstants.selectedCityName);
+                  print("************** $selectedValue  ****************");
+                  // show();
+                  return GestureDetector(
+                    onTap: (){
+                      showCityDialog(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 04,vertical: 08),
+                      margin: EdgeInsets.all(08),
+                      width:  MediaQuery.of(context).size.width*0.35,
+                      decoration: BoxDecoration(
+                       color: Colors.white,
+                        // border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(08),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Icon(Icons.location_on_outlined,
+                              color: Color(0xFF0B4619),),),
+                          Text(
+                            selectedValue??"Select City",
+                            style: poppinsRegular.copyWith(
+                                color: Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      /*child: DropdownButton<int>(
+                        value: selectedValue,
+                        dropdownColor: Colors.white,
+                        iconEnabledColor: Colors.white,
+                        iconDisabledColor: Colors.white,
+                        underline: SizedBox(),
+                        isExpanded: true,
+                        items: provider.items.map((item) {
+                          return DropdownMenuItem<int>(
+                            value: item.warehousesId,
+                            // child: Text(item.warehousesCity!),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    child: Icon(Icons.location_on_outlined,
+                                        color: Color(0xFF0B4619),),),
+                                Text(
+                                  item.warehousesCity!,
+                                  style: poppinsRegular.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (int? newValue) async {
+                          provider.selectItem(newValue);
+                          await loadData(true, context);
+                          // await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
+                          //      context,
+                          //      "en",
+                          //      false,
+                          //      id: newValue,
+                          //  );
+                        },
+                      ),*/
+                    ),
+                  );
+                },
+              ),
+              // IconButton(onPressed: (){
+              //   Navigator.pushNamed(
+              //       context, RouteHelper.searchProduct);
+              // }, icon: Icon(Icons.search,color: Colors.white,)),
               Padding(
                 padding: const EdgeInsets.only(right: 18.0),
                 child: Consumer<ProfileProvider>(
@@ -224,6 +310,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ],
+            // leadingWidth: 30,
+            leading: Container(
+              margin: EdgeInsets.only(left: 08,top: 08,bottom: 08),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                // color: Colors.red,
+                image: DecorationImage(image: AssetImage("assets/image/shree_logo.png"),),
+              ),
+            ),
           ),
           body: SingleChildScrollView(
             controller: scrollController,
@@ -430,7 +525,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     //     ],
                     //   ),
                     // ),
-                    Consumer<ProfileProvider>(
+                    /*Consumer<ProfileProvider>(
                       builder: (context, provider, child) {
                         int? selectedValue = sharedPreferences!.getInt(AppConstants.selectedCityId);
                         print("************** $selectedValue  ****************");
@@ -451,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               isExpanded: true,
                               items: provider.items.map((item) {
                                 return DropdownMenuItem<int>(
-                                  value: item.cityId,
+                                  value: item.warehousesId,
                                   // child: Text(item.warehousesCity!),
                                   child: Row(
                                     children: [
@@ -499,15 +594,40 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                         ):const LocationView(locationColor: Colors.black54);
                       },
-                    ),
+                    ),*/
                     // const LocationView(locationColor: Colors.black54),
                     //
+                    const SizedBox(height: Dimensions.paddingSizeSmall),
                     const BannersView(bannerType: 'home_page'),
 
                     const SizedBox(height: Dimensions.paddingSizeSmall),
 
 // const SearchWidget(),
                     //Offer Banners
+                    if (splashProvider.configModel!.flashDealProductStatus!)
+                      Consumer<FlashDealProvider>(
+                          builder: (context, flashDealProvider, child) {
+                            return flashDealProvider.dailyFlashDealList.isEmpty
+                                ? const SizedBox()
+                                : Column(children: [
+                              TitleRow(
+                                isDetailsPage: null,
+                                title: getTranslated('daily_sale', context),
+                                eventDuration:
+                                flashDealProvider.flashDeal != null
+                                    ? flashDealProvider.duration
+                                    : null,
+                                onTap: () => Navigator.pushNamed(
+                                    context,
+                                    RouteHelper.getHomeItemRoute(
+                                      productType: NewFlashDealModal(
+                                        productType: ProductType.dailyItem,
+                                        productImage: "",
+                                      ),
+                                    )),
+                              ),
+                            ]);
+                          }),
                     if (splashProvider.configModel!=null && splashProvider.configModel!.flashDealProductStatus!)
                       Consumer<FlashDealProvider>(
                         builder: (context, flashProvider, child) {
@@ -528,7 +648,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             : Dimensions.paddingSizeSmall),
 
                     //Special Offers
-                    if (splashProvider.configModel!.flashDealProductStatus!)
+                   /* if (splashProvider.configModel!.flashDealProductStatus!)
                       Consumer<FlashDealProvider>(
                           builder: (context, flashDealProvider, child) {
                         return flashDealProvider.specialFlashDealList.isEmpty
@@ -611,7 +731,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             .dailyFlashDealList,
                                         productType: ProductType.flashSaleDaily)
                               ]);
-                      }),
+                      }),*/
                   ]),
                 ),
               )),

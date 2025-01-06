@@ -123,7 +123,8 @@ class ProductWidget extends StatelessWidget {
               break;
             }
           }
-        } else {
+        }
+        else {
           price = double.parse(product.variations!.isNotEmpty
               ? product.variations![0].price!
               : product.price!);
@@ -205,7 +206,7 @@ class ProductWidget extends StatelessWidget {
                         padding: const EdgeInsets.all(5),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
+                          // color: Theme.of(context).primaryColor,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(Dimensions.radiusSizeTen),
                             topRight: Radius.circular(Dimensions.radiusSizeTen),
