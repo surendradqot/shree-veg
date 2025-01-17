@@ -1,22 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:shreeveg/data/model/new_flash_modal.dart';
-import 'package:shreeveg/data/model/response/category_model.dart';
-import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
-import 'package:shreeveg/helper/route_helper.dart';
 import 'package:shreeveg/provider/banner_provider.dart';
-import 'package:shreeveg/provider/category_provider.dart';
 import 'package:shreeveg/provider/flash_deal_provider.dart';
 import 'package:shreeveg/provider/splash_provider.dart';
-import 'package:shreeveg/utill/dimensions.dart';
 import 'package:shreeveg/utill/images.dart';
-import 'package:shreeveg/view/screens/product/product_details_screen.dart';
+import 'package:shreeveg/view/screens/new%20category%20product%20screen/new_category_product_list_screen.dart';
+import 'package:shreeveg/view/screens/product/image_zoom_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
-import '../../../../helper/product_type.dart';
-import '../../../../utill/styles.dart';
 
 class BannersView extends StatelessWidget {
   final String bannerType;
@@ -60,17 +52,16 @@ class BannersView extends StatelessWidget {
                       children: [
                         SizedBox(
                           width: width,
-                          height: ResponsiveHelper.isDesktop(context)
-                              ? 400
-                              : myBanners.length > 1
-                                  ? 125
-                                  : 135,
+                          height:
+                              ResponsiveHelper.isDesktop(context) ? 400 : 125,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
                               autoPlay: myBanners.length > 1,
                               enlargeCenterPage: true,
                               viewportFraction: 1,
                               disableCenter: true,
+                              autoPlayAnimationDuration: Duration(seconds: 1),
+                              autoPlayInterval: Duration(seconds: 5),
                               onPageChanged: (index, reason) {
                                 if (bannerType != 'flash') {
                                   Provider.of<BannerProvider>(context,
@@ -86,68 +77,97 @@ class BannersView extends StatelessWidget {
                               return InkWell(
                                 hoverColor: Colors.transparent,
                                 onTap: () {
-                                  if (bannerType == 'flash') {
-                                    var pageTitle =
-                                        myBanners[index].dealType == 'one_rupee'
-                                            ? ProductType.flashSale
-                                            : ProductType.dailyItem;
-                                    print(
-                                        '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
-                                        '/${myBanners[index].banner}');
-                                    Navigator.pushNamed(
-                                        context,
-                                        RouteHelper.getHomeItemRoute(
-                                           productType: NewFlashDealModal(
-                                             productImage: '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
-                                                 '/${myBanners[index].banner}',
-                                             productType: pageTitle
-                                           ),
-                                            ),);
+                                  if (bannerType == 'home_page') {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductImageScreen(
+                                                    title: "Banner",
+                                                    imageList: [
+                                                      '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
+                                                          '/${myBanners[index].banner}'
+                                                    ])));
+                                  } else if (bannerType == "flash") {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                            NewCategoryProductListScreen()));
                                   }
-                                  if (bannerType != 'flash') {
-                                    if (myBanners[index].productId != null) {
-                                      Product? product;
-                                      for (Product prod in banner.productList) {
-                                        if (prod.id ==
-                                            banner
-                                                .bannerList[index].productId) {
-                                          product = prod;
-                                          break;
-                                        }
-                                      }
-                                      if (product != null) {
-                                        Navigator.pushNamed(
-                                          context,
-                                          RouteHelper.getProductDetailsRoute(
-                                              product: product),
-                                          arguments: ProductDetailsScreen(
-                                              product: product,
-                                              from: 'banners'),
-                                        );
-                                      }
-                                    } else if (myBanners[index].categoryId !=
-                                        null) {
-                                      CategoryModel? category;
-                                      for (CategoryModel categoryModel
-                                          in Provider.of<CategoryProvider>(
-                                                  context,
-                                                  listen: false)
-                                              .categoryList!) {
-                                        if (categoryModel.id ==
-                                            myBanners[index].categoryId) {
-                                          category = categoryModel;
-                                          break;
-                                        }
-                                      }
-                                      if (category != null) {
-                                        Navigator.of(context).pushNamed(
-                                          RouteHelper
-                                              .getCategoryProductsRouteNew(
-                                                  categoryModel: category),
-                                        );
-                                      }
-                                    }
-                                  }
+                                  // if (bannerType == 'flash') {
+                                  //   var pageTitle =
+                                  //       myBanners[index].dealType == 'one_rupee'
+                                  //           ? ProductType.flashSale
+                                  //           : ProductType.dailyItem;
+                                  //   print(
+                                  //       '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
+                                  //       '/${myBanners[index].banner}');
+                                  //   Navigator.pushNamed(
+                                  //     context,
+                                  //     RouteHelper.getHomeItemRoute(
+                                  //       productType: NewFlashDealModal(
+                                  //           productImage:
+                                  //               '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
+                                  //               '/${myBanners[index].banner}',
+                                  //           productType: pageTitle),
+                                  //     ),
+                                  //   );
+                                  // }
+                                  // if (bannerType != 'flash') {
+                                  //   if (myBanners[index].productId != null) {
+                                  //     Product? product;
+                                  //     for (Product prod in banner.productList) {
+                                  //       if (prod.id ==
+                                  //           banner
+                                  //               .bannerList[index].productId) {
+                                  //         product = prod;
+                                  //         break;
+                                  //       }
+                                  //     }
+                                  //     if (product != null) {
+                                  //       Navigator.pushNamed(
+                                  //         context,
+                                  //         RouteHelper.getProductDetailsRoute(
+                                  //             product: product),
+                                  //         arguments: ProductDetailsScreen(
+                                  //             product: product,
+                                  //             from: 'banners'),
+                                  //       );
+                                  //     }
+                                  //   } else if (myBanners[index].categoryId !=
+                                  //       null) {
+                                  //     CategoryModel? category;
+                                  //     for (CategoryModel categoryModel
+                                  //         in Provider.of<CategoryProvider>(
+                                  //                 context,
+                                  //                 listen: false)
+                                  //             .categoryList!) {
+                                  //       if (categoryModel.id ==
+                                  //           myBanners[index].categoryId) {
+                                  //         category = categoryModel;
+                                  //         break;
+                                  //       }
+                                  //     }
+                                  //     if (category != null) {
+                                  //       Navigator.of(context).pushNamed(
+                                  //         RouteHelper
+                                  //             .getCategoryProductsRouteNew(
+                                  //                 categoryModel: category),
+                                  //       );
+                                  //     }
+                                  //   } else {
+                                  // Navigator.of(context).push(MaterialPageRoute(
+                                  //     builder: (context) => ProductImageScreen(
+                                  //             title: "Banner",
+                                  //             imageList: [
+                                  //               '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
+                                  //                   '/${myBanners[index].banner}'
+                                  //             ])));
+                                  //     // showImageDialog(
+                                  //     //     Get.context!,
+                                  //     //     '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
+                                  //     //     '/${myBanners[index].banner}');
+                                  //   }
+                                  // }
                                 },
                                 child: Container(
                                   width: width,
@@ -155,43 +175,21 @@ class BannersView extends StatelessWidget {
                                       horizontal: 10),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10)),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        width: width,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: FadeInImage.assetNetwork(
-                                            placeholder:
-                                                Images.placeholder(context),
-                                            image:
-                                                '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
-                                                '/${myBanners[index].banner}',
-                                            fit: BoxFit.fill,
-                                            imageErrorBuilder: (c, o, s) =>
-                                                Image.asset(
-                                                    Images.placeholder(context),
-                                                    fit: BoxFit.cover),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned.fill(
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(bannerTitle,
-                                              style: poppinsRegular.copyWith(
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.white)),
-                                        ),
-                                      )
-                                    ],
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder: Images.placeholder(context),
+                                      image:
+                                          '${bannerType == 'flash' ? Provider.of<SplashProvider>(context, listen: false).baseUrls!.flashSaleImageUrl : Provider.of<SplashProvider>(context, listen: false).baseUrls!.bannerImageUrl}'
+                                          '/${myBanners[index].banner}',
+                                      fit: BoxFit.fill,
+                                      width: width,
+                                      height: 125,
+                                      imageErrorBuilder: (c, o, s) =>
+                                          Image.asset(
+                                              Images.placeholder(context),
+                                              fit: BoxFit.cover),
+                                    ),
                                   ),
                                 ),
                               );
@@ -231,6 +229,27 @@ class BannersView extends StatelessWidget {
               //   ),
             );
           },
+        );
+      },
+    );
+  }
+
+  void showImageDialog(BuildContext context, String? image) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Image.network(
+            image!,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         );
       },
     );

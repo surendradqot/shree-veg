@@ -1043,6 +1043,7 @@ class CategoryListingProduct extends StatelessWidget {
                                                       onTap: () {
                                                         showCustomSnackBar(
                                                             "Not in scope");
+                                                        updateSelectedVariation(context, index);
                                                         /*if (product.variations ==
                                                                 null ||
                                                             product.variations!

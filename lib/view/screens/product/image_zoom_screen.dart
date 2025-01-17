@@ -62,7 +62,7 @@ class _ProductImageScreenState extends State<ProductImageScreen> {
                               'value -----> ${photoViewControllerValue.scale} || ${PhotoViewComputedScale.contained.multiplier}');
                         },
                         imageProvider: NetworkImage(
-                            '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.productImageUrl}/${widget.imageList![index]}'),
+                            widget.title!="Banner"?'${Provider.of<SplashProvider>(context, listen: false).baseUrls!.productImageUrl}/${widget.imageList![index]}':"${widget.imageList![index]}"),
                         initialScale: PhotoViewComputedScale.contained,
                       );
                     },

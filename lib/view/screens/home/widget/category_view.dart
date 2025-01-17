@@ -14,6 +14,7 @@ import 'package:shreeveg/view/base/title_widget.dart';
 import 'package:shreeveg/view/screens/home/web/web_categories.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:shreeveg/view/screens/new%20category%20product%20screen/new_category_product_list_screen.dart';
 
 class CategoryView extends StatefulWidget {
   const CategoryView({Key? key}) : super(key: key);
@@ -53,7 +54,7 @@ class _CategoryViewState extends State<CategoryView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TitleWidget(
-                                title: getTranslated('categoryNew', context),
+                                title: getTranslated("Select Your Choice", context),
                                 color: Colors.grey.shade400,
                               ),
                               GestureDetector(
@@ -63,28 +64,28 @@ class _CategoryViewState extends State<CategoryView> {
                                 },
                                 child: Container(
                                   padding: EdgeInsets.all(04),
-                                  margin: EdgeInsets.all(08),
-                                  width: MediaQuery.of(context).size.width * 0.35,
+                                  margin: EdgeInsets.all(05),
+                                  width: MediaQuery.of(context).size.width * 0.5,
                                   height:
-                                      MediaQuery.of(context).size.height * 0.04,
+                                      MediaQuery.of(context).size.height * 0.05,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     // border: Border.all(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(08),
                                   ),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Icon(
                                         Icons.search,
                                         color: Color(0xFF0B4619),
-                                        size: 12,
+                                        size: 15,
                                       ),
                                       Text(
                                         getTranslated('search_anything', context)!,
                                         style: poppinsRegular.copyWith(
-                                            color: Colors.grey,
-                                            fontSize: 11,
+                                            color: Color(0xFF0B4619),
+                                            fontSize: 15,
                                             fontWeight: FontWeight.w400),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -162,7 +163,11 @@ class _CategoryViewState extends State<CategoryView> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
-                                if (index == 5) {
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            NewCategoryProductListScreen()));
+                               /* if (index == 5) {
                                   ResponsiveHelper.isMobilePhone()
                                       ? Provider.of<SplashProvider>(context,
                                               listen: false)
@@ -184,7 +189,7 @@ class _CategoryViewState extends State<CategoryView> {
                                         categoryModel:
                                             category.categoryList![index]),
                                   );
-                                }
+                                }*/
                               },
                               child: Container(
                                 decoration: BoxDecoration(
