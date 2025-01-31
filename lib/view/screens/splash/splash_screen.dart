@@ -211,6 +211,7 @@ void showCityDialog(BuildContext context) {
             color: Colors.white,
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height*0.6,
+              maxWidth: MediaQuery.of(context).size.width,
             ),
             child: Consumer<ProfileProvider>(
               builder: (context, provider, child) {
@@ -230,6 +231,7 @@ void showCityDialog(BuildContext context) {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () async {
+                          Navigator.of(Get.context!).pop();
                           provider.selectItem(provider.items[index].warehousesId!,provider.items[index]);
                           await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
                             context,
@@ -237,7 +239,7 @@ void showCityDialog(BuildContext context) {
                             false,
                             id: provider.items[index].warehousesId!,
                           ).then((onValue){
-                            Navigator.of(Get.context!).pop();
+
                           });
                         },
                         child: Row(

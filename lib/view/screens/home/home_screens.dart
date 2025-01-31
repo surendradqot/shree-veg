@@ -180,9 +180,6 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               Consumer<ProfileProvider>(
                 builder: (context, provider, child) {
-                  String? selectedValue = sharedPreferences!.getString(AppConstants.selectedCityName);
-                  print("************** $selectedValue  ****************");
-                  // show();
                   return GestureDetector(
                     onTap: (){
                       showCityDialog(context);
@@ -204,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Icon(Icons.location_on_outlined,
                               color: Color(0xFF0B4619),),),
                           Text(
-                            selectedValue??"Select City",
+                            sharedPreferences!.getString(AppConstants.selectedCityName)??"Select City",
                             style: poppinsRegular.copyWith(
                                 color: Colors.grey,
                                 fontSize: 14,

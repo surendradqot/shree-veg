@@ -1,14 +1,21 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:shreeveg/data/model/response/base/api_response.dart';
 import 'package:shreeveg/data/model/response/category_model.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/data/repository/product_repo.dart';
 import 'package:shreeveg/data/repository/search_repo.dart';
 import 'package:shreeveg/helper/api_checker.dart';
 import 'package:shreeveg/helper/product_type.dart';
+import 'package:shreeveg/helper/toast_service.dart';
+import 'package:shreeveg/main.dart';
+import 'package:shreeveg/provider/auth_provider.dart';
+import 'package:shreeveg/provider/cart_provider.dart';
 import '../data/model/body/review_body.dart';
 import '../data/model/response/response_model.dart';
 import '../data/repository/product_details_repo.dart';
@@ -18,8 +25,11 @@ class ProductProvider extends ChangeNotifier {
   final ProductDetailsRepo? productDetailsRepo;
   final SearchRepo? searchRepo;
 
-  ProductProvider(
-      {this.productDetailsRepo, required this.productRepo, this.searchRepo});
+  ProductProvider({
+    this.productDetailsRepo,
+    required this.productRepo,
+    this.searchRepo,
+  });
 
   // Latest products
   Product? _product;
@@ -37,7 +47,7 @@ class ProductProvider extends ChangeNotifier {
   int? _latestPageSize;
   List<String> _offsetList = [];
   List<String> _popularOffsetList = [];
-  int _quantity = 1;
+  int _quantity = 0;
   List<int>? _variationIndex;
   int? _imageSliderIndex;
   int? _cartIndex;
@@ -334,8 +344,8 @@ class ProductProvider extends ChangeNotifier {
   }
 
   // Brand and category products
-  List<Product> _categoryProductList = [];
-  List<Product> _categoryAllProductList = [];
+  List<ProductData> _categoryProductList = [];
+  List<ProductData> _categoryAllProductList = [];
   bool? _hasData;
 
   double _minValue = 0;
@@ -366,9 +376,14 @@ class ProductProvider extends ChangeNotifier {
 
   String? get selectedDiscountSort => _selectedDiscountSort;
 
-  List<Product> get categoryProductList => _categoryProductList;
+  List<ProductData> get categoryProductList => _categoryProductList;
+  List<ProductData> oneRupeeProductList = [];
+  List<ProductData> bulkOfferProductList = [];
+  String? marqueeText = '';
+  List<String> tabList = [];
+  bool? loader = false;
 
-  List<Product> get categoryAllProductList => _categoryAllProductList;
+  List<ProductData> get categoryAllProductList => _categoryAllProductList;
 
   bool? get hasData => _hasData;
 
@@ -377,32 +392,108 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void initCategoryProductList(
-      String id, BuildContext context, String languageCode) async {
+  int? selectedVariation = 0;
+
+  updateVariation(int? index){
+    selectedVariation = index;
+    notifyListeners();
+  }
+
+  void initCategoryProductList(String id, BuildContext context,
+      String languageCode, String catName, bool? whereFrom) async {
     _categoryProductList = [];
     _categoryAllProductList = [];
+    oneRupeeProductList = [];
+    bulkOfferProductList = [];
+    tabList = [];
     _hasData = true;
+    loader = false;
     ApiResponse apiResponse =
         await productRepo!.getBrandOrCategoryProductList(id, languageCode);
     if (apiResponse.response != null &&
         apiResponse.response!.statusCode == 200) {
       _categoryProductList = [];
       _categoryAllProductList = [];
-      print("lenth:- ${apiResponse.response!.data}");
-      apiResponse.response!.data.forEach((product) {
-        var prod = Product.fromJson(product);
-
-        prod.updateSelectedVariation(0);
-
-        _categoryProductList.add(prod);
-        _categoryAllProductList.add(prod);
+      oneRupeeProductList = [];
+      bulkOfferProductList = [];
+      tabList = [];
+      print(apiResponse.response!.data.toString());
+      print(apiResponse.response!.data.runtimeType);
+      CategoryProductModal? categoryProductModal =
+          categoryProductModalFromJson(jsonEncode(apiResponse.response!.data));
+      if (!whereFrom!) {
+        tabList.add(catName);
+      }
+      marqueeText = categoryProductModal.data!.warehouseTime ?? "";
+      if (categoryProductModal.data!.is1RsOffer == 1) {
+        tabList.add("1₹ Offer");
+      }
+      if (categoryProductModal.data!.isBulkOffer == 1) {
+        tabList.add("Bulk Order\nLimited Time");
+      }
+      CartProvider? cartProvider =
+          Provider.of<CartProvider>(Get.context!, listen: false);
+      categoryProductModal.result!.forEach((product) {
+        if (!whereFrom) {
+          tabList.add(product.name!);
+        }
+        if (product.oneRsOfferEnable == 0 && product.bulkOfferEnable == 0) {
+          if (cartProvider.newCartList.isNotEmpty) {
+            CartModalNew? cartItem = cartProvider.newCartList.firstWhere(
+              (item) => item.productData!.id == product.id,
+              orElse: () => CartModalNew(),
+            );
+            if (cartItem.productData != null) {
+              _categoryProductList.add(cartItem.productData!);
+              _categoryAllProductList.add(cartItem.productData!);
+            } else {
+              _categoryProductList.add(product);
+              _categoryAllProductList.add(product);
+            }
+          } else {
+            _categoryProductList.add(product);
+            _categoryAllProductList.add(product);
+          }
+        }
+        if (product.oneRsOfferEnable == 1) {
+          if (cartProvider.newOfferCartList.isNotEmpty) {
+            CartModalNew? cartItem = cartProvider.newOfferCartList.firstWhere(
+              (item) => item.productData!.id == product.id,
+              orElse: () => CartModalNew(),
+            );
+            if (cartItem.productData != null) {
+              oneRupeeProductList.add(cartItem.productData!);
+            } else {
+              oneRupeeProductList.add(product);
+            }
+          } else {
+            oneRupeeProductList.add(product);
+          }
+        }
+        if (product.bulkOfferEnable == 1) {
+          if (cartProvider.newOfferCartList.isNotEmpty) {
+            CartModalNew? cartItem = cartProvider.newOfferCartList.firstWhere(
+              (item) => item.productData!.id == product.id,
+              orElse: () => CartModalNew(),
+            );
+            if (cartItem.productData != null) {
+              bulkOfferProductList.add(cartItem.productData!);
+            } else {
+              bulkOfferProductList.add(product);
+            }
+          } else {
+            bulkOfferProductList.add(product);
+          }
+        }
       });
       _hasData = _categoryProductList.length > 1;
-      List<Product> products = [];
+      List<ProductData> products = [];
       products.addAll(_categoryProductList);
       List<double> prices = [];
       for (var product in products) {
-        prices.add(double.parse(product.price.toString()));
+        if (product.price != null) {
+          prices.add(double.parse(product.price.toString()));
+        }
       }
       prices.sort();
       if (categoryProductList.isNotEmpty) {
@@ -410,11 +501,165 @@ class ProductProvider extends ChangeNotifier {
         _maxValue = prices[prices.length - 1];
         _maxFilterRange = ((_maxValue + 99) / 100) * 100;
       }
-
+      loader = true;
       clearRefineFilters();
       clearSortingFilters();
+      notifyListeners();
     } else {
+      loader = true;
       ApiChecker.checkApi(apiResponse);
+      notifyListeners();
+    }
+    loader = true;
+    notifyListeners();
+  }
+
+  List<String> addCart = [];
+
+  addToCart(ProductData product, int? totalCount, String? type, String? unit,
+      {int? index}) {
+    bool? isLoggedIn = Provider.of<AuthProvider>(Get.context!, listen: false).isLoggedIn();
+    if(isLoggedIn){
+      if (type!.isNotEmpty) {
+        if (!addCart.contains("oneRupeeOffer") && type == "oneRupeeOffer") {
+          if (!addCart.contains("bulkOffer")) {
+            if (product.oneRsOfferEnable == 1) {
+              for (ProductData listProduct in oneRupeeProductList) {
+                if (listProduct.id == product.id) {
+                  listProduct.appliedOneRupee = true;
+                  listProduct.appliedUnit = unit;
+                  listProduct.totalAddedWeight = totalCount!.toDouble();
+                  addCart.add("oneRupeeOffer");
+                  Provider.of<CartProvider>(Get.context!, listen: false)
+                      .addOfferCartItem(
+                    product: product,
+                    totalUnit: 1.0,
+                    totalPrice: 1.0,
+                    totalDiscount: double.parse(product.discount!),
+                    itemPrice:
+                        double.parse(product.marketPrice!.toStringAsFixed(1)),
+                    gstPrice: product.tax!.toDouble(),
+                    deliveryCharge: 0.0,
+                    offerPrice: double.parse(product.price!),
+                  );
+                }
+              }
+            }
+          } else {
+            ToastService().show(
+                "आप बल्क ऑर्डर ऑफर का फायदा पहले ही ले चुके हैं. एक रुपए ऑफर अब आपके लिए मान्य नहीं होगा.");
+          }
+        } else if (type == "bulkOffer") {
+          if (!addCart.contains("oneRupeeOffer")) {
+            if (product.bulkOfferEnable == 1) {
+              for (ProductData listProduct in bulkOfferProductList) {
+                if (listProduct.id == product.id) {
+                  listProduct.appliedBulkRupee = true;
+                  listProduct.appliedUnit = unit;
+                  listProduct.appliedBulkRupeeCount = totalCount;
+                  listProduct.totalAddedWeight =
+                      double.parse(product.quantity!) * totalCount!.toDouble();
+                  addCart.add("bulkOffer");
+                  Provider.of<CartProvider>(Get.context!, listen: false)
+                      .addOfferCartItem(
+                    product: product,
+                    totalUnit:
+                        double.parse(product.quantity!) * totalCount.toDouble(),
+                    totalPrice: totalCount * double.parse(product.price!),
+                    totalDiscount: double.parse(product.discount!),
+                    itemPrice: totalCount *
+                        double.parse(product.marketPrice!.toStringAsFixed(1)),
+                    gstPrice: product.tax!.toDouble(),
+                    deliveryCharge: 0.0,
+                    offerPrice: double.parse(product.price!),
+                  );
+                }
+              }
+            }
+          } else {
+            ToastService().show(
+                "आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं. बल्क ऑर्डर ऑफर अब आपके लिए मान्य नहीं होगा.");
+          }
+        } else {
+          ToastService().show("आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं.");
+        }
+      } else {
+        for (ProductData listProduct in _categoryAllProductList) {
+          if (listProduct.id == product.id) {
+            if (totalCount! *
+                    double.parse(product.variations![index!].quantity!) <=
+                listProduct.totalStock!.toDouble()) {
+              listProduct.variations![index].addCount = totalCount;
+              listProduct.variations![index].isSelected = true;
+              listProduct.totalAddedWeight = totalCount *
+                  double.parse(product.variations![index].quantity!);
+              listProduct.appliedUnit = unit;
+              Provider.of<CartProvider>(Get.context!, listen: false)
+                  .addCartItem(
+                product: product,
+                totalUnit: totalCount *
+                    double.parse(product.variations![index].quantity!),
+                totalPrice: totalCount *
+                    double.parse(product.variations![index].offerPrice!),
+                totalDiscount:
+                    double.parse(product.variations![index].discount!),
+                itemPrice: totalCount *
+                    double.parse(product.variations![index].marketPrice!
+                        .toStringAsFixed(2)),
+                gstPrice: product.tax!.toDouble(),
+                deliveryCharge: 0.0,
+                offerPrice:
+                    double.parse(product.variations![index].offerPrice!),
+              );
+            } else {
+              ToastService().show("Out of Stock");
+            }
+          }
+        }
+      }
+    }
+    else{
+      ToastService().show("Please login for use this functionality");
+    }
+
+    notifyListeners();
+  }
+
+  removeFromCart(ProductData product, String? type, {int? index}) {
+    if (type == "oneRupeeOffer") {
+      for (ProductData listProduct in oneRupeeProductList) {
+        if (listProduct.id == product.id) {
+          listProduct.appliedOneRupee = false;
+          listProduct.appliedUnit = "";
+          listProduct.totalAddedWeight = 0;
+          addCart.remove("oneRupeeOffer");
+          Provider.of<CartProvider>(Get.context!, listen: false)
+              .removeOfferCartItem(product);
+        }
+      }
+    } else if (type == "bulkOffer") {
+      for (ProductData listProduct in bulkOfferProductList) {
+        if (listProduct.id == product.id) {
+          listProduct.appliedBulkRupee = false;
+          listProduct.appliedUnit = "";
+          listProduct.appliedBulkRupeeCount = 0;
+          listProduct.totalAddedWeight = 0;
+          addCart.remove("bulkOffer");
+          Provider.of<CartProvider>(Get.context!, listen: false)
+              .removeOfferCartItem(product);
+        }
+      }
+    } else {
+      for (ProductData listProduct in _categoryAllProductList) {
+        if (listProduct.id == product.id) {
+          listProduct.variations![index!].addCount = 0;
+          listProduct.variations![index].isSelected = false;
+          listProduct.totalAddedWeight = 0;
+          listProduct.appliedUnit = "";
+          Provider.of<CartProvider>(Get.context!, listen: false)
+              .removeCartItem(product);
+        }
+      }
     }
     notifyListeners();
   }
@@ -442,7 +687,7 @@ class ProductProvider extends ChangeNotifier {
     } else {
       _categoryProductList = _categoryAllProductList
           .where((categoryProduct) =>
-              categoryProduct.categoryName!.toLowerCase() ==
+              categoryProduct.catName!.toLowerCase() ==
               subCategory.toLowerCase())
           .toList();
     }
@@ -470,7 +715,7 @@ class ProductProvider extends ChangeNotifier {
       _categoryProductList.sort(
           (product1, product2) => product1.price!.compareTo(product2.price!));
       Iterable iterable = _categoryProductList.reversed;
-      _categoryProductList = iterable.toList() as List<Product>;
+      _categoryProductList = iterable.toList() as List<ProductData>;
     } else if (filterIndex == 2) {
       _categoryProductList.sort((product1, product2) =>
           product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
@@ -478,7 +723,7 @@ class ProductProvider extends ChangeNotifier {
       _categoryProductList.sort((product1, product2) =>
           product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
       Iterable iterable = _categoryProductList.reversed;
-      _categoryProductList = iterable.toList() as List<Product>;
+      _categoryProductList = iterable.toList() as List<ProductData>;
     }
     notifyListeners();
   }
@@ -514,11 +759,12 @@ class ProductProvider extends ChangeNotifier {
   void applyDiscountFilter(List<double> minDiscounts) {
     if (minDiscounts.isNotEmpty) {
       minDiscounts.sort();
-      _categoryProductList = _categoryProductList.where((categoryProduct) {
+      _categoryProductList = _categoryAllProductList.where((categoryProduct) {
         bool? value = false;
         if (categoryProduct.variations!.isNotEmpty) {
           if (categoryProduct.variations![0].discount != null &&
-              double.parse(categoryProduct.variations![0].discount!.replaceAll("-", "")) >=
+              double.parse(categoryProduct.variations![0].discount!
+                      .replaceAll("-", "")) >=
                   minDiscounts[0]) {
             value = true;
           } else {
@@ -527,6 +773,8 @@ class ProductProvider extends ChangeNotifier {
         }
         return value;
       }).toList();
+    } else {
+      _categoryProductList = _categoryAllProductList;
     }
     notifyListeners();
   }
@@ -551,7 +799,7 @@ class ProductProvider extends ChangeNotifier {
           _categoryProductList.sort((product1, product2) =>
               product1.price!.compareTo(product2.price!));
           Iterable iterable = _categoryProductList.reversed;
-          _categoryProductList = iterable.toList() as List<Product>;
+          _categoryProductList = iterable.toList() as List<ProductData>;
           break;
         case 'Rupee Saving - Low to High':
           _categoryProductList.sort((product1, product2) =>
@@ -561,7 +809,7 @@ class ProductProvider extends ChangeNotifier {
           _categoryProductList.sort((product1, product2) =>
               product1.price!.compareTo(product2.price!));
           Iterable iterable = _categoryProductList.reversed;
-          _categoryProductList = iterable.toList() as List<Product>;
+          _categoryProductList = iterable.toList() as List<ProductData>;
           break;
         default:
           break;
@@ -584,7 +832,7 @@ class ProductProvider extends ChangeNotifier {
               double.parse(product1.rating![0].average!)
                   .compareTo(double.parse(product2.rating![0].average!)));
           Iterable iterable = _categoryProductList.reversed;
-          _categoryProductList = iterable.toList() as List<Product>;
+          _categoryProductList = iterable.toList() as List<ProductData>;
           break;
         default:
           break;
@@ -607,7 +855,7 @@ class ProductProvider extends ChangeNotifier {
               double.parse(product1.variations![0].discount!)
                   .compareTo(double.parse(product2.variations![0].discount!)));
           Iterable iterable = _categoryProductList.reversed;
-          _categoryProductList = iterable.toList() as List<Product>;
+          _categoryProductList = iterable.toList() as List<ProductData>;
           break;
         default:
           break;
@@ -707,7 +955,7 @@ class ProductProvider extends ChangeNotifier {
         return aPrice.compareTo(bPrice);
       });
       Iterable iterable = _categoryProductList.reversed;
-      _categoryProductList = iterable.toList() as List<Product>;
+      _categoryProductList = iterable.toList() as List<ProductData>;
     }
     notifyListeners();
   }

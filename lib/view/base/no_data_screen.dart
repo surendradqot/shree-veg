@@ -84,20 +84,20 @@ class NoDataScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: height * 0.01),
-          // SizedBox(
-          //   height: 40,
-          //   width: 150,
-          //   child: CustomButton(
-          //     buttonText: 'lets_shop'.tr,
-          //     onPressed: () {
-          //       Provider.of<SplashProvider>(context, listen: false)
-          //           .setCurrentPageIndex(0);
-          //       // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => MenuScreen()), (route) => false);
-          //       Navigator.pushNamedAndRemoveUntil(
-          //           context, RouteHelper.main, (route) => false);
-          //     },
-          //   ),
-          // ),
+          SizedBox(
+            height: 40,
+            width: 150,
+            child: CustomButton(
+              buttonText: 'lets_shop'.tr,
+              onPressed: () {
+                Provider.of<SplashProvider>(context, listen: false)
+                    .setCurrentPageIndex(0);
+                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => MenuScreen()), (route) => false);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RouteHelper.main, (route) => false);
+              },
+            ),
+          ),
         ]),
       ),
     );

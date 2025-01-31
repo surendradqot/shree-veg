@@ -37,7 +37,7 @@ class AppBarBase extends StatelessWidget implements PreferredSizeWidget {
                       shape: BoxShape.circle,
                       color: Theme.of(context).primaryColor),
                   child: Text(
-                      '${Provider.of<CartProvider>(context).cartList.length}',
+                      '${Provider.of<CartProvider>(context).cartLength}',
                       style: TextStyle(
                           color: Theme.of(context).cardColor, fontSize: 10)),
                 ),

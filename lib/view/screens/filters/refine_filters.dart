@@ -59,7 +59,7 @@ class RefineOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> refineOptions = const ['Price', 'Rating', 'Discount'];
+    List<String> refineOptions = const ['Price', 'Discount'];
     return SingleChildScrollView(
       child: Column(
         children: List.generate(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/helper/price_converter.dart';
 import 'package:shreeveg/localization/language_constraints.dart';
@@ -15,7 +16,7 @@ import 'package:provider/provider.dart';
 import 'product_title_view.dart';
 
 class WebProductInformation extends StatelessWidget {
-  final Product? product;
+  final ProductData? product;
   final int? stock;
   final int? cartIndex;
   final double? priceWithQuantity;
@@ -35,51 +36,51 @@ class WebProductInformation extends StatelessWidget {
     double? endingPrice;
     double? endingPriceWithDiscount;
     double? endingPriceWithCategoryDiscount;
-    if (product!.variations!.isNotEmpty) {
-      List<double?> priceList = [];
-      for (var variation in product!.variations!) {
-        priceList.add(double.parse(variation.price!));
-      }
-      priceList.sort((a, b) => a!.compareTo(b!));
-      startingPrice = priceList[0];
-      if (priceList[0]! < priceList[priceList.length - 1]!) {
-        endingPrice = priceList[priceList.length - 1];
-      }
-    } else {
-      startingPrice = double.parse(product!.price!);
-    }
-
-    if (product!.categoryDiscount != null) {
-      startingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
-        startingPrice,
-        product!.categoryDiscount!.discountAmount,
-        product!.categoryDiscount!.discountType,
-        maxDiscount: product!.categoryDiscount!.maximumAmount,
-      );
-
-      if (endingPrice != null) {
-        endingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
-          endingPrice,
-          product!.categoryDiscount!.discountAmount,
-          product!.categoryDiscount!.discountType,
-          maxDiscount: product!.categoryDiscount!.maximumAmount,
-        );
-      }
-    }
-    startingPriceWithDiscount = PriceConverter.convertWithDiscount(
-        startingPrice, double.parse(product!.discount!), product!.discountType);
-
-    if (endingPrice != null) {
-      endingPriceWithDiscount = PriceConverter.convertWithDiscount(
-          endingPrice, double.parse(product!.discount!), product!.discountType);
-    }
-
-    if (startingPriceWithCategoryDiscount != null &&
-        startingPriceWithCategoryDiscount > 0 &&
-        startingPriceWithCategoryDiscount < startingPriceWithDiscount!) {
-      startingPriceWithDiscount = startingPriceWithCategoryDiscount;
-      endingPriceWithDiscount = endingPriceWithCategoryDiscount;
-    }
+    // if (product!.variations!.isNotEmpty) {
+    //   List<double?> priceList = [];
+    //   for (var variation in product!.variations!) {
+    //     priceList.add(double.parse(variation.price!));
+    //   }
+    //   priceList.sort((a, b) => a!.compareTo(b!));
+    //   startingPrice = priceList[0];
+    //   if (priceList[0]! < priceList[priceList.length - 1]!) {
+    //     endingPrice = priceList[priceList.length - 1];
+    //   }
+    // } else {
+    //   startingPrice = double.parse(product!.price!);
+    // }
+    //
+    // if (product!.categoryDiscount != null) {
+    //   startingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
+    //     startingPrice,
+    //     product!.categoryDiscount!.discountAmount,
+    //     product!.categoryDiscount!.discountType,
+    //     maxDiscount: product!.categoryDiscount!.maximumAmount,
+    //   );
+    //
+    //   if (endingPrice != null) {
+    //     endingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
+    //       endingPrice,
+    //       product!.categoryDiscount!.discountAmount,
+    //       product!.categoryDiscount!.discountType,
+    //       maxDiscount: product!.categoryDiscount!.maximumAmount,
+    //     );
+    //   }
+    // }
+    // startingPriceWithDiscount = PriceConverter.convertWithDiscount(
+    //     startingPrice, double.parse(product!.discount!), product!.discountType);
+    //
+    // if (endingPrice != null) {
+    //   endingPriceWithDiscount = PriceConverter.convertWithDiscount(
+    //       endingPrice, double.parse(product!.discount!), product!.discountType);
+    // }
+    //
+    // if (startingPriceWithCategoryDiscount != null &&
+    //     startingPriceWithCategoryDiscount > 0 &&
+    //     startingPriceWithCategoryDiscount < startingPriceWithDiscount!) {
+    //   startingPriceWithDiscount = startingPriceWithCategoryDiscount;
+    //   endingPriceWithDiscount = endingPriceWithCategoryDiscount;
+    // }
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,

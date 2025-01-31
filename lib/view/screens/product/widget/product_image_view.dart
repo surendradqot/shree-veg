@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
 import 'package:shreeveg/provider/product_provider.dart';
@@ -9,10 +8,11 @@ import 'package:shreeveg/utill/images.dart';
 import 'package:shreeveg/view/screens/product/image_zoom_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../data/model/response/new_category_product_modal.dart';
+
 class ProductImageView extends StatelessWidget {
-  final Product? productModel;
-  const ProductImageView({Key? key, required this.productModel})
-      : super(key: key);
+  final ProductData? productModel;
+  const ProductImageView({super.key, required this.productModel});
 
   @override
   Widget build(BuildContext context) {

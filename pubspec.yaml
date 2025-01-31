@@ -67,6 +67,9 @@ dependencies:
   flutter_plugin_android_lifecycle: ^2.0.23
   google_api_headers: ^1.6.0
   flutter_google_places:
+  marquee:
+  animated_text_kit:
+  dotted_line:
 
 dev_dependencies:
   flutter_test:

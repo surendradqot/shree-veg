@@ -11,8 +11,8 @@ class AppConstants {
       // 'http://192.168.29.160/shreeveg';
       // 'http://192.168.29.51/shreeveg';
       // 'http://192.168.29.160/2024/Admin-shreeveg';
-  "http://192.168.29.59/sheeveg/admin";
-      // 'https://shreeveg.dqot.solutions';
+  // "http://192.168.1.110/sheeveg/admin";
+      'https://shreeveg.dqot.solutions';
   //http://shreevegcrm.dqotsolutions.com
   // 'https://dashboard.indianayurveda.shop';
   // 'https://indianayurveda.shop';

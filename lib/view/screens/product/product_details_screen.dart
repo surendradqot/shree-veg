@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shreeveg/data/model/response/cart_model.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/data/model/response/review_model.dart';
 import 'package:shreeveg/helper/price_converter.dart';
@@ -32,11 +33,10 @@ import '../../../provider/profile_provider.dart';
 import 'widget/product_review.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  final Product product;
+  final ProductData? product;
   final bool? fromSearch;
   const ProductDetailsScreen(
-      {Key? key, required this.product, this.fromSearch = false, String? from})
-      : super(key: key);
+      {super.key, required this.product, this.fromSearch = false, String? from});
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -52,25 +52,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
     _tabController = TabController(length: 2, initialIndex: 0, vsync: this);
 
     Provider.of<ProductProvider>(context, listen: false)
-        .getProductReviews(context, '${widget.product.productId}');
+        .getProductReviews(context, '${widget.product!.id!}');
 
     Provider.of<SplashProvider>(context, listen: false).initSharedData();
     Provider.of<CartProvider>(context, listen: false).getCartData();
     Provider.of<CartProvider>(context, listen: false).setSelect(0, false);
 
-    print(
-        'selected variiiiiiiiiiiiiiiiiiii: ${widget.product.selectedVariation}');
+    // print('selected variiiiiiiiiiiiiiiiiiii: ${widget.product.selectedVariation}');
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Variations? variation;
+    Variation? variation;
 
-    if (widget.product.selectedVariation == null) {
-      widget.product.updateSelectedVariation(0);
-    }
+    // for(int i=0; i< widget.product!.variations!.length;i++){
+    //   if (variation![i].isSelected) {
+    //     widget.product.updateSelectedVariation(i);
+    //   }
+    // }
 
     return Scaffold(
       appBar: ResponsiveHelper.isDesktop(context)
@@ -83,21 +84,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
           double? price = 0;
           int? stock = 0;
           double? priceWithQuantity = 0;
-          CartModel? cartModel;
+          CartModalNew? cartModel;
 
-          price = widget.product
-              .variations!.isNotEmpty?double.parse(widget.product
-              .variations![widget.product.selectedVariation ?? 0].price!):0.00;
-          stock = widget.product.totalStock;
+          price = widget.product!
+              .variations!.isNotEmpty?double.parse(widget.product!
+              .variations![0].offerPrice!):0.00;
+          stock = widget.product!.totalStock;
 
-          if (widget.product.variations != null) {
+          if (widget.product!.variations != null) {
             for (int index = 0;
-                index < widget.product.variations!.length;
+                index < widget.product!.variations!.length;
                 index++) {
-              Variations variationData = widget.product.variations![index];
-              if (index == widget.product.selectedVariation) {
-                price = double.parse(variationData.price!);
-                variation = variationData;
+              if (widget.product!.variations![index].isSelected!) {
+                price = double.parse(widget.product!.variations![index].offerPrice!);
+                variation = widget.product!.variations![index];
                 break;
               }
             }
@@ -106,18 +106,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
           double? priceWithDiscount = 0;
           double? categoryDiscountAmount;
 
-          if (widget.product.categoryDiscount != null) {
-            categoryDiscountAmount = PriceConverter.convertWithDiscount(
-              price,
-              widget.product.categoryDiscount!.discountAmount,
-              widget.product.categoryDiscount!.discountType,
-              maxDiscount: widget.product.categoryDiscount!.maximumAmount,
-            );
-          }
+          // if (widget.product!.categoryDiscount != null) {
+          //   categoryDiscountAmount = PriceConverter.convertWithDiscount(
+          //     price,
+          //     widget.product!.categoryDiscount!.discountAmount,
+          //     widget.product!.categoryDiscount!.discountType,
+          //     maxDiscount: widget.product!.categoryDiscount!.maximumAmount,
+          //   );
+          // }
           priceWithDiscount = PriceConverter.convertWithDiscount(
               price,
-              double.parse(widget.product.discount!),
-              widget.product.discountType);
+              double.parse(widget.product!.discount!),
+              widget.product!.discountType);
 
           if (categoryDiscountAmount != null &&
               categoryDiscountAmount > 0 &&
@@ -125,36 +125,36 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
             priceWithDiscount = categoryDiscountAmount;
           }
 
-          cartModel = CartModel(
-              widget.product.id,
-              widget.product.image!.isNotEmpty ? widget.product.image![0] : '',
-              widget.product.name,
-              price,
-              priceWithDiscount,
-              productProvider.quantity,
-              variation,
-              (price! - priceWithDiscount!),
-              (price -
-                  PriceConverter.convertWithDiscount(
-                      price, widget.product.tax, widget.product.taxType)!),
-              widget
-                  .product
-                  .variations!.isNotEmpty?double.parse(widget
-                  .product
-                  .variations![widget.product.selectedVariation ?? 0]
-                  .quantity!):0.00,
-              widget.product.unit,
-              stock,
-              widget.product);
+          // cartModel = CartModel(
+          //     widget.product.id,
+          //     widget.product.image!.isNotEmpty ? widget.product.image![0] : '',
+          //     widget.product.name,
+          //     price,
+          //     priceWithDiscount,
+          //     productProvider.quantity,
+          //     variation,
+          //     (price! - priceWithDiscount!),
+          //     (price -
+          //         PriceConverter.convertWithDiscount(
+          //             price, widget.product.tax, widget.product.taxType)!),
+          //     widget
+          //         .product
+          //         .variations!.isNotEmpty?double.parse(widget
+          //         .product
+          //         .variations![widget.product.selectedVariation ?? 0]
+          //         .quantity!):0.00,
+          //     widget.product.unit,
+          //     stock,
+          //     widget.product);
 
-          productProvider.setExistData(
-              Provider.of<CartProvider>(context).isExistInCart(cartModel));
+          // productProvider.setExistData(
+          //     Provider.of<CartProvider>(context).isExistInCart(cartModel));
 
           try {
-            priceWithQuantity = priceWithDiscount *
+            priceWithQuantity = (priceWithDiscount! *
                 (productProvider.cartIndex != null
                     ? cart.cartList[productProvider.cartIndex!].quantity!
-                    : productProvider.quantity);
+                    : productProvider.quantity));
           } catch (e) {
             priceWithQuantity = priceWithDiscount;
           }
@@ -213,7 +213,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                     PriceConverter
                                                         .convertPrice(
                                                             context,
-                                                            priceWithQuantity),
+                                                        double.parse(widget.product!.variations![productProvider.selectedVariation!].offerPrice!)*productProvider.quantity),
                                                     style: poppinsBold
                                                         .copyWith(
                                                       color: Colors.black,
@@ -227,7 +227,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                         // Description
                                       ],
                                     ),
-                                    _description(context, widget.product,
+                                    _description(context, widget.product!,
                                         productProvider),
                                   ],
                                 ),
@@ -252,15 +252,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                   ? () {
                                       if (productProvider.cartIndex == null &&
                                           stock! > 0) {
-                                        Provider.of<CartProvider>(context,
-                                                listen: false)
-                                            .addToCart(cartModel!);
+                                        Provider.of<ProductProvider>(context,
+                                            listen: false)
+                                            .addToCart(
+                                          widget.product!,
+                                          productProvider.quantity,
+                                          "",
+                                          "Kg",
+                                          index:  productProvider.selectedVariation,
+                                        );
+                                        // Provider.of<CartProvider>(context,
+                                        //         listen: false)
+                                        //     .addToCart(cartModel!);
                                         //   _key.currentState.shake();
 
-                                        showCustomSnackBar(
-                                            getTranslated(
-                                                'added_to_cart', context)!,
-                                            isError: false);
+                                        // showCustomSnackBar(
+                                        //     getTranslated(
+                                        //         'added_to_cart', context)!,
+                                        //     isError: false);
                                       } else {
                                         // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(getTranslated('already_added', context)), backgroundColor: Colors.red,));
                                         showCustomSnackBar(getTranslated(
@@ -329,10 +338,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                               SizedBox(
                                                 height: 100,
                                                 child:
-                                                    widget.product.image != null
+                                                    widget.product!.image != null
                                                         ? ListView.builder(
                                                             itemCount: widget
-                                                                .product
+                                                                .product!
                                                                 .image!
                                                                 .length,
                                                             scrollDirection:
@@ -406,7 +415,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                               children: [
                                                 widget.product != null
                                                     ? WebProductInformation(
-                                                        product: widget.product,
+                                                        product: widget.product!,
                                                         stock: stock,
                                                         cartIndex:
                                                             productProvider
@@ -441,12 +450,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                                         null &&
                                                                     stock! >
                                                                         0) {
-                                                                  Provider.of<CartProvider>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .addToCart(
-                                                                          cartModel!);
+                                                                  // Provider.of<CartProvider>(
+                                                                  //         context,
+                                                                  //         listen:
+                                                                  //             false)
+                                                                  //     .addToCart(
+                                                                  //         cartModel!);
 
                                                                   showCustomSnackBar(
                                                                       getTranslated(
@@ -478,7 +487,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                   child: SizedBox(
                                       width: Dimensions.webScreenWidth,
                                       child: _description(context,
-                                          widget.product, productProvider))),
+                                          widget.product!, productProvider))),
                               const SizedBox(
                                 height: Dimensions.paddingSizeDefault,
                               ),
@@ -496,7 +505,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
   }
 
   Widget _description(
-      BuildContext context, Product product, ProductProvider productProvider) {
+      BuildContext context, ProductData product, ProductProvider productProvider) {
     return Column(
       children: [
         Center(
@@ -541,7 +550,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                     ),
                     const SizedBox(height: Dimensions.paddingSizeDefault),
                     HtmlWidget(
-                      product.hindiDescription ?? '',
+                      product.hnDescription ?? '',
                       textStyle: poppinsRegular.copyWith(
                           fontSize: Dimensions.fontSizeSmall),
                     ),
@@ -598,7 +607,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                         Navigator.of(context).pushNamed(
                                           RouteHelper
                                               .getProductSubmitReviewRoute(
-                                                  product: widget.product,
+                                                  product: widget.product!,
                                                   myReview: myReview),
                                         );
                                       },

@@ -41,11 +41,11 @@ class WebDailyItemView extends StatelessWidget {
       isItem: true,
       child: InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed(
-              RouteHelper.getProductDetailsRoute(
-                  product: productProvider.dailyItemList![index]),
-              arguments: ProductDetailsScreen(
-                  product: productProvider.dailyItemList![index], from: 'daily'));
+          // Navigator.of(context).pushNamed(
+          //     RouteHelper.getProductDetailsRoute(
+          //         product: productProvider.dailyItemList![index]),
+          //     arguments: ProductDetailsScreen(
+          //         product: productProvider.dailyItemList![index], from: 'daily'));
         },
         borderRadius: BorderRadius.circular(Dimensions.radiusSizeTen),
         child: Container(

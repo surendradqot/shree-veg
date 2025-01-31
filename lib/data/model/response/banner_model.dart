@@ -8,6 +8,8 @@ class BannerModel {
   String? _createdAt;
   String? _updatedAt;
   int? _categoryId;
+  String? _categoryName;
+      String? _categoryHnName;
 
   BannerModel(
       {int? id,
@@ -18,7 +20,10 @@ class BannerModel {
         int? status,
         String? createdAt,
         String? updatedAt,
-        int? categoryId}) {
+        int? categoryId,
+        String? categoryName,
+        String? categoryHnName,
+      }) {
     _id = id;
     _title = title;
     _banner = banner;
@@ -28,6 +33,8 @@ class BannerModel {
     _createdAt = createdAt;
     _updatedAt = updatedAt;
     _categoryId = categoryId;
+    _categoryName = categoryName;
+    _categoryHnName = categoryHnName;
   }
 
   int? get id => _id;
@@ -39,6 +46,23 @@ class BannerModel {
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
   int? get categoryId => _categoryId;
+  String? get categoryName => _categoryName;
+  String? get categoryHnName => _categoryHnName;
+
+  // _id = 10
+  // _title = "one rupees"
+  // _startDate = "2025-01-24 11:59:00"
+  // _endDate = "2025-01-24 17:59:00"
+  // _status = 1
+  // _featured = 0
+  // _backgroundColor = null
+  // _textColor = null
+  // _banner = "2025-01-24-6793337b369d6.png"
+  // _slug = null
+  // _createdAt = "2025-01-24 12:00:19"
+  // _updatedAt = "2025-01-24 12:00:41"
+  // _productId = 30
+  // _dealType = "one_rupee"
 
 
   BannerModel.fromJson(Map<String, dynamic> json) {
@@ -51,6 +75,8 @@ class BannerModel {
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
     _categoryId = json['category_id'];
+    _categoryName = json['category_name'];
+    _categoryHnName = json['category_hindi_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +90,8 @@ class BannerModel {
     data['created_at'] = _createdAt;
     data['updated_at'] = _updatedAt;
     data['category_id'] = _categoryId;
+    data['category_name'] = _categoryName;
+    data['category_hindi_name'] = _categoryHnName;
     return data;
   }
 }

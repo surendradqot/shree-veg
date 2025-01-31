@@ -1,46 +1,70 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/helper/product_type.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
-import 'package:shreeveg/helper/route_helper.dart';
-import 'package:shreeveg/localization/app_localization.dart';
 import 'package:shreeveg/localization/language_constraints.dart';
-import 'package:shreeveg/provider/location_provider.dart';
 import 'package:shreeveg/provider/search_provider.dart';
-import 'package:shreeveg/provider/theme_provider.dart';
+import 'package:shreeveg/provider/splash_provider.dart';
 import 'package:shreeveg/utill/dimensions.dart';
 import 'package:shreeveg/utill/styles.dart';
-import 'package:shreeveg/view/base/custom_app_bar.dart';
 import 'package:shreeveg/view/base/custom_text_field.dart';
 import 'package:shreeveg/view/base/footer_view.dart';
 import 'package:shreeveg/view/base/no_data_screen.dart';
-import 'package:shreeveg/view/base/product_shimmer.dart';
 import 'package:shreeveg/view/base/product_widget.dart';
 import 'package:shreeveg/view/base/web_app_bar/web_app_bar.dart';
-import 'package:shreeveg/view/base/web_product_shimmer.dart';
-import 'package:shreeveg/view/screens/search/search_result_screen.dart';
+import 'package:shreeveg/view/screens/product/product_details_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:shreeveg/view/screens/search/widget/filter_widget.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
-  int? pageSize;
-  final ScrollController scrollController = ScrollController();
-  final TextEditingController _searchController = TextEditingController();
+class _SearchScreenState extends State<SearchScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  String _currentText = "99.99%";
+
+  // String _currentImage = "assets/image/ellipse.png";
+  Color _textColor = Colors.white;
+  double? fontSize = 5;
+  ColorFilter? _imageColorFilter;
+  bool isFirstVerticalItemUpdated = false;
+  String? selectedIndex = "";
+  late Timer _timer;
+  Future apiCall() async {
+    Provider.of<SearchProvider>(context, listen: false).initHistoryList();
+    await Provider.of<SearchProvider>(context, listen: false)
+        .initializeAllSortBy(notify: false);
+  }
 
   @override
   void initState() {
     super.initState();
-    Provider.of<SearchProvider>(context, listen: false).initHistoryList();
-    Provider.of<SearchProvider>(context, listen: false)
-        .initializeAllSortBy(notify: false);
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _currentText = _currentText == "99.99%" ? "Discount" : "99.99%";
+        _textColor = _textColor == Colors.white ? Colors.black : Colors.white;
+        fontSize = fontSize == 5 ? 4 : 5;
+        _imageColorFilter = _imageColorFilter == null
+            ? ColorFilter.mode(Color(0xffFDC94C), BlendMode.srcATop)
+            : null;
+      });
+    });
+    apiCall();
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 1000), vsync: this);
   }
+
+  int? pageSize;
+  final ScrollController scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
 
   bool _containsOnlyAscii(String text) {
     for (int i = 0; i < text.length; i++) {
@@ -60,10 +84,16 @@ class _SearchScreenState extends State<SearchScreen> {
           ? const PreferredSize(
               preferredSize: Size.fromHeight(120),
               child: WebAppBar()) as PreferredSizeWidget
-          : AppBar(title: Text(getTranslated('search', context)!,style: poppinsMedium.copyWith(
-      fontSize: Dimensions.fontSizeLarge,
-          color:
-          Colors.white)),backgroundColor: Color(0xFF0B4619),centerTitle: true,leading: BackButton(color: Colors.white,),),
+          : AppBar(
+              title: Text(getTranslated('search', context)!,
+                  style: poppinsMedium.copyWith(
+                      fontSize: Dimensions.fontSizeLarge, color: Colors.white)),
+              backgroundColor: Color(0xFF0B4619),
+              centerTitle: true,
+              leading: BackButton(
+                color: Colors.white,
+              ),
+            ),
       body: SafeArea(
         child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -94,449 +124,143 @@ class _SearchScreenState extends State<SearchScreen> {
                                 if (searchText.isNotEmpty &&
                                     _containsOnlyAscii(searchText)) {
                                   List<int> encoded = utf8.encode(searchText);
-                                  String data = base64Encode(encoded);
+                                  base64Encode(encoded);
                                   searchProvider.saveSearchAddress(searchText);
-                                  Provider.of<SearchProvider>(context, listen: false).initHistoryList();
-                                  Provider.of<SearchProvider>(context, listen: false)
+                                  Provider.of<SearchProvider>(context,
+                                          listen: false)
+                                      .initHistoryList();
+                                  Provider.of<SearchProvider>(context,
+                                          listen: false)
                                       .initializeAllSortBy(notify: false);
-                                  Provider.of<SearchProvider>(context, listen: false)
-                                      .saveSearchAddress(searchText, isUpdate: false);
-                                  Provider.of<SearchProvider>(context, listen: false)
-                                      .searchProduct(searchText, context, isUpdate: false);
-                                  // Navigator.pushNamed(context,
-                                  //     '${RouteHelper.searchResult}?text=$data',
-                                  //     arguments: SearchResultScreen(
-                                  //         searchString: searchText));
-                                }
-                                else{
-                                  Provider.of<SearchProvider>(context, listen: false).updateList();
+                                  Provider.of<SearchProvider>(context,
+                                          listen: false)
+                                      .saveSearchAddress(searchText,
+                                          isUpdate: false);
+                                  Provider.of<SearchProvider>(context,
+                                          listen: false)
+                                      .searchProduct(searchText, context,
+                                          isUpdate: false);
+                                } else {
+                                  Provider.of<SearchProvider>(context,
+                                          listen: false)
+                                      .updateList();
                                 }
                               },
                               isShowSuffixIcon: true,
                             ),
                           ),
-                          // Consumer<LocationProvider>(
-                          //   builder: (context, locationProvider, child) =>
-                          //       TextButton(
-                          //     onPressed: () {
-                          //       Navigator.of(context).pop();
-                          //     },
-                          //     style: TextButton.styleFrom(
-                          //       padding: const EdgeInsets.all(12),
-                          //       shadowColor: Theme.of(context).primaryColor,
-                          //     ),
-                          //     child: DropdownButton<String>(
-                          //       value: locationProvider.selectedCity,
-                          //       onChanged: (String? newValue) {
-                          //         // Setter method
-                          //         locationProvider.setSelectedCity(newValue!);
-                          //       },
-                          //       items: <String>[
-                          //         'Jaipur',
-                          //         'Delhi',
-                          //         'Mumbai'
-                          //       ].map<DropdownMenuItem<String>>((String value) {
-                          //         return DropdownMenuItem<String>(
-                          //           value: value,
-                          //           child: Text(value),
-                          //         );
-                          //       }).toList(),
-                          //     ),
-                          //   ),
-                          // )
                         ],
                       ),
                       const SizedBox(height: 10),
-                     /* // for resent search section
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            getTranslated('recent_search', context)!,
-                            style: poppinsMedium.copyWith(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.color
-                                    ?.withOpacity(0.6),
-                                fontSize: Dimensions.fontSizeLarge),
-                          ),
-                          searchProvider.historyList.isNotEmpty
-                              ? TextButton(
-                                  onPressed: searchProvider.clearSearchAddress,
-                                  child: Text(
-                                    getTranslated('remove_all', context)!,
-                                    style: poppinsMedium.copyWith(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.color
-                                            ?.withOpacity(0.6),
-                                        fontSize: Dimensions.fontSizeLarge),
-                                  ))
-                              : const SizedBox.shrink(),
-                        ],
-                      ),
-
-                      // for recent search list section
-                      Wrap(
-                          children: List.generate(
-                              searchProvider.historyList.length,
-                              (index) => InkWell(
-                                    onTap: () {
-                                      List<int> encoded = utf8.encode(
-                                          searchProvider
-                                              .historyList[index]!);
-                                      String data = base64Encode(encoded);
-                                      searchProvider.searchProduct(
-                                          searchProvider
-                                              .historyList[index]!,
-                                          context);
-                                      Navigator.pushNamed(context,
-                                          '${RouteHelper.searchResult}?text=$data',
-                                          arguments: SearchResultScreen(
-                                              searchString: searchProvider
-                                                  .historyList[index]));
-                                      // Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchResultScreen(searchString: searchProvider.historyList[index])));
-                                    },
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 9),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Card(
-                                          elevation: 0.5,
-                                          color: const Color(0xFFF0F1F2),
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 8.0,
-                                                    vertical: 5.0),
-                                            child: Text(
-                                              searchProvider
-                                                  .historyList[index]!
-                                                  .toCapitalized(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displayMedium!
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: Dimensions
-                                                          .fontSizeSmall),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ))),*/
                       Expanded(
                         child: Consumer<SearchProvider>(
                           builder: (context, searchProvider, child) =>
                               SingleChildScrollView(
-                                child: Column(children: [
-                                  Center(
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          minHeight: ResponsiveHelper.isDesktop(context)
-                                              ? MediaQuery.of(context).size.height - 400
-                                              : MediaQuery.of(context).size.height,
-                                        ),
-                                        child: SizedBox(
-                                            // width: 1170,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                // const SizedBox(height: 15),
-                                                // !ResponsiveHelper.isDesktop(context)
-                                                //     ? Container(
-                                                //   height: 48,
-                                                //   margin: const EdgeInsets.symmetric(
-                                                //       horizontal:
-                                                //       Dimensions.paddingSizeSmall),
-                                                //   padding: const EdgeInsets.symmetric(
-                                                //       horizontal:
-                                                //       Dimensions.paddingSizeSmall),
-                                                //   width: MediaQuery.of(context).size.width,
-                                                //   decoration: BoxDecoration(
-                                                //     borderRadius: BorderRadius.circular(7),
-                                                //     color: Theme.of(context).cardColor,
-                                                //     boxShadow: [
-                                                //       BoxShadow(
-                                                //         color: Colors.grey[
-                                                //         Provider.of<ThemeProvider>(
-                                                //             context)
-                                                //             .darkTheme
-                                                //             ? 700
-                                                //             : 200]!,
-                                                //         spreadRadius: 0.5,
-                                                //         blurRadius: 0.5,
-                                                //         offset: const Offset(0,
-                                                //             3), // changes position of shadow
-                                                //       ),
-                                                //     ],
-                                                //   ),
-                                                //   child: Row(
-                                                //     mainAxisAlignment:
-                                                //     MainAxisAlignment.spaceBetween,
-                                                //     children: [
-                                                //       Text(
-                                                //         _searchController.text,
-                                                //         style: poppinsLight.copyWith(
-                                                //             color: Theme.of(context)
-                                                //                 .textTheme
-                                                //                 .bodyLarge
-                                                //                 ?.color
-                                                //                 ?.withOpacity(0.6),
-                                                //             fontSize:
-                                                //             Dimensions.paddingSizeLarge),
-                                                //       ),
-                                                //       InkWell(
-                                                //         onTap: () {
-                                                //           Navigator.of(context).pop();
-                                                //         },
-                                                //         child: const Icon(Icons.close,
-                                                //             color: Colors.red, size: 22),
-                                                //       )
-                                                //     ],
-                                                //   ),
-                                                // )
-                                                //     : const SizedBox(),
-                                                // const SizedBox(height: 13),
-                                                // Container(
-                                                //   height: 48,
-                                                //   margin: const EdgeInsets.symmetric(
-                                                //       horizontal: Dimensions.paddingSizeSmall),
-                                                //   padding: const EdgeInsets.symmetric(
-                                                //       horizontal: Dimensions.paddingSizeSmall),
-                                                //   width: MediaQuery.of(context).size.width,
-                                                //   decoration: BoxDecoration(
-                                                //     borderRadius: BorderRadius.circular(7),
-                                                //     color: Theme.of(context).cardColor,
-                                                //     boxShadow: [
-                                                //       BoxShadow(
-                                                //         color: Colors.grey[
-                                                //         Provider.of<ThemeProvider>(context)
-                                                //             .darkTheme
-                                                //             ? 700
-                                                //             : 200]!,
-                                                //         spreadRadius: 0.5,
-                                                //         blurRadius: 0.5,
-                                                //         offset: const Offset(
-                                                //             0, 3), // changes position of shadow
-                                                //       ),
-                                                //     ],
-                                                //   ),
-                                                //   child: Row(
-                                                //     mainAxisAlignment:
-                                                //     MainAxisAlignment.spaceBetween,
-                                                //     children: [
-                                                //       Row(
-                                                //         children: [
-                                                //           searchProvider.searchProductList != null
-                                                //               ? Text(
-                                                //             "${searchProvider.searchProductList!.length}",
-                                                //             style: poppinsMedium.copyWith(
-                                                //                 color: Theme.of(context)
-                                                //                     .primaryColor),
-                                                //           )
-                                                //               : const SizedBox.shrink(),
-                                                //           Text(
-                                                //             '${searchProvider.searchProductList != null ? "" : 0} ${getTranslated('items_found', context)}',
-                                                //             style: poppinsMedium.copyWith(
-                                                //                 color: Theme.of(context)
-                                                //                     .textTheme
-                                                //                     .bodyLarge
-                                                //                     ?.color
-                                                //                     ?.withOpacity(0.6)),
-                                                //           )
-                                                //         ],
-                                                //       ),
-                                                //       // searchProvider.searchProductList != null
-                                                //       //     ? InkWell(
-                                                //       //   onTap: () {
-                                                //       //     showDialog(
-                                                //       //         context: context,
-                                                //       //         builder:
-                                                //       //             (BuildContext context) {
-                                                //       //           List<double?> prices = [];
-                                                //       //           for (var product
-                                                //       //           in searchProvider
-                                                //       //               .filterProductList!) {
-                                                //       //             prices.add(double.parse(product.price!));
-                                                //       //           }
-                                                //       //           prices.sort();
-                                                //       //           double? maxValue =
-                                                //       //           prices.isNotEmpty
-                                                //       //               ? prices[
-                                                //       //           prices.length - 1]
-                                                //       //               : 1000;
-                                                //       //
-                                                //       //           return Dialog(
-                                                //       //             shape:
-                                                //       //             RoundedRectangleBorder(
-                                                //       //                 borderRadius:
-                                                //       //                 BorderRadius
-                                                //       //                     .circular(
-                                                //       //                     20.0)),
-                                                //       //             child: FilterWidget(
-                                                //       //                 maxValue: maxValue),
-                                                //       //           );
-                                                //       //         });
-                                                //       //   },
-                                                //       //   child: Container(
-                                                //       //     padding: const EdgeInsets.all(5),
-                                                //       //     decoration: BoxDecoration(
-                                                //       //         borderRadius:
-                                                //       //         BorderRadius.circular(4.0),
-                                                //       //         border: Border.all(
-                                                //       //             color: Theme.of(context)
-                                                //       //                 .hintColor
-                                                //       //                 .withOpacity(0.6)
-                                                //       //                 .withOpacity(.5))),
-                                                //       //     child: Row(
-                                                //       //       children: [
-                                                //       //         Icon(Icons.filter_list,
-                                                //       //             color: Theme.of(context)
-                                                //       //                 .textTheme
-                                                //       //                 .bodyLarge
-                                                //       //                 ?.color
-                                                //       //                 ?.withOpacity(0.6)),
-                                                //       //         Text(
-                                                //       //           '  ${getTranslated('filter', context)}',
-                                                //       //           style: poppinsMedium.copyWith(
-                                                //       //               color: Theme.of(context)
-                                                //       //                   .textTheme
-                                                //       //                   .bodyLarge
-                                                //       //                   ?.color
-                                                //       //                   ?.withOpacity(0.6),
-                                                //       //               fontSize: Dimensions
-                                                //       //                   .fontSizeSmall),
-                                                //       //         )
-                                                //       //       ],
-                                                //       //     ),
-                                                //       //   ),
-                                                //       // )
-                                                //       //     : const SizedBox.shrink(),
-                                                //     ],
-                                                //   ),
-                                                // ),
-                                                Row(
-                                                  children: [
-                                                    searchProvider.searchProductList != null
-                                                        ? Text(
-                                                      "${searchProvider.searchProductList!.length}",
-                                                      style: poppinsMedium.copyWith(
-                                                          color: Theme.of(context)
-                                                              .primaryColor),
-                                                    )
-                                                        : const SizedBox.shrink(),
-                                                    Text(
-                                                      '${searchProvider.searchProductList != null ? "" : 0} ${getTranslated('items_found', context)}',
-                                                      style: poppinsMedium.copyWith(
-                                                          color: Theme.of(context)
-                                                              .textTheme
-                                                              .bodyLarge
-                                                              ?.color
-                                                              ?.withOpacity(0.6)),
-                                                    )
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 10),
-                                                searchProvider.searchProductList != null
-                                                   && searchProvider.searchProductList!.isNotEmpty
-                                                    ? GridView.builder(
-                                                  gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisSpacing:
-                                                      ResponsiveHelper.isDesktop(
-                                                          context)
-                                                          ? 13
-                                                          : 5,
-                                                      mainAxisSpacing:
-                                                      ResponsiveHelper.isDesktop(
-                                                          context)
-                                                          ? 13
-                                                          : 5,
-                                                      childAspectRatio:
-                                                      ResponsiveHelper.isDesktop(
-                                                          context)
-                                                          ? (1 / 1.4)
-                                                          : 2.5,
-                                                      crossAxisCount: ResponsiveHelper
-                                                          .isDesktop(context)
-                                                          ? 5
-                                                          : ResponsiveHelper.isTab(
-                                                          context)
-                                                          ? 2
-                                                          : 1),
-                                                  itemCount: searchProvider
-                                                      .searchProductList!.length,
-                                                  // padding: EdgeInsets.symmetric(
-                                                  //     horizontal:
-                                                  //     Dimensions.paddingSizeSmall,
-                                                  //     vertical: ResponsiveHelper
-                                                  //         .isDesktop(context)
-                                                  //         ? Dimensions.paddingSizeLarge
-                                                  //         : 0.0),
-                                                  physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  itemBuilder:
-                                                      (BuildContext context, int index) =>
-                                                      ProductWidget(
-                                                        product: searchProvider
-                                                            .searchProductList![index],
-                                                        productType: ProductType.searchItem,
-                                                      ),
-                                                )
-                                                    : const NoDataScreen(isSearch: true),
-                                                    /*: GridView.builder(
-                                                  gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
+                            child: Column(children: [
+                              Center(
+                                  child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: ResponsiveHelper.isDesktop(context)
+                                      ? MediaQuery.of(context).size.height - 400
+                                      : MediaQuery.of(context).size.height,
+                                ),
+                                child: SizedBox(
+                                    // width: 1170,
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        searchProvider.searchProductList != null
+                                            ? Text(
+                                                "${searchProvider.searchProductList!.length}",
+                                                style: poppinsMedium.copyWith(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              )
+                                            : const SizedBox.shrink(),
+                                        Text(
+                                          '${searchProvider.searchProductList != null ? "" : 0} ${getTranslated('items_found', context)}',
+                                          style: poppinsMedium.copyWith(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge
+                                                  ?.color
+                                                  ?.withOpacity(0.6)),
+                                        )
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    searchProvider.searchProductList != null &&
+                                            searchProvider
+                                                .searchProductList!.isNotEmpty
+                                        ? GridView.builder(
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisSpacing:
-                                                    ResponsiveHelper.isDesktop(context)
-                                                        ? 13
-                                                        : 5,
+                                                        ResponsiveHelper
+                                                                .isDesktop(
+                                                                    context)
+                                                            ? 13
+                                                            : 5,
                                                     mainAxisSpacing:
-                                                    ResponsiveHelper.isDesktop(context)
-                                                        ? 13
-                                                        : 5,
+                                                        ResponsiveHelper
+                                                                .isDesktop(
+                                                                    context)
+                                                            ? 13
+                                                            : 5,
                                                     childAspectRatio:
-                                                    ResponsiveHelper.isDesktop(context)
-                                                        ? (1 / 1.4)
-                                                        : 4,
+                                                        ResponsiveHelper
+                                                                .isDesktop(
+                                                                    context)
+                                                            ? (1 / 1.4)
+                                                            : 2.5,
                                                     crossAxisCount:
-                                                    ResponsiveHelper.isDesktop(context)
-                                                        ? 5
-                                                        : ResponsiveHelper.isTab(context)
-                                                        ? 2
-                                                        : 1,
-                                                  ),
-                                                  physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  itemCount: 10,
-                                                  itemBuilder: (context, index) =>
-                                                  ResponsiveHelper.isDesktop(context)
-                                                      ? WebProductShimmer(
-                                                      isEnabled: searchProvider
-                                                          .searchProductList ==
-                                                          null)
-                                                      : ProductShimmer(
-                                                      isEnabled: searchProvider
-                                                          .searchProductList ==
-                                                          null),
-                                                )*/
-                                              ],
-                                            )),
-                                      )),
-                                  ResponsiveHelper.isDesktop(context)
-                                      ? const FooterView()
-                                      : const SizedBox(),
-                                ]),
-                              ),
+                                                        ResponsiveHelper
+                                                                .isDesktop(
+                                                                    context)
+                                                            ? 5
+                                                            : ResponsiveHelper
+                                                                    .isTab(
+                                                                        context)
+                                                                ? 2
+                                                                : 1),
+                                            itemCount: searchProvider
+                                                .searchProductList!.length,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return searchProvider
+                                                          .searchProductList![
+                                                              index]
+                                                          .oneRsOfferEnable ==
+                                                      1
+                                                  ? oneRupeeOfferBox(
+                                                      searchProvider
+                                                          .searchProductList![index])
+                                                  : searchProvider
+                                                              .searchProductList![
+                                                                  index]
+                                                              .oneRsOfferEnable ==
+                                                          1
+                                                      ? bulkOfferBox(
+                                                          searchProvider
+                                                              .searchProductList![index])
+                                                      : productList(searchProvider
+                                                          .searchProductList![index]);
+                                            },
+                                          )
+                                        : const NoDataScreen(isSearch: true),
+                                  ],
+                                )),
+                              )),
+                              ResponsiveHelper.isDesktop(context)
+                                  ? const FooterView()
+                                  : const SizedBox(),
+                            ]),
+                          ),
                         ),
                       ),
                     ],
@@ -546,5 +270,1087 @@ class _SearchScreenState extends State<SearchScreen> {
             )),
       ),
     );
+  }
+
+  oneRupeeOfferBox(ProductData oneRupeeProductList) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ProductDetailsScreen(
+                product: oneRupeeProductList)));
+      },
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Color(0xffDCF1E1),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Color(0xff14A236),
+          ),
+        ),
+        child: Row(
+          children: [
+            productImageBox(
+              oneRupeeProductList.leftTitle!.isNotEmpty
+                  ? oneRupeeProductList.leftTitle!
+                  : "",
+              oneRupeeProductList.rightTile!.isNotEmpty
+                  ? oneRupeeProductList.rightTile!
+                  : "",
+              oneRupeeProductList.singleImage!.isNotEmpty
+                  ? "${Provider.of<SplashProvider>(context, listen: false).baseUrls!.productImageUrl}/single/${oneRupeeProductList.singleImage![0]}"
+                  : "",
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    child: Text(
+                      oneRupeeProductList.name!.isNotEmpty
+                          ? "${oneRupeeProductList.name!} ${oneRupeeProductList.hnName}"
+                          : "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: poppinsRegular.copyWith(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        height: 22,
+                        width: 60,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: Color(0xff14A236)),
+                        child: Text(
+                          "1₹ Offer",
+                          style: poppinsRegular.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(right: 05),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: Color(0xffF64A4D)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5.0, vertical: 4),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Time Remaining",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
+                              ),
+                              Text(
+                                timingBox(oneRupeeProductList
+                                    .offerTimeLimit),
+                                // "11h  :  15m  :  10s",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                                text: "1",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black),
+                                children: [
+                                  TextSpan(
+                                    text: 'st',
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 08,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black),
+                                  ),
+                                  TextSpan(
+                                    text: " Kg",
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black),
+                                  ),
+                                ]),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "₹1.00",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                "MRP ₹${oneRupeeProductList.marketPrice}",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff828282),
+                                    decoration:
+                                    TextDecoration.lineThrough,
+                                    decorationColor: Color(0xff828282)),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      Spacer(),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 27,
+                        width: 27,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image:
+                            AssetImage("assets/image/discount.png"),
+                            fit: BoxFit.fill,
+                            colorFilter: _imageColorFilter,
+                          ),
+                        ),
+                        child: Text(
+                          _currentText == "Discount"
+                              ? "Discount"
+                              : "${oneRupeeProductList.discount.toString()}%",
+                          style: poppinsRegular.copyWith(
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.w500,
+                              color: _textColor),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      5 % 3 != 0
+                          ? Container(
+                        alignment: Alignment.center,
+                        height: 22,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          // color: Color(0xff0C4619),
+                          border: Border.all(
+                            color: Color(0xff0C4619),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xffDAEEDF),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(3),
+                                    bottomLeft: Radius.circular(3),
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.remove,
+                                  color: Color(0xff0C4619),
+                                  size: 15,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  "20",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff0C4619),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xffDAEEDF),
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(3),
+                                    bottomRight: Radius.circular(3),
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.add,
+                                  color: Color(0xff0C4619),
+                                  size: 15,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          : Container(
+                        alignment: Alignment.center,
+                        height: 22,
+                        width: 60,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: Color(0xff0C4619)),
+                        child: Text(
+                          "ADD",
+                          style: poppinsRegular.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                    ],
+                  ),
+                  Text(
+                    "* ₹${oneRupeeProductList.minPurchaseAmount} minimum purchase to claim the offer",
+                    style: poppinsRegular.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 9,
+                      color: Color(0xffF64A4D),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bulkOfferBox(ProductData bulkOfferProductList) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ProductDetailsScreen(
+                product: bulkOfferProductList)));
+      },
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Color(0xffFFECD0),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Color(0xffFDC94C),
+          ),
+        ),
+        child: Row(
+          children: [
+            productImageBox(
+              bulkOfferProductList.leftTitle!.isNotEmpty
+                  ? bulkOfferProductList.leftTitle!
+                  : "",
+              bulkOfferProductList.rightTile!.isNotEmpty
+                  ? bulkOfferProductList.rightTile!
+                  : "",
+              bulkOfferProductList.singleImage!.isNotEmpty
+                  ? "${Provider.of<SplashProvider>(context, listen: false).baseUrls!.productImageUrl}/single/${bulkOfferProductList.singleImage![0]}"
+                  : "",
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    child: Text(
+                      bulkOfferProductList.name!.isNotEmpty
+                          ? "${bulkOfferProductList.name!} ${bulkOfferProductList.hnName}"
+                          : "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: poppinsRegular.copyWith(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.all(05),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: Color(0xffFDC94C)),
+                        child: Text(
+                          "Bulk Order",
+                          style: poppinsRegular.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(right: 05),
+                        // width: 200.0,
+                        child: DefaultTextStyle(
+                          style: const TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.red,
+                          ),
+                          child: AnimatedTextKit(
+                            animatedTexts: [
+                              ScaleAnimatedText('Limited Offer'),
+                            ],
+                            pause: Duration(milliseconds: 100),
+                            isRepeatingAnimation: true,
+                            totalRepeatCount: 10000,
+                          ),
+                        ),
+                      )
+                      // Container(
+                      //   alignment: Alignment.center,
+                      //   margin: EdgeInsets.only(right: 05),
+                      //   decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(3),
+                      //       color: Color(0xffF64A4D)),
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.symmetric(
+                      //         horizontal: 5.0, vertical: 4),
+                      //     child: Column(
+                      //       children: [
+                      //         Text(
+                      //           "Time Remaining",
+                      //           style: poppinsRegular.copyWith(
+                      //               fontSize: 8,
+                      //               fontWeight: FontWeight.w500,
+                      //               color: Colors.white),
+                      //         ),
+                      //         Text(
+                      //           "11h  :  15m  :  10s",
+                      //           style: poppinsRegular.copyWith(
+                      //               fontSize: 8,
+                      //               fontWeight: FontWeight.w500,
+                      //               color: Colors.white),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                                text: bulkOfferProductList
+                                    .quantity!
+                                    .isNotEmpty
+                                    ? bulkOfferProductList
+                                    .quantity!
+                                    : "",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black),
+                                children: [
+                                  TextSpan(
+                                    text: bulkOfferProductList
+                                        .quantity!
+                                        .isNotEmpty
+                                        ? bulkOfferProductList
+                                        .unit!
+                                        : "",
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black),
+                                  ),
+                                ]),
+                          ),
+                          // (Sree Veg - ₹30.00 Par kg)
+                          Text(
+                            "(Shree Veg - ₹${double.parse(bulkOfferProductList.amount!) / double.parse(bulkOfferProductList.quantity!)}/kg)",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: poppinsRegular.copyWith(
+                                fontSize: 06,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.red),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                bulkOfferProductList
+                                    .quantity!
+                                    .isNotEmpty
+                                    ? "₹${bulkOfferProductList.amount!}"
+                                    : "",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                "MRP ₹${(double.parse(bulkOfferProductList.quantity!) * double.parse(bulkOfferProductList.marketPrice!.toStringAsFixed(2))).toStringAsFixed(0)}",
+                                style: poppinsRegular.copyWith(
+                                  fontSize: 08,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff828282),
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationColor: Color(0xff828282),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      Spacer(),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 27,
+                        width: 27,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image:
+                            AssetImage("assets/image/discount.png"),
+                            fit: BoxFit.fill,
+                            colorFilter: _imageColorFilter,
+                          ),
+                        ),
+                        child: Text(
+                          _currentText,
+                          style: poppinsRegular.copyWith(
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.w500,
+                              color: _textColor),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      5 % 3 != 0
+                          ? Container(
+                        alignment: Alignment.center,
+                        height: 22,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          // color: Color(0xff0C4619),
+                          border: Border.all(
+                            color: Color(0xff0C4619),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xffDAEEDF),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(3),
+                                    bottomLeft: Radius.circular(3),
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.remove,
+                                  color: Color(0xff0C4619),
+                                  size: 15,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  "20",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff0C4619),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xffDAEEDF),
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(3),
+                                    bottomRight: Radius.circular(3),
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.add,
+                                  color: Color(0xff0C4619),
+                                  size: 15,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          : Container(
+                        alignment: Alignment.center,
+                        height: 22,
+                        width: 60,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: Color(0xff0C4619)),
+                        child: Text(
+                          "ADD",
+                          style: poppinsRegular.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  productList(ProductData categoryProductList) {
+    return productBox(categoryProductList);
+  }
+
+  productBox(ProductData categoryProductList) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                ProductDetailsScreen(product: categoryProductList)));
+      },
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Color(0xff0C4619),
+          ),
+        ),
+        child: Row(
+          children: [
+            productImageBox(
+              categoryProductList.leftTitle!.isNotEmpty
+                  ? categoryProductList.leftTitle!
+                  : "",
+              categoryProductList.leftTitle!.isNotEmpty
+                  ? categoryProductList.leftTitle!
+                  : "",
+              categoryProductList.singleImage!.isNotEmpty
+                  ? "${Provider.of<SplashProvider>(context, listen: false).baseUrls!.productImageUrl}/single/${categoryProductList.singleImage![0]}"
+                  : "",
+            ),
+            productDetailBox(categoryProductList),
+          ],
+        ),
+      ),
+    );
+  }
+
+  productImageBox(String leftTitle, String rightTitle, String imageUrl) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.15,
+      width: MediaQuery.of(context).size.height * 0.15,
+      margin: EdgeInsets.all(05),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Color(0xffCFCFCF),
+        ),
+      ),
+      child: Stack(
+        children: [
+          Center(
+            child: Image.network(
+              imageUrl,
+              height: MediaQuery.of(context).size.height * 0.12,
+              width: MediaQuery.of(context).size.height * 0.12,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              leftTitle.isNotEmpty
+                  ? Container(
+                      margin: EdgeInsets.only(top: 05),
+                      alignment: Alignment.center,
+                      width: 50,
+                      height: 15,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/image/left_banner.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Text(
+                        "Premium",
+                        style: poppinsRegular.copyWith(
+                            fontSize: 7,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white),
+                      ),
+                    )
+                  : SizedBox(),
+              rightTitle.isNotEmpty
+                  ? Container(
+                      margin: EdgeInsets.only(top: 05),
+                      alignment: Alignment.center,
+                      width: 50,
+                      height: 15,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/image/right_banner.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Text(
+                        "Best",
+                        style: poppinsRegular.copyWith(
+                            fontSize: 7,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black),
+                      ),
+                    )
+                  : SizedBox(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  productDetailBox(ProductData categoryProductList) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.32,
+                child: Text(
+                  "${categoryProductList.name} ${categoryProductList.hnName}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: poppinsRegular.copyWith(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black),
+                ),
+              ),
+              4 % 2 == 0 && 3 % 2 == 0
+                  ? Container(
+                      padding: EdgeInsets.all(06),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(06),
+                          bottomLeft: Radius.circular(06),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Total ",
+                            style: poppinsMedium.copyWith(
+                                fontSize: 08, color: Colors.white),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 08),
+                            decoration: BoxDecoration(
+                              color: Color(0XFFFFDE4D),
+                              // shape: BoxShape.oval,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.elliptical(15, 08),
+                                topLeft: Radius.elliptical(15, 08),
+                                bottomLeft: Radius.elliptical(15, 08),
+                                bottomRight: Radius.elliptical(15, 08),
+                              ),
+                            ),
+                            child: RichText(
+                              text: TextSpan(
+                                text: "12",
+                                children: [
+                                  TextSpan(
+                                    text: "Kg",
+                                    style: poppinsMedium.copyWith(
+                                      fontSize: 06,
+                                      color: Color(0XFF80150E),
+                                    ),
+                                  ),
+                                ],
+                                style: poppinsMedium.copyWith(
+                                  fontSize: 10,
+                                  color: Color(0XFF80150E),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox(),
+            ],
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          ListView.separated(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, subIndex) {
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  categoryProductList.variations![subIndex]
+                                          .quantity!.isNotEmpty
+                                      ? weightBox(categoryProductList
+                                          .variations![subIndex].quantity!)
+                                      : "",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                                weightBox(categoryProductList
+                                            .variations![subIndex].quantity!)
+                                        .contains("gm")
+                                    ? Text(
+                                        "(₹${approxBox(categoryProductList.variations![subIndex].quantity!, categoryProductList.variations![subIndex].offerPrice!).toStringAsFixed(2)}/Kg)",
+                                        style: poppinsRegular.copyWith(
+                                            fontSize: 06,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.red),
+                                      )
+                                    : weightBox(categoryProductList
+                                                    .variations![subIndex]
+                                                    .quantity!)
+                                                .contains("gm") ||
+                                            weightBox(categoryProductList
+                                                        .variations![subIndex]
+                                                        .quantity!)
+                                                    .contains("Kg") &&
+                                                weightBox(categoryProductList
+                                                        .variations![subIndex]
+                                                        .quantity!) !=
+                                                    "1 Kg"
+                                        ? Text(
+                                            "(₹${approxBox(categoryProductList.variations![subIndex].quantity!, categoryProductList.variations![subIndex].offerPrice!).toStringAsFixed(2)}/Kg)",
+                                            style: poppinsRegular.copyWith(
+                                                fontSize: 06,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.red),
+                                          )
+                                        : SizedBox(),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "₹${categoryProductList.variations![subIndex].offerPrice!.isNotEmpty ? categoryProductList.variations![subIndex].offerPrice : ""}",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                                Text(
+                                  "MRP ₹${categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0).isNotEmpty ? categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0) : ""}",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xff828282),
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: Color(0xff828282)),
+                                )
+                              ],
+                            ),
+                            categoryProductList.variations![subIndex]
+                                    .approxWeight!.isNotEmpty
+                                ? Text(
+                                    categoryProductList
+                                        .variations![subIndex].approxWeight!,
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 06,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black),
+                                  )
+                                : SizedBox(),
+                          ],
+                        ),
+                        Spacer(),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 27,
+                          width: 27,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/image/discount.png"),
+                              fit: BoxFit.fill,
+                              colorFilter: _imageColorFilter,
+                            ),
+                          ),
+                          child: Text(
+                            _currentText != "Discount"
+                                ? "${categoryProductList.variations![subIndex].discount!.replaceAll("-", " ")}%"
+                                : "Discount",
+                            style: poppinsRegular.copyWith(
+                                fontSize: fontSize,
+                                fontWeight: FontWeight.w500,
+                                color: _textColor),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        3 % 2 == 0 && 5 % 2 == 0
+                            ? Container(
+                                alignment: Alignment.center,
+                                height: 22,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  // color: Color(0xff0C4619),
+                                  border: Border.all(
+                                    color: Color(0xff0C4619),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffDAEEDF),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(3),
+                                            bottomLeft: Radius.circular(3),
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Icon(
+                                          Icons.remove,
+                                          color: Color(0xff0C4619),
+                                          size: 15,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Center(
+                                        child: Text(
+                                          "20",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Color(0xff0C4619),
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffDAEEDF),
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(3),
+                                            bottomRight: Radius.circular(3),
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Color(0xff0C4619),
+                                          size: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(
+                                alignment: Alignment.center,
+                                height: 22,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: Color(0xff0C4619)),
+                                child: Text(
+                                  "ADD",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+              separatorBuilder: (context, index) {
+                return Divider();
+              },
+              itemCount: categoryProductList.variations!.length),
+          SizedBox(
+            height: 15,
+          ),
+        ],
+      ),
+    );
+  }
+
+  String weightBox(String weight) {
+    String fixedWeight = "";
+    if (weight.contains(".")) {
+      if (double.parse(double.parse(weight)
+                  .toStringAsFixed(3)
+                  .toString()
+                  .split(".")
+                  .last) <=
+              500 &&
+          double.parse(double.parse(weight)
+                  .toStringAsFixed(3)
+                  .toString()
+                  .split(".")
+                  .first) <
+              1) {
+        fixedWeight =
+            "${double.parse(weight).toStringAsFixed(3).toString().split(".").last}gm";
+      } else if (double.parse(double.parse(weight)
+                  .toStringAsFixed(3)
+                  .toString()
+                  .split(".")
+                  .last) <=
+              500 &&
+          double.parse(double.parse(weight)
+                  .toStringAsFixed(3)
+                  .toString()
+                  .split(".")
+                  .first) >=
+              1) {
+        fixedWeight =
+            "${double.parse(weight).toStringAsFixed(3).toString().split(".").first}Kg ${double.parse(weight).toStringAsFixed(3).toString().split(".").last}gm";
+      }
+    } else {
+      fixedWeight = "$weight Kg";
+    }
+    return fixedWeight;
+  }
+
+  double approxBox(String weight, String price) {
+    double fixedWeight = 0.00;
+    if (weight.contains(".")) {
+      if (double.parse(double.parse(weight)
+                  .toStringAsFixed(3)
+                  .toString()
+                  .split(".")
+                  .last) <=
+              500 &&
+          double.parse(double.parse(weight)
+                  .toStringAsFixed(3)
+                  .toString()
+                  .split(".")
+                  .first) <
+              1) {
+        fixedWeight = (double.parse(price) /
+            double.parse(double.parse(weight).toStringAsFixed(2)));
+      } else if (double.parse(double.parse(weight)
+                  .toStringAsFixed(3)
+                  .toString()
+                  .split(".")
+                  .last) <=
+              500 &&
+          double.parse(double.parse(weight)
+                  .toStringAsFixed(3)
+                  .toString()
+                  .split(".")
+                  .first) >=
+              1) {
+        fixedWeight = double.parse(price) / double.parse(weight);
+      }
+    } else {
+      if (double.parse(double.parse(weight.isNotEmpty ? weight : "0.00")
+              .toStringAsFixed(3)
+              .toString()
+              .split(".")
+              .first) >=
+          1) {
+        fixedWeight = double.parse(price) / double.parse(weight);
+      }
+    }
+    return fixedWeight;
+  }
+
+  timingBox(String? eventDuration) {
+    DateTime endTime = DateFormat("yyyy-MM-dd")
+        .parse(eventDuration!)
+        .add(const Duration(days: 1));
+
+    Duration? duration = endTime.difference(DateTime.now());
+    int? days, hours, minutes, seconds;
+    days = duration.inDays;
+    hours = duration.inHours - days * 24;
+    minutes = duration.inMinutes - (24 * days * 60) - (hours * 60);
+    seconds = duration.inSeconds -
+        (24 * days * 60 * 60) -
+        (hours * 60 * 60) -
+        (minutes * 60);
+    return "${hours}h : ${minutes}m : ${seconds}s";
   }
 }

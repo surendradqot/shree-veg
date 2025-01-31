@@ -451,14 +451,14 @@ class ProductWidget extends StatelessWidget {
                 ),
               ],
             ),
-            Positioned.fill(
-                child: Align(
-              alignment: Alignment.topRight,
-              child: WishButton(
-                product: product,
-                edgeInset: const EdgeInsets.all(8.0),
-              ),
-            )),
+            // Positioned.fill(
+            //     child: Align(
+            //   alignment: Alignment.topRight,
+            //   child: WishButton(
+            //     product: product,
+            //     edgeInset: const EdgeInsets.all(8.0),
+            //   ),
+            // )),
           ],
         ),
       ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 
 import '../../../../data/model/response/product_model.dart';
 import '../../../../utill/dimensions.dart';
 import '../../../../utill/styles.dart';
 
 class ProductTitleOnlyView extends StatelessWidget {
-  final Product product;
+  final ProductData? product;
   final double? fontSize;
   const ProductTitleOnlyView({Key? key, required this.product, this.fontSize = Dimensions.fontSizeLarge}) : super(key: key);
 
@@ -18,7 +19,7 @@ class ProductTitleOnlyView extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  product.name ?? '',
+                  product!.name ?? '',
                   style: poppinsMedium.copyWith(
                       fontSize: fontSize,
                       color:
@@ -33,7 +34,7 @@ class ProductTitleOnlyView extends StatelessWidget {
                 ),
                 Flexible(
                   child: Text(
-                    ' (#${product.productCode})',
+                    ' (#${product!.productCode})',
                     style: poppinsMedium.copyWith(
                         fontSize: fontSize,
                         color: Theme.of(context)
@@ -54,7 +55,7 @@ class ProductTitleOnlyView extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              '(${product.hindiName})',
+              '(${product!.hnName})',
               style: poppinsMedium.copyWith(
                   fontSize: fontSize,
                   color: Theme.of(context)

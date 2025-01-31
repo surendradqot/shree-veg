@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/provider/cart_provider.dart';
 import 'package:shreeveg/provider/splash_provider.dart';
 import 'package:shreeveg/utill/images.dart';
@@ -10,7 +11,7 @@ import '../../../base/wish_button.dart';
 import '../../menu/main_screen.dart';
 
 class DetailsAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final Product? product;
+  final ProductData? product;
   const DetailsAppBar({Key? key, required this.product}) : super(key: key);
 
   @override
@@ -82,7 +83,7 @@ class DetailsAppBarState extends State<DetailsAppBar>
                           shape: BoxShape.circle,
                           color: Colors.white),
                       child: Text(
-                          '${Provider.of<CartProvider>(context).cartList.length}',
+                          '${Provider.of<CartProvider>(context).cartLength}',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 10)),

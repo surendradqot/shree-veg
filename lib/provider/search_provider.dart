@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shreeveg/data/model/response/base/api_response.dart';
+import 'package:shreeveg/data/model/response/base/new_search_modal.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/data/repository/search_repo.dart';
 import 'package:shreeveg/helper/api_checker.dart';
@@ -20,15 +24,15 @@ class SearchProvider with ChangeNotifier {
   double get lowerValue => _lowerValue;
   double get upperValue => _upperValue;
 
-  List<Product>? _searchProductList;
-  List<Product>? _filterProductList;
+  List<ProductData>? _searchProductList;
+  List<ProductData>? _filterProductList;
   bool _isClear = true;
   String _searchText = '';
   bool _isSearch = true;
 
-  List<Product>? get searchProductList => _searchProductList;
+  List<ProductData>? get searchProductList => _searchProductList;
 
-  List<Product>? get filterProductList => _filterProductList;
+  List<ProductData>? get filterProductList => _filterProductList;
 
   bool get isClear => _isClear;
   bool get isSearch => _isSearch;
@@ -116,11 +120,10 @@ class SearchProvider with ChangeNotifier {
         _searchProductList = [];
       } else {
         _searchProductList = [];
-        _searchProductList!.addAll(
-            ProductModel.fromJson(apiResponse.response!.data).products!);
+        SearchProductProductModal? searchProductModal = searchProductProductModalFromJson(jsonEncode(apiResponse.response!.data));
+        _searchProductList!.addAll(searchProductModal.result!.products!);
         _filterProductList = [];
-        _filterProductList!.addAll(
-            ProductModel.fromJson(apiResponse.response!.data).products!);
+        _filterProductList!.addAll(searchProductModal.result!.products!);
       }
     } else {
       ApiChecker.checkApi(apiResponse);
@@ -144,7 +147,7 @@ class SearchProvider with ChangeNotifier {
       _searchProductList!.sort(
           (product1, product2) => product1.price!.compareTo(product2.price!));
       Iterable iterable = _searchProductList!.reversed;
-      _searchProductList = iterable.toList() as List<Product>?;
+      _searchProductList = iterable.toList() as List<ProductData>?;
     } else if (_filterIndex == 2) {
       _searchProductList!.sort((product1, product2) =>
           product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
@@ -152,7 +155,7 @@ class SearchProvider with ChangeNotifier {
       _searchProductList!.sort((product1, product2) =>
           product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
       Iterable iterable = _searchProductList!.reversed;
-      _searchProductList = iterable.toList() as List<Product>?;
+      _searchProductList = iterable.toList() as List<ProductData>?;
     }
     notifyListeners();
   }

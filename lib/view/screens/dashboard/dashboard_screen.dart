@@ -31,7 +31,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _screens = [
       const HomeScreen(),
       const Allcategoriescreen(),
-      const CartScreen(),
+      const CartListScreen(),
+      // const CartScreen(),
       const WishListScreen(),
       const MyOrderScreen(),
       const AddressScreen(),

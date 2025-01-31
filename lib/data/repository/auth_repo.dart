@@ -295,7 +295,7 @@ class AuthRepo {
 
       Response response = await dioClient!.post(
         AppConstants.tokenUri,
-        data: {"_method": "put", "cm_firebase_token": deviceToken},
+        data: {"cm_firebase_token": deviceToken},
       );
 
       print('token updated');

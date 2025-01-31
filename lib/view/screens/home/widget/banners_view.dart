@@ -91,7 +91,7 @@ class BannersView extends StatelessWidget {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                            NewCategoryProductListScreen()));
+                                                CategoryListScreen(catId: myBanners[index].categoryId.toString(), catName: "${myBanners[index].categoryName} ${myBanners[index].categoryHnName}", whereFrom: true,)));
                                   }
                                   // if (bannerType == 'flash') {
                                   //   var pageTitle =

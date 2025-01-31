@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/provider/product_provider.dart';
 import 'package:shreeveg/utill/color_resources.dart';
@@ -8,18 +9,16 @@ import 'package:provider/provider.dart';
 import 'package:shreeveg/view/screens/product/widget/prices_view.dart';
 
 class VariationView extends StatelessWidget {
-  final Product product;
+  final ProductData? product;
   const VariationView({Key? key, required this.product}) : super(key: key);
 
-  void updateSelectedVariation(BuildContext context, int variationIndex) {
-    Provider.of<ProductProvider>(context, listen: false)
-        .setSelectedVariation(product, variationIndex);
-  }
+  // void updateSelectedVariation(BuildContext context, int variationIndex) {
+  //   Provider.of<ProductProvider>(context, listen: false)
+  //       .setSelectedVariation(product, variationIndex);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    print('selected varrrrrrrrrrrrrr: ${product.selectedVariation}');
-
     return Consumer<ProductProvider>(
       builder: (context, productProvider, child) {
         return Container(
@@ -35,11 +34,11 @@ class VariationView extends StatelessWidget {
               ),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: product.variations!.length,
+              itemCount: product!.variations!.length,
               itemBuilder: (context, i) {
                 return InkWell(
                   onTap: () {
-                    updateSelectedVariation(context, i);
+                    productProvider.updateVariation(i);
                   },
                   child: Stack(
                     alignment: Alignment.topLeft,
@@ -54,7 +53,7 @@ class VariationView extends StatelessWidget {
                           color: const Color(0xFFF1FFF4),
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(
-                              color: product.selectedVariation == i
+                              color: product!.variations![i].isSelected! || productProvider.selectedVariation==i
                                   ? const Color(0xFF039800)
                                   : ColorResources.getGreyColor(context),
                               width: 2),
@@ -65,7 +64,7 @@ class VariationView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              '${product.variations![i].quantity!} ${product.unit}',
+                              '${product!.variations![i].quantity!} ${product!.unit}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: poppinsRegular.copyWith(
@@ -76,9 +75,9 @@ class VariationView extends StatelessWidget {
 
                             //prices row
                             PricesView(
-                                marketPrice: product.variations![i].marketPrice!,
+                                marketPrice: product!.variations![i].marketPrice!,
                                 offerPrice: double.parse(
-                                    product.variations![i].offerPrice!),
+                                    product!.variations![i].offerPrice!),
                               centerAlign: true,
                             ),
                             if(i!=0)
@@ -86,7 +85,7 @@ class VariationView extends StatelessWidget {
                                   alignment: Alignment.bottomRight,
                                   child: Text(
                                     "(₹${(double.parse(
-                                        product.variations![i].offerPrice!)/double.parse(product.variations![i].quantity!)).toStringAsFixed(2)} per kg)",
+                                        product!.variations![i].offerPrice!)/double.parse(product!.variations![i].quantity??"")).toStringAsFixed(2)} per kg)",
                                     style: poppinsRegular.copyWith(
                                         color:  Color(0xFF848484),
                                         fontWeight: FontWeight.w400,
@@ -108,7 +107,7 @@ class VariationView extends StatelessWidget {
                               // color: Color(0xFFe73838),
                               image: DecorationImage(image: AssetImage("assets/image/ribbon.png"),fit: BoxFit.contain)
                           ),
-                          child: Text("${product.variations![i].discount!.split(".").first.replaceAll("-", "")}%\n Off",style: TextStyle(
+                          child: Text("${product!.variations![i].discount!.split(".").first.replaceAll("-", "")}%\n Off",style: TextStyle(
                             fontSize: 07,
                             color: Colors.white,
                           ),),

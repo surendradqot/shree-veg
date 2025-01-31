@@ -13,6 +13,9 @@
   String? _updatedAt;
   int? _productId;
   String? _dealType;
+  int? _categoryId;
+  String? _categoryName;
+  String? _categoryHnName;
 
   FlashDealModel(
       {int? id,
@@ -28,7 +31,11 @@
         String? createdAt,
         String? updatedAt,
         int? productId,
-        String? dealType}) {
+        String? dealType,
+        int? categoryId,
+        String? categoryName,
+        String? categoryHnName,
+      }) {
     _id = id;
     _title = title;
     _startDate = startDate;
@@ -43,6 +50,9 @@
     _updatedAt = updatedAt;
     _productId = productId;
     _dealType = dealType;
+    _categoryId = categoryId;
+    _categoryName = categoryName;
+    _categoryHnName = categoryHnName;
   }
 
   int? get id => _id;
@@ -59,6 +69,10 @@
   String? get updatedAt => _updatedAt;
   int? get productId => _productId;
   String? get dealType => _dealType;
+  int? get categoryId => _categoryId;
+  String? get categoryName => _categoryName;
+  String? get categoryHnName => _categoryHnName;
+
 
   FlashDealModel.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
@@ -75,6 +89,9 @@
     _updatedAt = json['updated_at'];
     _productId = json['product_id'];
     _dealType = json['offer_type'];
+    _categoryId = json['category_id'];
+    _categoryName = json['category_name'];
+    _categoryHnName = json['category_hindi_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -93,6 +110,9 @@
     data['updated_at'] = _updatedAt;
     data['product_id'] = _productId;
     data['offer_type'] = _dealType;
+    data['category_id'] = _categoryId;
+    data['category_name'] = _categoryName;
+    data['category_hindi_name'] = _categoryHnName;
     return data;
   }
 }

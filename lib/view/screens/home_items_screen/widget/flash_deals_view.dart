@@ -9,6 +9,7 @@ import 'package:shreeveg/utill/dimensions.dart';
 import 'package:shreeveg/utill/images.dart';
 import 'package:shreeveg/utill/styles.dart';
 import 'package:shreeveg/view/base/custom_directionality.dart';
+import 'package:shreeveg/view/base/product_shimmer.dart';
 import 'package:shreeveg/view/base/product_widget.dart';
 import 'package:shreeveg/view/base/rating_bar.dart';
 import 'package:shreeveg/view/base/web_product_shimmer.dart';

@@ -240,91 +240,91 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                               ),
                             ),
                             const SizedBox(height: 22),
-                            searchProvider.searchProductList != null
-                                ? searchProvider.searchProductList!.isNotEmpty
-                                    ? GridView.builder(
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisSpacing:
-                                                    ResponsiveHelper.isDesktop(
-                                                            context)
-                                                        ? 13
-                                                        : 5,
-                                                mainAxisSpacing:
-                                                    ResponsiveHelper.isDesktop(
-                                                            context)
-                                                        ? 13
-                                                        : 5,
-                                                childAspectRatio:
-                                                    ResponsiveHelper.isDesktop(
-                                                            context)
-                                                        ? (1 / 1.4)
-                                                        : 2.5,
-                                                crossAxisCount: ResponsiveHelper
-                                                        .isDesktop(context)
-                                                    ? 5
-                                                    : ResponsiveHelper.isTab(
-                                                            context)
-                                                        ? 2
-                                                        : 1),
-                                        itemCount: searchProvider
-                                            .searchProductList!.length,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal:
-                                                Dimensions.paddingSizeSmall,
-                                            vertical: ResponsiveHelper
-                                                    .isDesktop(context)
-                                                ? Dimensions.paddingSizeLarge
-                                                : 0.0),
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemBuilder:
-                                            (BuildContext context, int index) =>
-                                                ProductWidget(
-                                          product: searchProvider
-                                              .searchProductList![index],
-                                          productType: ProductType.searchItem,
-                                        ),
-                                      )
-                                    : const NoDataScreen(isSearch: true)
-                                : GridView.builder(
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisSpacing:
-                                          ResponsiveHelper.isDesktop(context)
-                                              ? 13
-                                              : 5,
-                                      mainAxisSpacing:
-                                          ResponsiveHelper.isDesktop(context)
-                                              ? 13
-                                              : 5,
-                                      childAspectRatio:
-                                          ResponsiveHelper.isDesktop(context)
-                                              ? (1 / 1.4)
-                                              : 4,
-                                      crossAxisCount:
-                                          ResponsiveHelper.isDesktop(context)
-                                              ? 5
-                                              : ResponsiveHelper.isTab(context)
-                                                  ? 2
-                                                  : 1,
-                                    ),
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: 10,
-                                    itemBuilder: (context, index) =>
-                                        ResponsiveHelper.isDesktop(context)
-                                            ? WebProductShimmer(
-                                                isEnabled: searchProvider
-                                                        .searchProductList ==
-                                                    null)
-                                            : ProductShimmer(
-                                                isEnabled: searchProvider
-                                                        .searchProductList ==
-                                                    null),
-                                  ),
+                            // searchProvider.searchProductList != null
+                            //     ? searchProvider.searchProductList!.isNotEmpty
+                            //         ? GridView.builder(
+                            //             gridDelegate:
+                            //                 SliverGridDelegateWithFixedCrossAxisCount(
+                            //                     crossAxisSpacing:
+                            //                         ResponsiveHelper.isDesktop(
+                            //                                 context)
+                            //                             ? 13
+                            //                             : 5,
+                            //                     mainAxisSpacing:
+                            //                         ResponsiveHelper.isDesktop(
+                            //                                 context)
+                            //                             ? 13
+                            //                             : 5,
+                            //                     childAspectRatio:
+                            //                         ResponsiveHelper.isDesktop(
+                            //                                 context)
+                            //                             ? (1 / 1.4)
+                            //                             : 2.5,
+                            //                     crossAxisCount: ResponsiveHelper
+                            //                             .isDesktop(context)
+                            //                         ? 5
+                            //                         : ResponsiveHelper.isTab(
+                            //                                 context)
+                            //                             ? 2
+                            //                             : 1),
+                            //             itemCount: searchProvider
+                            //                 .searchProductList!.length,
+                            //             padding: EdgeInsets.symmetric(
+                            //                 horizontal:
+                            //                     Dimensions.paddingSizeSmall,
+                            //                 vertical: ResponsiveHelper
+                            //                         .isDesktop(context)
+                            //                     ? Dimensions.paddingSizeLarge
+                            //                     : 0.0),
+                            //             physics:
+                            //                 const NeverScrollableScrollPhysics(),
+                            //             shrinkWrap: true,
+                            //             itemBuilder:
+                            //                 (BuildContext context, int index) =>
+                            //                     ProductWidget(
+                            //               product: searchProvider
+                            //                   .searchProductList![index],
+                            //               productType: ProductType.searchItem,
+                            //             ),
+                            //           )
+                            //         : const NoDataScreen(isSearch: true)
+                            //     : GridView.builder(
+                            //         gridDelegate:
+                            //             SliverGridDelegateWithFixedCrossAxisCount(
+                            //           crossAxisSpacing:
+                            //               ResponsiveHelper.isDesktop(context)
+                            //                   ? 13
+                            //                   : 5,
+                            //           mainAxisSpacing:
+                            //               ResponsiveHelper.isDesktop(context)
+                            //                   ? 13
+                            //                   : 5,
+                            //           childAspectRatio:
+                            //               ResponsiveHelper.isDesktop(context)
+                            //                   ? (1 / 1.4)
+                            //                   : 4,
+                            //           crossAxisCount:
+                            //               ResponsiveHelper.isDesktop(context)
+                            //                   ? 5
+                            //                   : ResponsiveHelper.isTab(context)
+                            //                       ? 2
+                            //                       : 1,
+                            //         ),
+                            //         physics:
+                            //             const NeverScrollableScrollPhysics(),
+                            //         shrinkWrap: true,
+                            //         itemCount: 10,
+                            //         itemBuilder: (context, index) =>
+                            //             ResponsiveHelper.isDesktop(context)
+                            //                 ? WebProductShimmer(
+                            //                     isEnabled: searchProvider
+                            //                             .searchProductList ==
+                            //                         null)
+                            //                 : ProductShimmer(
+                            //                     isEnabled: searchProvider
+                            //                             .searchProductList ==
+                            //                         null),
+                            //       ),
                           ],
                         )),
                   )),

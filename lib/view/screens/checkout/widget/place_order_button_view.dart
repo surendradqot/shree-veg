@@ -127,6 +127,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                 SharedPreferences? sharedPreferences  = await SharedPreferences.getInstance();
                 int? whId = sharedPreferences.getInt(AppConstants.selectedCityId);
                 PlaceOrderBody placeOrderBody = PlaceOrderBody(
+                    // cart: widget.amount!<100 && cartProvider.newOfferCartList.length>=1 ?jsonEncode(cartProvider.newCartList):jsonEncode(cartProvider.newOfferCartList+cartProvider.newCartList),
                     cart: jsonEncode(cartProvider.cartList),
                     orderAmount: (widget.amount! + widget.deliveryCharge!)
                         .ceilToDouble(),

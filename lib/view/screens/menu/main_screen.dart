@@ -70,7 +70,7 @@ List<MainScreenModel> screenList = [
   // MainScreenModel(const NotificationScreen(), 'notifications', null),
   // MainScreenModel(const HomeScreen(), 'log_out', null),
   // MainScreenModel(const Allcategoriescreen(), 'all_categories', Images.list),
-  MainScreenModel(const CartScreen(), 'shopping_bag', Images.orderBag),
+  MainScreenModel(const CartListScreen(), 'shopping_bag', Images.orderBag),
   // MainScreenModel(const WishListScreen(), 'favourite', Images.favouriteIcon),
   // MainScreenModel(const MyOrderScreen(), 'my_order', Images.orderList),
   // MainScreenModel(const AddressScreen(), 'address', Images.location),
@@ -342,7 +342,7 @@ class _MainScreenState extends State<MainScreen> {
                                               // minHeight: 10,
                                             ),
                                             child: Text(
-                                              '${Provider.of<CartProvider>(context).cartList.length}',
+                                              '${Provider.of<CartProvider>(context).cartLength}',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 10,

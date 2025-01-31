@@ -32,10 +32,12 @@ class CategoryProvider extends ChangeNotifier {
   CategoryModel? get categoryModel => _categoryModel;
   bool get pageFirstIndex => _pageFirstIndex;
   bool get pageLastIndex => _pageLastIndex;
+  bool? loading = false;
 
   Future<ApiResponse> getCategoryList(
       BuildContext context, String? languageCode, bool reload,
       {int? id}) async {
+    loading = false;
     ApiResponse apiResponse = await categoryRepo!.getCategoryList(languageCode,(id??1).toString());
     if (apiResponse.response != null &&
         apiResponse.response!.statusCode == 200) {
@@ -45,9 +47,14 @@ class CategoryProvider extends ChangeNotifier {
             _categoryList!.add(CategoryModel.fromJson(category));});
       _categorieselectedIndex = 0;
       _categoryIndex = 0;
+      loading = true;
+      notifyListeners();
     } else {
+      loading = true;
+      notifyListeners();
       ApiChecker.checkApi(apiResponse);
     }
+    loading = true;
     notifyListeners();
     return apiResponse;
   }

@@ -5,6 +5,7 @@ import 'package:shreeveg/data/model/body/place_order_body.dart';
 import 'package:shreeveg/data/model/new_flash_modal.dart';
 import 'package:shreeveg/data/model/response/address_model.dart';
 import 'package:shreeveg/data/model/response/category_model.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/data/model/response/order_model.dart';
 import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/data/model/response/userinfo_model.dart';
@@ -214,7 +215,7 @@ class RouteHelper {
   static String getFiltersRoute() => filter;
 
   static String getProductSubmitReviewRoute({
-    required Product product,
+    required ProductData product,
     ActiveReview? myReview,
   }) {
     String productJson = jsonEncode(product.toJson());
@@ -232,27 +233,27 @@ class RouteHelper {
     }
   }
 
-  static final Handler _submitReviewHandler = Handler(
-      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
-    // Check if 'product' key is present in the params
-    if (!params.containsKey('product')) {
-      // Handle the case where 'product' key is missing
-      // You may want to throw an error, show a message, or navigate back to a previous screen
-      return Container(); // Placeholder return, replace it with your error handling logic
-    }
-
-    Product product = Product.fromJson(jsonDecode(params['product'][0]));
-    ActiveReview? myReview;
-
-    // Check if 'myReview' key is present in the params
-    if (params.containsKey('myReview')) {
-      myReview = ActiveReview.fromJson(jsonDecode(params['myReview'][0]));
-    }
-
-    return _routeHandler(
-      child: AddProductReview(product: product, myReview: myReview),
-    );
-  });
+  // static final Handler _submitReviewHandler = Handler(
+  //     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+  //   // Check if 'product' key is present in the params
+  //   if (!params.containsKey('product')) {
+  //     // Handle the case where 'product' key is missing
+  //     // You may want to throw an error, show a message, or navigate back to a previous screen
+  //     return Container(); // Placeholder return, replace it with your error handling logic
+  //   }
+  //
+  //   Product product = Product.fromJson(jsonDecode(params['product'][0]));
+  //   ActiveReview? myReview;
+  //
+  //   // Check if 'myReview' key is present in the params
+  //   if (params.containsKey('myReview')) {
+  //     myReview = ActiveReview.fromJson(jsonDecode(params['myReview'][0]));
+  //   }
+  //
+  //   return _routeHandler(
+  //     child: AddProductReview(product: product, myReview: myReview),
+  //   );
+  // });
 
   static String getProductImagesRoute(String? name, String images) =>
       '$productImages?name=$name&images=$images';
@@ -474,22 +475,22 @@ class RouteHelper {
         child: trackOrderScreen ?? TrackOrderScreen(orderID: params['id'][0]));
   });
 
-  static final Handler _categoryProductsHandlerNew = Handler(
-      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
-    String decoded = utf8.decode(base64Url.decode(params['category'][0]));
-    String sub;
-    try {
-      sub = utf8.decode(base64Url.decode(params['subcategory'][0]));
-    } catch (error) {
-      sub = '';
-    }
-    return _routeHandler(
-      child: CategoryProductScreenNew(
-        categoryModel: CategoryModel.fromJson(jsonDecode(decoded)),
-        subCategoryName: sub,
-      ),
-    );
-  });
+  // static final Handler _categoryProductsHandlerNew = Handler(
+  //     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+  //   String decoded = utf8.decode(base64Url.decode(params['category'][0]));
+  //   String sub;
+  //   try {
+  //     sub = utf8.decode(base64Url.decode(params['subcategory'][0]));
+  //   } catch (error) {
+  //     sub = '';
+  //   }
+  //   return _routeHandler(
+  //     child: CategoryProductScreenNew(
+  //       categoryModel: CategoryModel.fromJson(jsonDecode(decoded)),
+  //       subCategoryName: sub,
+  //     ),
+  //   );
+  // });
 
   static final Handler _productDescriptionHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
@@ -502,13 +503,13 @@ class RouteHelper {
         child: descriptionScreen ?? DescriptionScreen(description: data));
   });
 
-  static final Handler _productDetailsHandler = Handler(
-      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
-    Product product = Product.fromJson(jsonDecode(params['product'][0]));
-    bool? fromSearch = jsonDecode(params['search'][0]);
-    return _routeHandler(
-        child: ProductDetailsScreen(product: product, fromSearch: fromSearch));
-  });
+  // static final Handler _productDetailsHandler = Handler(
+  //     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+  //   Product product = Product.fromJson(jsonDecode(params['product'][0]));
+  //   bool? fromSearch = jsonDecode(params['search'][0]);
+  //   return _routeHandler(
+  //       child: ProductDetailsScreen(product: product, fromSearch: fromSearch));
+  // });
 
   static final Handler _filterHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
@@ -553,7 +554,7 @@ class RouteHelper {
   });
   static final Handler _cartHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
-          _routeHandler(child: const CartScreen()));
+          _routeHandler(child: const CartListScreen()));
   static final Handler _categoriesHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     return _routeHandler(child: const Allcategoriescreen());
@@ -709,18 +710,18 @@ class RouteHelper {
         handler: _notificationHandler, transitionType: TransitionType.fadeIn);
     router.define(trackOrder,
         handler: _trackOrderHandler, transitionType: TransitionType.fadeIn);
-    router.define(categoryProductsNew,
-        handler: _categoryProductsHandlerNew,
-        transitionType: TransitionType.fadeIn);
+    // router.define(categoryProductsNew,
+    //     handler: _categoryProductsHandlerNew,
+    //     transitionType: TransitionType.fadeIn);
     router.define(productDescription,
         handler: _productDescriptionHandler,
         transitionType: TransitionType.fadeIn);
-    router.define(productDetails,
-        handler: _productDetailsHandler, transitionType: TransitionType.fadeIn);
+    // router.define(productDetails,
+    //     handler: _productDetailsHandler, transitionType: TransitionType.fadeIn);
     router.define(filter,
         handler: _filterHandler, transitionType: TransitionType.fadeIn);
-    router.define(submitReview,
-        handler: _submitReviewHandler, transitionType: TransitionType.fadeIn);
+    // router.define(submitReview,
+    //     handler: _submitReviewHandler, transitionType: TransitionType.fadeIn);
     router.define(productImages,
         handler: _productImagesHandler, transitionType: TransitionType.fadeIn);
     router.define(profile,

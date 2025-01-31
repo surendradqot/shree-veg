@@ -54,18 +54,20 @@ class _CategoryViewState extends State<CategoryView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TitleWidget(
-                                title: getTranslated("Select Your Choice", context),
+                                title: getTranslated(
+                                    "Select Your Choice", context),
                                 color: Colors.grey.shade400,
                               ),
                               GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   Navigator.pushNamed(
                                       context, RouteHelper.searchProduct);
                                 },
                                 child: Container(
                                   padding: EdgeInsets.all(04),
                                   margin: EdgeInsets.all(05),
-                                  width: MediaQuery.of(context).size.width * 0.5,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.5,
                                   height:
                                       MediaQuery.of(context).size.height * 0.05,
                                   decoration: BoxDecoration(
@@ -82,7 +84,8 @@ class _CategoryViewState extends State<CategoryView> {
                                         size: 15,
                                       ),
                                       Text(
-                                        getTranslated('search_anything', context)!,
+                                        getTranslated(
+                                            'search_anything', context)!,
                                         style: poppinsRegular.copyWith(
                                             color: Color(0xFF0B4619),
                                             fontSize: 15,
@@ -163,11 +166,23 @@ class _CategoryViewState extends State<CategoryView> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
-                                Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            NewCategoryProductListScreen()));
-                               /* if (index == 5) {
+                                if(index!=5){
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          CategoryListScreen(catId: category.categoryList![index].id.toString(), catName: "${category.categoryList![index].name} ${category.categoryList![index].hnName}", whereFrom: false,)));
+                                }else{ ResponsiveHelper.isMobilePhone()
+                                    ? Provider.of<SplashProvider>(context,
+                                    listen: false)
+                                    .setPageIndex(1)
+                                    : const SizedBox();
+                                Provider.of<SplashProvider>(context, listen: false)
+                                    .setCurrentPageIndex(1);
+                                ResponsiveHelper.isWeb()
+                                    ? Navigator.pushNamed(
+                                    context, RouteHelper.categories)
+                                    : const SizedBox();
+                                }
+                                /* if (index == 5) {
                                   ResponsiveHelper.isMobilePhone()
                                       ? Provider.of<SplashProvider>(context,
                                               listen: false)
@@ -223,101 +238,158 @@ class _CategoryViewState extends State<CategoryView> {
                                       child: Stack(
                                         children: [
                                           ClipRRect(
-                                            borderRadius: BorderRadius.circular(10),
-                                            child: category.categoryList![index].titleGold!=null&& category.categoryList![index].titleGold!.isNotEmpty?Banner(
-                                              message:category.categoryList![index].titleGold!,
-                                              location: BannerLocation.topStart,
-                                              color: const Color(0xFF0B4619),
-                                              child:  index != 5
-                                                  ? ClipRRect(
-                                                // borderRadius:
-                                                //     const BorderRadius.only(
-                                                //         topLeft:
-                                                //             Radius.circular(10),
-                                                //         topRight:
-                                                //             Radius.circular(10)),
-                                                child: FadeInImage.assetNetwork(
-                                                  placeholder:
-                                                  Images.placeholder(context),
-                                                  width: MediaQuery.of(context).size.width*0.45,
-                                                  image:
-                                                  '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/${category.categoryList![index].image}',
-                                                  fit: BoxFit.contain,
-                                                  imageErrorBuilder: (c, o, s) =>
-                                                      Image.asset(
-                                                          Images.placeholder(
-                                                              context),
-                                                          fit: BoxFit.cover),
-                                                ),
-                                              )
-                                                  : Container(
-                                                height: 100,
-                                                width: 100,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                ),
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                    '${category.categoryList!.length - 5}+',
-                                                    style:
-                                                    poppinsRegular.copyWith(
-                                                        color:
-                                                        Theme.of(context)
-                                                            .cardColor)),
-                                              ),
-                                            ):index != 5
-                                                ? ClipRRect(
-                                              // borderRadius:
-                                              //     const BorderRadius.only(
-                                              //         topLeft:
-                                              //             Radius.circular(10),
-                                              //         topRight:
-                                              //             Radius.circular(10)),
-                                              child: FadeInImage.assetNetwork(
-                                                placeholder:
-                                                Images.placeholder(context),
-                                                width: MediaQuery.of(context).size.width*0.45,
-                                                image:
-                                                '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/${category.categoryList![index].image}',
-                                                fit: BoxFit.contain,
-                                                imageErrorBuilder: (c, o, s) =>
-                                                    Image.asset(
-                                                        Images.placeholder(
-                                                            context),
-                                                        fit: BoxFit.cover),
-                                              ),
-                                            )
-                                                : Container(
-                                              height: 100,
-                                              width: 100,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                  '${category.categoryList!.length - 5}+',
-                                                  style:
-                                                  poppinsRegular.copyWith(
-                                                      color:
-                                                      Theme.of(context)
-                                                          .cardColor)),
-                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: index != 5
+                                       && category.categoryList![index]
+                                                            .titleGold !=
+                                                        null &&
+                                                    category
+                                                        .categoryList![index]
+                                                        .titleGold!
+                                                        .isNotEmpty
+                                                ? Banner(
+                                                    message: category
+                                                        .categoryList![index]
+                                                        .titleGold!,
+                                                    location:
+                                                        BannerLocation.topStart,
+                                                    color:
+                                                        const Color(0xFF0B4619),
+                                                    child: index != 5
+                                                        ? ClipRRect(
+                                                            // borderRadius:
+                                                            //     const BorderRadius.only(
+                                                            //         topLeft:
+                                                            //             Radius.circular(10),
+                                                            //         topRight:
+                                                            //             Radius.circular(10)),
+                                                            child: FadeInImage
+                                                                .assetNetwork(
+                                                              placeholder: Images
+                                                                  .placeholder(
+                                                                      context),
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.45,
+                                                              image:
+                                                                  '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/${category.categoryList![index].image}',
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                              imageErrorBuilder: (c,
+                                                                      o, s) =>
+                                                                  Image.asset(
+                                                                      Images.placeholder(
+                                                                          context),
+                                                                      fit: BoxFit
+                                                                          .cover),
+                                                            ),
+                                                          )
+                                                        : Container(
+                                                            height: 100,
+                                                            width: 100,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                            ),
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Text(
+                                                                '${category.categoryList!.length - 5}+',
+                                                                style: poppinsRegular.copyWith(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .cardColor)),
+                                                          ),
+                                                  )
+                                                : index != 5
+                                                    ? ClipRRect(
+                                                        // borderRadius:
+                                                        //     const BorderRadius.only(
+                                                        //         topLeft:
+                                                        //             Radius.circular(10),
+                                                        //         topRight:
+                                                        //             Radius.circular(10)),
+                                                        child: FadeInImage
+                                                            .assetNetwork(
+                                                          placeholder: Images
+                                                              .placeholder(
+                                                                  context),
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.45,
+                                                          image:
+                                                              '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/${category.categoryList![index].image}',
+                                                          fit: BoxFit.contain,
+                                                          imageErrorBuilder: (c,
+                                                                  o, s) =>
+                                                              Image.asset(
+                                                                  Images.placeholder(
+                                                                      context),
+                                                                  fit: BoxFit
+                                                                      .cover),
+                                                        ),
+                                                      )
+                                                    : Container(
+                                                        height: 100,
+                                                        width: 100,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                        ),
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Text(
+                                                            '${category.categoryList!.length - 5}+',
+                                                            style: poppinsRegular.copyWith(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .cardColor)),
+                                                      ),
                                           ),
-                                          category.categoryList![index].titlePlatinum!=null&& category.categoryList![index].titlePlatinum!.isNotEmpty?Positioned(
-                                            top: 0,
-                                            right: 0,
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(10),
-                                              child: Banner(message: category.categoryList![index].titlePlatinum!, location: BannerLocation.topEnd,
-                                                child: SizedBox(
-                                                  width: MediaQuery.of(context).size.width * 0.3,
-                                                  height: 180,
-                                                ),),),
-                                          ):SizedBox(),
+                                          index != 5 &&
+                                                  category.categoryList![index]
+                                                          .titlePlatinum !=
+                                                      null &&
+                                                  category.categoryList![index]
+                                                      .titlePlatinum!.isNotEmpty
+                                              ? Positioned(
+                                                  top: 0,
+                                                  right: 0,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    child: Banner(
+                                                      message: category
+                                                          .categoryList![index]
+                                                          .titlePlatinum!,
+                                                      location:
+                                                          BannerLocation.topEnd,
+                                                      child: SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.3,
+                                                        height: 180,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : SizedBox(),
                                         ],
                                       ),
                                       /*child: Stack(
@@ -400,44 +472,81 @@ class _CategoryViewState extends State<CategoryView> {
                                       ),*/
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        index != 5
-                                            ? category.categoryList![index].name!
-                                            : getTranslated('view_all', context)!,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 05),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        text: index != 5
+                                            ? category
+                                            .categoryList![index].name!
+                                            : getTranslated(
+                                            'view_all', context)!,
+                                        children: [
+                                          TextSpan(
+                                            text: index != 5
+                                                ? " (${category.categoryList![index].hnName ?? ""})"
+                                                : "",
+                                            style: poppinsRegular.copyWith(
+                                                color: Colors.black,
+                                                fontSize: 08, fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
                                         style: poppinsRegular.copyWith(
                                             fontSize: Dimensions.fontSizeDefault,
+                                            color: Colors.black,
                                             fontWeight: FontWeight.w500),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
+                                        // textAlign: TextAlign.center,
+                                        // maxLines: 2,
+                                        // overflow: TextOverflow.ellipsis,
                                       ),
-                                      Text(
-                                        index != 5
-                                            ? " (${category.categoryList![index].hnName??""})"
-                                            : "",
-                                        style: poppinsRegular.copyWith(
-                                            fontSize: 08,
-                                            fontWeight: FontWeight.w500),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    index != 5
-                                        ? category.categoryList![index].titleSilver??""
-                                        : "",
-                                    style: poppinsRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeExtraSmall,
-                                        fontWeight: FontWeight.w600,
-                                      color: Color(0XFF600402)
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    textAlign: TextAlign.center,
                                   ),
+                                  // Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   children: [
+                                  //     Text(
+                                  //       index != 5
+                                  //           ? category
+                                  //               .categoryList![index].name!
+                                  //           : getTranslated(
+                                  //               'view_all', context)!,
+                                  //       style: poppinsRegular.copyWith(
+                                  //           fontSize:
+                                  //               Dimensions.fontSizeDefault,
+                                  //           fontWeight: FontWeight.w500),
+                                  //       textAlign: TextAlign.center,
+                                  //       maxLines: 2,
+                                  //       overflow: TextOverflow.ellipsis,
+                                  //     ),
+                                  //     Text(
+                                  //       index != 5
+                                  //           ? " (${category.categoryList![index].hnName ?? ""})"
+                                  //           : "",
+                                  //       style: poppinsRegular.copyWith(
+                                  //           fontSize: 08,
+                                  //           fontWeight: FontWeight.w500),
+                                  //       textAlign: TextAlign.center,
+                                  //       maxLines: 1,
+                                  //       overflow: TextOverflow.ellipsis,
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                  index != 5
+                                      ? Text(
+                                          category.categoryList![index]
+                                                  .titleSilver ??
+                                              "",
+                                          style: poppinsRegular.copyWith(
+                                              fontSize:
+                                                  Dimensions.fontSizeExtraSmall,
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0XFF600402)),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      : SizedBox(),
                                   const SizedBox(
                                       height: Dimensions.paddingSizeExtraSmall)
                                 ]),

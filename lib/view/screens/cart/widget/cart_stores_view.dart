@@ -19,9 +19,10 @@ class CartStoreOptions extends StatelessWidget {
       int storeRows = 0;
       return Consumer<ProfileProvider>(
           builder: (context, profileProvider, child) {
-            int storesLength = 0;
-            if(profileProvider.userInfoModel!=null && profileProvider.userInfoModel!.stores!.isNotEmpty){
-          int storesLength = profileProvider.userInfoModel!.stores!.length;
+        int storesLength = 0;
+        if (profileProvider.userInfoModel != null &&
+            profileProvider.userInfoModel!.stores!.isNotEmpty) {
+          storesLength = profileProvider.userInfoModel!.stores!.length;
           if (kDebugMode) {
             print('stores length is: $storesLength');
           }
@@ -32,115 +33,102 @@ class CartStoreOptions extends StatelessWidget {
           }
         }
 
-        return profileProvider.userInfoModel!=null && profileProvider.userInfoModel!.stores!.isNotEmpty?Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              getTranslated('stores', context)!,
-              style: poppinsRegular.copyWith(
-                  fontSize: Dimensions.fontSizeLarge,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
-            ),
-            SizedBox(
-              height: (180 * storeRows).toDouble(),
+        return profileProvider.userInfoModel != null &&
+                profileProvider.userInfoModel!.stores!.isNotEmpty
+            ? SizedBox(
+              // height: (180 * storeRows).toDouble(),
               child: Wrap(
-                  children: List.generate(
-                      storesLength,
-                      (index) => InkWell(
-                            onTap: () {
-                              cartProvider.updateSelectedStoreId(
-                                  '${profileProvider.userInfoModel!.stores![index].id}');
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Card(
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Container(
-                                  height: 170,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: cartProvider.selectedStoreId !=
-                                                  null &&
-                                              cartProvider.selectedStoreId ==
-                                                  '${profileProvider.userInfoModel!.stores![index].id}'
-                                          ? const Color(
-                                              0xFFF1FFF4) // Color if the slot is both selected and enabled
-                                          : Colors.white54,
-                                      border: Border.all(
-                                        width: 1,
-                                        color: cartProvider.selectedStoreId !=
-                                                    null &&
-                                                cartProvider.selectedStoreId ==
-                                                    '${profileProvider.userInfoModel!.stores![index].id}'
-                                            ? const Color(
-                                                0xFF039800) // Color if the slot is both selected and enabled
-                                            : Colors.grey,
-                                      )), // Default color (blue) if the slot is not enabled),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(
-                                        Dimensions.paddingSizeSmall),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(10),
-                                                    topRight:
-                                                        Radius.circular(10)),
-                                            child: FadeInImage.assetNetwork(
-                                              placeholder:
-                                                  Images.placeholder(context),
-                                              image:
-                                                  '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.storeImageUrl}/${profileProvider.userInfoModel!.stores![index].document}',
-                                              width: 85,
-                                              imageErrorBuilder: (c, o, s) =>
-                                                  Image.asset(
-                                                      Images.placeholder(
-                                                          context),
-                                                      width: 85),
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                            profileProvider.userInfoModel!
-                                                .stores![index].name!,
-                                            style: poppinsRegular.copyWith(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize:
-                                                    Dimensions.fontSizeSmall)),
-                                        Text(
-                                            profileProvider.userInfoModel!
-                                                .stores![index].address!,
-                                            style: poppinsRegular.copyWith(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize:
-                                                    Dimensions.fontSizeSmall)),
-                                        RatingBar(
-                                            rating: double.parse(profileProvider
-                                                    .userInfoModel!
-                                                    .stores![index]
-                                                    .adminRating!) -
-                                                1),
-                                      ],
+                children: List.generate(
+                  storesLength,
+                  (index) => InkWell(
+                    onTap: () {
+                      cartProvider.updateSelectedStoreId(
+                          '${profileProvider.userInfoModel!.stores![index].id}');
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Container(
+                          height: 170,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: cartProvider.selectedStoreId !=
+                                          null &&
+                                      cartProvider.selectedStoreId ==
+                                          '${profileProvider.userInfoModel!.stores![index].id}'
+                                  ? const Color(
+                                      0xFFF1FFF4) // Color if the slot is both selected and enabled
+                                  : Colors.white54,
+                              border: Border.all(
+                                width: 1,
+                                color: cartProvider.selectedStoreId !=
+                                            null &&
+                                        cartProvider.selectedStoreId ==
+                                            '${profileProvider.userInfoModel!.stores![index].id}'
+                                    ? const Color(
+                                        0xFF039800) // Color if the slot is both selected and enabled
+                                    : Colors.grey,
+                              )),
+                          // Default color (blue) if the slot is not enabled),
+                          child: Padding(
+                            padding: const EdgeInsets.all(
+                                Dimensions.paddingSizeSmall),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10)),
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder:
+                                          Images.placeholder(context),
+                                      image:
+                                          '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.storeImageUrl}/${profileProvider.userInfoModel!.stores![index].document}',
+                                      width: 85,
+                                      imageErrorBuilder: (c, o, s) =>
+                                          Image.asset(
+                                              Images.placeholder(context),
+                                              width: 85),
                                     ),
                                   ),
                                 ),
-                              ),
+                                Text(
+                                    profileProvider.userInfoModel!
+                                        .stores![index].name!,
+                                    style: poppinsRegular.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.red,
+                                        fontSize:
+                                            Dimensions.fontSizeSmall)),
+                                Text(
+                                    profileProvider.userInfoModel!
+                                        .stores![index].address!,
+                                    style: poppinsRegular.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize:
+                                            Dimensions.fontSizeSmall)),
+                                // RatingBar(
+                                //     rating: double.parse(profileProvider
+                                //             .userInfoModel!
+                                //             .stores![index]
+                                //             .adminRating!) -
+                                //         1),
+                              ],
                             ),
-                          ))),
-            ),
-            const SizedBox(
-              height: Dimensions.paddingSizeSmall,
-            ),
-          ],
-        ):SizedBox();
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+            : SizedBox();
       });
     });
   }

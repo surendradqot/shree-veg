@@ -116,11 +116,11 @@ class CartProductWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                            flex: 2,
-                            child: ProductTitleOnlyView(
-                                product: cart.product!,
-                                fontSize: Dimensions.fontSizeSmall)),
+                        // Expanded(
+                        //     flex: 2,
+                        //     child: ProductTitleOnlyView(
+                        //         product: cart.product!,
+                        //         fontSize: Dimensions.fontSizeSmall)),
                         CustomDirectionality(
                             child: Text(
                           PriceConverter.convertPrice(

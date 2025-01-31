@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/data/model/response/product_model.dart';
 import 'package:shreeveg/helper/price_converter.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
@@ -16,7 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:shreeveg/view/screens/product/widget/product_title_only_view.dart';
 
 class ProductTitleView extends StatelessWidget {
-  final Product? product;
+  final ProductData? product;
   final int? stock;
   final int? cartIndex;
   const ProductTitleView(
@@ -37,7 +38,7 @@ class ProductTitleView extends StatelessWidget {
     if (product!.variations!.isNotEmpty) {
       List<double?> priceList = [];
       for (var variation in product!.variations!) {
-        priceList.add(double.parse(variation.price!));
+        priceList.add(double.parse(variation.offerPrice!));
       }
       priceList.sort((a, b) => a!.compareTo(b!));
       startingPrice = priceList[0];
@@ -48,23 +49,23 @@ class ProductTitleView extends StatelessWidget {
       startingPrice = double.parse(product!.price!);
     }
 
-    if (product!.categoryDiscount != null) {
-      startingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
-        startingPrice,
-        product!.categoryDiscount!.discountAmount,
-        product!.categoryDiscount!.discountType,
-        maxDiscount: product!.categoryDiscount!.maximumAmount,
-      );
-
-      if (endingPrice != null) {
-        endingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
-          endingPrice,
-          product!.categoryDiscount!.discountAmount,
-          product!.categoryDiscount!.discountType,
-          maxDiscount: product!.categoryDiscount!.maximumAmount,
-        );
-      }
-    }
+    // if (product!.categoryDiscount != null) {
+    //   startingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
+    //     startingPrice,
+    //     product!.categoryDiscount!.discountAmount,
+    //     product!.categoryDiscount!.discountType,
+    //     maxDiscount: product!.categoryDiscount!.maximumAmount,
+    //   );
+    //
+    //   if (endingPrice != null) {
+    //     endingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
+    //       endingPrice,
+    //       product!.categoryDiscount!.discountAmount,
+    //       product!.categoryDiscount!.discountType,
+    //       maxDiscount: product!.categoryDiscount!.maximumAmount,
+    //     );
+    //   }
+    // }
     startingPriceWithDiscount = PriceConverter.convertWithDiscount(
         startingPrice, double.parse(product!.discount!), product!.discountType);
 
@@ -281,7 +282,7 @@ class QuantityButton extends StatelessWidget {
             }
           }
         } else {
-          if (!isIncrement && quantity > 1) {
+          if (!isIncrement && quantity >= 1) {
             Provider.of<ProductProvider>(context, listen: false)
                 .setQuantity(false);
           } else if (isIncrement) {

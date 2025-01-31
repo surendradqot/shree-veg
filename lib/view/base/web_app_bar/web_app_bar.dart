@@ -511,7 +511,7 @@ class _WebAppBarState extends State<WebAppBar> {
                                                     Dimensions
                                                         .paddingSizeExtraSmall),
                                                 child: Text(
-                                                    '${Provider.of<CartProvider>(context).cartList.length}',
+                                                    '${Provider.of<CartProvider>(context).cartLength}',
                                                     style:
                                                         poppinsRegular.copyWith(
                                                             color: Colors.white,
