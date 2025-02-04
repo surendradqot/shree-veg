@@ -209,8 +209,8 @@ class _CartListScreenState extends State<CartListScreen>
         if (totalDiscount != 0.0) {
           totalDiscount = totalDiscount! / cartProvider.cartLength!;
         }
-        return isLoggedIn!
-            ? cartProvider.cartLength != 0
+        return
+             cartProvider.cartLength != 0
                 ? Column(
                     children: [
                       Expanded(
@@ -622,7 +622,7 @@ class _CartListScreenState extends State<CartListScreen>
                 : Center(
                     child: const NoDataScreen(isCart: true),
                   )
-            : const NotLoggedInScreen();
+            ;
       }),
     );
   }

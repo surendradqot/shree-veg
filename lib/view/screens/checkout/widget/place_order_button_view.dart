@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shreeveg/data/model/body/place_order_body.dart';
 import 'package:shreeveg/data/model/response/cart_model.dart';
+import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
 import 'package:shreeveg/helper/toast_service.dart';
@@ -124,11 +125,96 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                 //   carts.add(cart);
                 // }
 
-                SharedPreferences? sharedPreferences  = await SharedPreferences.getInstance();
-                int? whId = sharedPreferences.getInt(AppConstants.selectedCityId);
+                SharedPreferences? sharedPreferences =
+                    await SharedPreferences.getInstance();
+                int? whId =
+                    sharedPreferences.getInt(AppConstants.selectedCityId);
+                List<CartModelForPlaceOrder> addedCartList = [];
+
+                double? price = 0;
+                int? stock = 0;
+                bool isExistInCart = false;
+                int? cardIndex;
+                CartModelForPlaceOrder? cartModel;
+
+                for (CartModalNew cartData in cartProvider.newCartList) {
+                  ProductData? product = cartData.productData!;
+                  for (int index = 0;
+                      index < cartData.productData!.variations!.length;
+                      index++) {
+                    price = double.parse(product.variations!.isNotEmpty
+                        ? product.variations![index].offerPrice ?? "0.0"
+                        : product.price!);
+                    stock = product.totalStock;
+                    cartModel = CartModelForPlaceOrder(
+                      product.id,
+                      // product Id
+                      product.singleImage!.isNotEmpty
+                          ? product.singleImage![0]
+                          : '',
+                      //Product Image
+                      product.name,
+                      // Product Name
+                      price,
+                      PriceConverter.convertWithDiscount(
+                          price,
+                          double.parse(product.discount!),
+                          product.discountType),
+                      // Discount Price
+                      cartData.productData!.variations!
+                          .where((test) => test.isSelected!)
+                          .fold(0.0, (oldValue, newValue) => newValue.addCount),
+                      //quantity
+                      cartData.productData!.variations!
+                          .firstWhere((test) => test.isSelected!),
+                      (price -
+                          PriceConverter.convertWithDiscount(
+                              price,
+                              double.parse(product.discount!),
+                              product.discountType)!),
+                      (price -
+                          PriceConverter.convertWithDiscount(price,
+                              product.tax!.toDouble(), product.taxType)!),
+                      product.capacity,
+                      product.unit,
+                      stock,
+                      product,
+                    );
+                  }
+                  addedCartList.add(cartModel!);
+                }
+                for (CartModalNew cartData in cartProvider.newOfferCartList) {
+                  CartModelForPlaceOrder? cartModal = CartModelForPlaceOrder(
+                    cartData.productData!.id!,
+                    cartData.productData!.singleImage!.isNotEmpty
+                        ? cartData.productData!.singleImage!.first
+                        : "",
+                    cartData.productData!.name!,
+                    double.parse(cartData.productData!.price!),
+                    double.parse(cartData.productData!.amount!),
+                    cartData.productData!.oneRsOfferEnable == 1
+                        ? 1
+                        : cartData.productData!.appliedBulkRupeeCount!.toInt(),
+                    cartData.productData!.variations!
+                        .firstWhere((test) => test.isSelected!),
+                    double.parse(cartData.productData!.discount!),
+                    double.parse(cartData.productData!.tax!.toString()),
+                    double.parse(cartData.productData!.capacity!),
+                    cartData.productData!.unit!,
+                    cartData.productData!.totalStock!,
+                    cartData.productData!,
+                  );
+                  if (widget.amount! >= 100 &&
+                      cartData.productData!.oneRsOfferEnable == 1) {
+                    addedCartList.add(cartModal);
+                  } else if (cartData.productData!.bulkOfferEnable == 1) {
+                    addedCartList.add(cartModal);
+                  }
+                }
+
                 PlaceOrderBody placeOrderBody = PlaceOrderBody(
                     // cart: widget.amount!<100 && cartProvider.newOfferCartList.length>=1 ?jsonEncode(cartProvider.newCartList):jsonEncode(cartProvider.newOfferCartList+cartProvider.newCartList),
-                    cart: jsonEncode(cartProvider.cartList),
+                    cart: jsonEncode(addedCartList),
                     orderAmount: (widget.amount! + widget.deliveryCharge!)
                         .ceilToDouble(),
                     // paymentMethod: orderProvider.paymentMethod,
@@ -178,13 +264,15 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                           userId: Provider.of<ProfileProvider>(context,
                                   listen: false)
                               .userInfoModel!
-                              .userInfo!.id
+                              .userInfo!
+                              .id
                               .toString(),
                           amount: widget.amount!.ceil().toString(),
                           phone: Provider.of<ProfileProvider>(context,
                                   listen: false)
                               .userInfoModel!
-                              .userInfo!.phone
+                              .userInfo!
+                              .phone
                               .toString(),
                           email:
                               Provider.of<AuthProvider>(context, listen: false)
@@ -213,7 +301,8 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                   } else if (orderProvider.paymentMethod == 'wallet_payment') {
                     if (Provider.of<ProfileProvider>(context, listen: false)
                             .userInfoModel!
-                            .userInfo!.walletBalance! <
+                            .userInfo!
+                            .walletBalance! <
                         placeOrderBody.orderAmount!) {
                       showDialog(
                           context: context,

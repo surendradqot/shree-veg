@@ -45,7 +45,7 @@ List<MainScreenModel> menuScreenList = [
   MainScreenModel(const ProfileScreen(), 'my_account', Images.plus),
   MainScreenModel(const WishListScreen(), 'my_wishlist', null),
   MainScreenModel(const Allcategoriescreen(), 'shop_by_category', null),
-  MainScreenModel(const ProfileScreen(), 'offers', null),
+  // MainScreenModel(const ProfileScreen(), 'offers', null),
   // MainScreenModel(const ProfileScreen(), 'rate_review', null),
   // MainScreenModel(const NotificationScreen(), 'notifications', null),
 ];
@@ -55,7 +55,7 @@ List<MainScreenModel> menuScreenListUser = [
   MainScreenModel(const ProfileScreen(), 'my_account', Images.plus),
   MainScreenModel(const WishListScreen(), 'my_wishlist', null),
   MainScreenModel(const Allcategoriescreen(), 'shop_by_category', null),
-  MainScreenModel(const ProfileScreen(), 'offers', null),
+  // MainScreenModel(const ProfileScreen(), 'offers', null),
   // MainScreenModel(const ProfileScreen(), 'rate_review', null),
   MainScreenModel(const NotificationScreen(), 'notifications', null),
 ];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shreeveg/data/model/response/new_category_product_modal.dart';
+import 'package:shreeveg/localization/language_constraints.dart';
 
 import '../../../../data/model/response/product_model.dart';
 import '../../../../utill/dimensions.dart';
@@ -46,6 +47,24 @@ class ProductTitleOnlyView extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                // Spacer(),
+                // Container(
+                //   padding: const EdgeInsets.symmetric(
+                //       horizontal: Dimensions.paddingSizeSmall,
+                //       vertical: 2),
+                //   decoration: BoxDecoration(
+                //     borderRadius:
+                //     BorderRadius.circular(Dimensions.radiusSizeLarge),
+                //     color:
+                //     product!.totalStock! > 0
+                //         ? const Color(0xFF039800)
+                //         : Theme.of(context).primaryColor.withOpacity(0.3),
+                //   ),
+                //   child: Text(
+                //     '${getTranslated(product!.totalStock! > 0 ? 'in_stock' : 'stock_out', context)}',
+                //     style: poppinsMedium.copyWith(color: Colors.white),
+                //   ),
+                // ),
               ],
             ),
           ),

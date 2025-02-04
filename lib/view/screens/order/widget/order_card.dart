@@ -139,145 +139,150 @@ class OrderCard extends StatelessWidget {
                                     width: 2,
                                     color: Theme.of(context).primaryColor))),
                         onPressed: () async {
-                          if (orderProvider.isActiveOrder) {
-                            Navigator.of(context).pushNamed(
-                                RouteHelper.getOrderTrackingRoute(
-                                    orderList![index].id));
-                          } else {
-                            List<OrderDetailsModel> orderDetails =
-                                (await orderProvider.getOrderDetails(
-                                    orderList![index].id.toString()))!;
-                            List<CartModel> cartList = [];
-                            String? errorMessage;
-                            Variations? variation;
-                            String? error;
-
-                            await Future.forEach(orderDetails,
-                                (dynamic orderDetail) async {
-                              Product? product;
-                              try {
-                                product =
-                                    await productProvider.getProductDetails(
-                                  context,
-                                  '${orderDetail.productId}',
-                                  Provider.of<LocalizationProvider>(context,
-                                          listen: false)
-                                      .locale
-                                      .languageCode,
-                                );
-                              } catch (e) {
-                                error = getTranslated(
-                                    'one_or_more_items_not_available', context);
-                              }
-
-                              if (product != null) {
-                                double? price = double.parse(product.price!);
-                                int? stock = product.totalStock;
-
-                                List<String> variationList = [];
-                                for (int index = 0;
-                                    index <
-                                        productProvider
-                                            .product!.choiceOptions!.length;
-                                    index++) {
-                                  variationList.add(productProvider
-                                      .product!
-                                      .choiceOptions![index]
-                                      .options![productProvider
-                                          .variationIndex![index]]
-                                      .replaceAll(' ', ''));
-                                }
-                                String variationType = '';
-                                bool isFirst = true;
-                                for (var variation in variationList) {
-                                  if (isFirst) {
-                                    variationType = '$variationType$variation';
-                                    isFirst = false;
-                                  } else {
-                                    variationType = '$variationType-$variation';
-                                  }
-                                }
-
-                                for (Variations variation
-                                    in productProvider.product!.variations!) {
-                                  if (variation.type == variationType) {
-                                    price = double.parse(variation.price!);
-                                    variation = variation;
-                                    stock = variation.stock;
-                                    break;
-                                  }
-                                }
-
-                                CartModel cartModel = CartModel(
-                                    productProvider.product!.id,
-                                    productProvider.product!.image!.isNotEmpty
-                                        ? productProvider.product!.image![0]
-                                        : '',
-                                    productProvider.product!.name,
-                                    price,
-                                    PriceConverter.convertWithDiscount(
-                                        price,
-                                        double.parse(productProvider.product!.discount!),
-                                        productProvider.product!.discountType),
-                                    productProvider.quantity,
-                                    variation,
-                                    (price! -
-                                        PriceConverter.convertWithDiscount(
-                                            price,
-                                            double.parse(productProvider.product!.discount!),
-                                            productProvider
-                                                .product!.discountType)!),
-                                    (price -
-                                        PriceConverter.convertWithDiscount(
-                                            price,
-                                            productProvider.product!.tax,
-                                            productProvider.product!.taxType)!),
-                                    productProvider.product!.capacity,
-                                    productProvider.product!.unit,
-                                    stock,
-                                    productProvider.product);
-
-                                if (Provider.of<CartProvider>(Get.context!,
-                                            listen: false)
-                                        .isExistInCart(cartModel) !=
-                                    null) {
-                                  errorMessage =
-                                      '${cartModel.product!.name} ${'is_already_in_cart'.tr}';
-                                } else if (cartModel.stock! < 1) {
-                                  errorMessage =
-                                      '${cartModel.product!.name} ${'is_out_of_stock'.tr}';
-                                } else {
-                                  cartList.add(cartModel);
-                                }
-                              }
-                            }).then((value) {
-                              if (error != null) {
-                                showCustomSnackBar(error!);
-                              } else if (errorMessage != null) {
-                                showCustomSnackBar(errorMessage!);
-                              } else {
-                                if (cartList.isNotEmpty) {
-                                  for (var cartModel in cartList) {
-                                    Provider.of<CartProvider>(context,
-                                            listen: false)
-                                        .addToCart(cartModel);
-                                  }
-
-                                  ResponsiveHelper.isMobilePhone()
-                                      ? Provider.of<SplashProvider>(context,
-                                              listen: false)
-                                          .setPageIndex(2)
-                                      : Navigator.pushNamed(
-                                          context, RouteHelper.cart);
-                                }
-                              }
-                            });
-                          }
+                          Navigator.of(context).pushNamed(
+                              RouteHelper.getOrderTrackingRoute(
+                                  orderList![index].id));
+                          // if (!orderProvider.isActiveOrder) {
+                          //   Navigator.of(context).pushNamed(
+                          //       RouteHelper.getOrderTrackingRoute(
+                          //           orderList![index].id));
+                          // }
+                          // else {
+                          //   List<OrderDetailsModel> orderDetails =
+                          //       (await orderProvider.getOrderDetails(
+                          //           orderList![index].id.toString()))!;
+                          //   List<CartModel> cartList = [];
+                          //   String? errorMessage;
+                          //   Variations? variation;
+                          //   String? error;
+                          //
+                          //   await Future.forEach(orderDetails,
+                          //       (dynamic orderDetail) async {
+                          //     Product? product;
+                          //     try {
+                          //       product =
+                          //           await productProvider.getProductDetails(
+                          //         context,
+                          //         '${orderDetail.productId}',
+                          //         Provider.of<LocalizationProvider>(context,
+                          //                 listen: false)
+                          //             .locale
+                          //             .languageCode,
+                          //       );
+                          //     } catch (e) {
+                          //       error = getTranslated(
+                          //           'one_or_more_items_not_available', context);
+                          //     }
+                          //
+                          //     if (product != null) {
+                          //       double? price = double.parse(product.price!);
+                          //       int? stock = product.totalStock;
+                          //
+                          //       List<String> variationList = [];
+                          //       for (int index = 0;
+                          //           index <
+                          //               productProvider
+                          //                   .product!.choiceOptions!.length;
+                          //           index++) {
+                          //         variationList.add(productProvider
+                          //             .product!
+                          //             .choiceOptions![index]
+                          //             .options![productProvider
+                          //                 .variationIndex![index]]
+                          //             .replaceAll(' ', ''));
+                          //       }
+                          //       String variationType = '';
+                          //       bool isFirst = true;
+                          //       for (var variation in variationList) {
+                          //         if (isFirst) {
+                          //           variationType = '$variationType$variation';
+                          //           isFirst = false;
+                          //         } else {
+                          //           variationType = '$variationType-$variation';
+                          //         }
+                          //       }
+                          //
+                          //       for (Variations variation
+                          //           in productProvider.product!.variations!) {
+                          //         if (variation.type == variationType) {
+                          //           price = double.parse(variation.price!);
+                          //           variation = variation;
+                          //           stock = variation.stock;
+                          //           break;
+                          //         }
+                          //       }
+                          //
+                          //       CartModel cartModel = CartModel(
+                          //           productProvider.product!.id,
+                          //           productProvider.product!.image!.isNotEmpty
+                          //               ? productProvider.product!.image![0]
+                          //               : '',
+                          //           productProvider.product!.name,
+                          //           price,
+                          //           PriceConverter.convertWithDiscount(
+                          //               price,
+                          //               double.parse(productProvider.product!.discount!),
+                          //               productProvider.product!.discountType),
+                          //           productProvider.quantity,
+                          //           variation,
+                          //           (price! -
+                          //               PriceConverter.convertWithDiscount(
+                          //                   price,
+                          //                   double.parse(productProvider.product!.discount!),
+                          //                   productProvider
+                          //                       .product!.discountType)!),
+                          //           (price -
+                          //               PriceConverter.convertWithDiscount(
+                          //                   price,
+                          //                   productProvider.product!.tax,
+                          //                   productProvider.product!.taxType)!),
+                          //           productProvider.product!.capacity,
+                          //           productProvider.product!.unit,
+                          //           stock,
+                          //           productProvider.product);
+                          //
+                          //       if (Provider.of<CartProvider>(Get.context!,
+                          //                   listen: false)
+                          //               .isExistInCart(cartModel) !=
+                          //           null) {
+                          //         errorMessage =
+                          //             '${cartModel.product!.name} ${'is_already_in_cart'.tr}';
+                          //       } else if (cartModel.stock! < 1) {
+                          //         errorMessage =
+                          //             '${cartModel.product!.name} ${'is_out_of_stock'.tr}';
+                          //       } else {
+                          //         cartList.add(cartModel);
+                          //       }
+                          //     }
+                          //   }).then((value) {
+                          //     if (error != null) {
+                          //       showCustomSnackBar(error!);
+                          //     } else if (errorMessage != null) {
+                          //       showCustomSnackBar(errorMessage!);
+                          //     } else {
+                          //       if (cartList.isNotEmpty) {
+                          //         for (var cartModel in cartList) {
+                          //           Provider.of<CartProvider>(context,
+                          //                   listen: false)
+                          //               .addToCart(cartModel);
+                          //         }
+                          //
+                          //         ResponsiveHelper.isMobilePhone()
+                          //             ? Provider.of<SplashProvider>(context,
+                          //                     listen: false)
+                          //                 .setPageIndex(2)
+                          //             : Navigator.pushNamed(
+                          //                 context, RouteHelper.cart);
+                          //       }
+                          //     }
+                          //   });
+                          // }
                         },
                         child: Text(
                           orderProvider.isActiveOrder
                               ? getTranslated('track_your_order', context)!
-                              : 'Re-Order',
+                              : getTranslated('track_your_order', context)!,
+                              // : 'Re-Order',
                           style: poppinsRegular.copyWith(
                             color: Theme.of(context).primaryColor,
                             fontSize: Dimensions.fontSizeDefault,

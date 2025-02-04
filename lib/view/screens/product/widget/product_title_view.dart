@@ -48,24 +48,6 @@ class ProductTitleView extends StatelessWidget {
     } else {
       startingPrice = double.parse(product!.price!);
     }
-
-    // if (product!.categoryDiscount != null) {
-    //   startingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
-    //     startingPrice,
-    //     product!.categoryDiscount!.discountAmount,
-    //     product!.categoryDiscount!.discountType,
-    //     maxDiscount: product!.categoryDiscount!.maximumAmount,
-    //   );
-    //
-    //   if (endingPrice != null) {
-    //     endingPriceWithCategoryDiscount = PriceConverter.convertWithDiscount(
-    //       endingPrice,
-    //       product!.categoryDiscount!.discountAmount,
-    //       product!.categoryDiscount!.discountType,
-    //       maxDiscount: product!.categoryDiscount!.maximumAmount,
-    //     );
-    //   }
-    // }
     startingPriceWithDiscount = PriceConverter.convertWithDiscount(
         startingPrice, double.parse(product!.discount!), product!.discountType);
 
@@ -106,86 +88,64 @@ class ProductTitleView extends StatelessWidget {
 
                 ProductTitleOnlyView(product: product!),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // product!.rating != null
-                    //     ? Padding(
-                    //   padding: const EdgeInsets.symmetric(
-                    //       vertical: Dimensions.paddingSizeExtraSmall),
-                    //   child: RatingBar(
-                    //     rating: product!.rating!.isNotEmpty
-                    //         ? double.parse(product!.rating![0].average!)
-                    //         : 4.0,
-                    //     size: Dimensions.paddingSizeDefault,
-                    //     color: const Color(0xFF0B4619),
-                    //   ),
-                    // )
-                    //     : const SizedBox(),
-                    Builder(builder: (context) {
-                      return Card(
-                        color: const Color(0xFF0B4619),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                QuantityButton(
-                                  isIncrement: false,
-                                  quantity: productProvider.quantity,
-                                  stock: stock,
-                                  cartIndex: cartIndex,
-                                  maxOrderQuantity: product!.maximumOrderQuantity,
-                                ),
-                                const SizedBox(width: 15),
-                                Consumer<CartProvider>(builder: (context, cart, child) {
-                                  return Text(
-                                    cartIndex != null
-                                        ? cart.cartList[cartIndex!].quantity.toString()
-                                        : productProvider.quantity.toString(),
-                                    style: poppinsSemiBold.copyWith(color: Colors.white),
-                                  );
-                                }),
-                                const SizedBox(width: 15),
-                                QuantityButton(
-                                  isIncrement: true,
-                                  quantity: productProvider.quantity,
-                                  stock: stock,
-                                  cartIndex: cartIndex,
-                                  maxOrderQuantity: product!.maximumOrderQuantity,
-                                ),
-                              ]),
-                        ),
-                      );
-                    }),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: Dimensions.paddingSizeSmall,
-                          vertical: 2),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(Dimensions.radiusSizeLarge),
-                        color:
-                        product!.totalStock! > 0
-                            ? const Color(0xFF039800)
-                            : Theme.of(context).primaryColor.withOpacity(0.3),
-                      ),
-                      child: Text(
-                        '${getTranslated(product!.totalStock! > 0 ? 'in_stock' : 'stock_out', context)}',
-                        style: poppinsMedium.copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'Select Unit',
-                  style: poppinsRegular.copyWith(
-                      color: Colors.black,
-                      fontSize: 14, fontWeight: FontWeight.w500),
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     // product!.rating != null
+                //     //     ? Padding(
+                //     //   padding: const EdgeInsets.symmetric(
+                //     //       vertical: Dimensions.paddingSizeExtraSmall),
+                //     //   child: RatingBar(
+                //     //     rating: product!.rating!.isNotEmpty
+                //     //         ? double.parse(product!.rating![0].average!)
+                //     //         : 4.0,
+                //     //     size: Dimensions.paddingSizeDefault,
+                //     //     color: const Color(0xFF0B4619),
+                //     //   ),
+                //     // )
+                //     //     : const SizedBox(),
+                //     Builder(builder: (context) {
+                //       return Card(
+                //         color: const Color(0xFF0B4619),
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(4.0),
+                //           child: Row(
+                //               mainAxisSize: MainAxisSize.min,
+                //               children: [
+                //                 QuantityButton(
+                //                   isIncrement: false,
+                //                   quantity: productProvider.quantity,
+                //                   stock: stock,
+                //                   cartIndex: cartIndex,
+                //                   maxOrderQuantity: product!.maximumOrderQuantity,
+                //                 ),
+                //                 const SizedBox(width: 15),
+                //                 Consumer<CartProvider>(builder: (context, cart, child) {
+                //                   return Text(
+                //                     cartIndex != null
+                //                         ? cart.cartList[cartIndex!].quantity.toString()
+                //                         : productProvider.quantity.toString(),
+                //                     style: poppinsSemiBold.copyWith(color: Colors.white),
+                //                   );
+                //                 }),
+                //                 const SizedBox(width: 15),
+                //                 QuantityButton(
+                //                   isIncrement: true,
+                //                   quantity: productProvider.quantity,
+                //                   stock: stock,
+                //                   cartIndex: cartIndex,
+                //                   maxOrderQuantity: product!.maximumOrderQuantity,
+                //                 ),
+                //               ]),
+                //         ),
+                //       );
+                //     }),
+                //   ],
+                // ),
+                // SizedBox(
+                //   height: 10,
+                // ),
+
                 // //Product Price
                 // Row(
                 //     mainAxisAlignment: MainAxisAlignment.spaceBetween,

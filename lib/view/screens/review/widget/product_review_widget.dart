@@ -105,7 +105,7 @@ class ProductReviewWidget extends StatelessWidget {
                                                 context,
                                                 orderDetailsList[index]
                                                     .productDetails!
-                                                    .price,
+                                                    .marketPrice!.toDouble(),
                                               ),
                                               style: poppinsBold)),
                                     ],
@@ -267,7 +267,7 @@ class ProductReviewWidget extends StatelessWidget {
                                                           orderId:
                                                               orderDetailsList[
                                                                       index]
-                                                                  .orderId
+                                                                  .id
                                                                   .toString(),
                                                         );
                                                         orderProvider

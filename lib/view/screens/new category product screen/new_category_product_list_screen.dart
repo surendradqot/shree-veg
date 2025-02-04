@@ -342,9 +342,9 @@ class _CategoryListScreenState extends State<CategoryListScreen>
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProductDetailsScreen(
-                      product: oneRupeeProductList[index])));
+              // Navigator.of(context).push(MaterialPageRoute(
+              //     builder: (context) => ProductDetailsScreen(
+              //         product: oneRupeeProductList[index])));
             },
             child: Container(
               width: double.infinity,
@@ -735,9 +735,9 @@ class _CategoryListScreenState extends State<CategoryListScreen>
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProductDetailsScreen(
-                      product: bulkOfferProductList[index])));
+              // Navigator.of(context).push(MaterialPageRoute(
+              //     builder: (context) => ProductDetailsScreen(
+              //         product: bulkOfferProductList[index])));
             },
             child: Container(
               width: double.infinity,

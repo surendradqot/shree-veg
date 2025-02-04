@@ -518,109 +518,212 @@ class ProductProvider extends ChangeNotifier {
 
   addToCart(ProductData product, int? totalCount, String? type, String? unit,
       {int? index}) {
-    bool? isLoggedIn = Provider.of<AuthProvider>(Get.context!, listen: false).isLoggedIn();
-    if(isLoggedIn){
-      if (type!.isNotEmpty) {
-        if (!addCart.contains("oneRupeeOffer") && type == "oneRupeeOffer") {
-          if (!addCart.contains("bulkOffer")) {
-            if (product.oneRsOfferEnable == 1) {
-              for (ProductData listProduct in oneRupeeProductList) {
-                if (listProduct.id == product.id) {
-                  listProduct.appliedOneRupee = true;
-                  listProduct.appliedUnit = unit;
-                  listProduct.totalAddedWeight = totalCount!.toDouble();
-                  addCart.add("oneRupeeOffer");
-                  Provider.of<CartProvider>(Get.context!, listen: false)
-                      .addOfferCartItem(
-                    product: product,
-                    totalUnit: 1.0,
-                    totalPrice: 1.0,
-                    totalDiscount: double.parse(product.discount!),
-                    itemPrice:
-                        double.parse(product.marketPrice!.toStringAsFixed(1)),
-                    gstPrice: product.tax!.toDouble(),
-                    deliveryCharge: 0.0,
-                    offerPrice: double.parse(product.price!),
-                  );
-                }
+
+    if (type!.isNotEmpty) {
+      if (!addCart.contains("oneRupeeOffer") && type == "oneRupeeOffer") {
+        if (!addCart.contains("bulkOffer")) {
+          if (product.oneRsOfferEnable == 1) {
+            for (ProductData listProduct in oneRupeeProductList) {
+              if (listProduct.id == product.id) {
+                listProduct.appliedOneRupee = true;
+                listProduct.appliedUnit = unit;
+                listProduct.totalAddedWeight = totalCount!.toDouble();
+                addCart.add("oneRupeeOffer");
+                Provider.of<CartProvider>(Get.context!, listen: false)
+                    .addOfferCartItem(
+                  product: product,
+                  totalUnit: 1.0,
+                  totalPrice: 1.0,
+                  totalDiscount: double.parse(product.discount!),
+                  itemPrice:
+                  double.parse(product.marketPrice!.toStringAsFixed(1)),
+                  gstPrice: product.tax!.toDouble(),
+                  deliveryCharge: 0.0,
+                  offerPrice: double.parse(product.price!),
+                );
               }
             }
-          } else {
-            ToastService().show(
-                "आप बल्क ऑर्डर ऑफर का फायदा पहले ही ले चुके हैं. एक रुपए ऑफर अब आपके लिए मान्य नहीं होगा.");
-          }
-        } else if (type == "bulkOffer") {
-          if (!addCart.contains("oneRupeeOffer")) {
-            if (product.bulkOfferEnable == 1) {
-              for (ProductData listProduct in bulkOfferProductList) {
-                if (listProduct.id == product.id) {
-                  listProduct.appliedBulkRupee = true;
-                  listProduct.appliedUnit = unit;
-                  listProduct.appliedBulkRupeeCount = totalCount;
-                  listProduct.totalAddedWeight =
-                      double.parse(product.quantity!) * totalCount!.toDouble();
-                  addCart.add("bulkOffer");
-                  Provider.of<CartProvider>(Get.context!, listen: false)
-                      .addOfferCartItem(
-                    product: product,
-                    totalUnit:
-                        double.parse(product.quantity!) * totalCount.toDouble(),
-                    totalPrice: totalCount * double.parse(product.price!),
-                    totalDiscount: double.parse(product.discount!),
-                    itemPrice: totalCount *
-                        double.parse(product.marketPrice!.toStringAsFixed(1)),
-                    gstPrice: product.tax!.toDouble(),
-                    deliveryCharge: 0.0,
-                    offerPrice: double.parse(product.price!),
-                  );
-                }
-              }
-            }
-          } else {
-            ToastService().show(
-                "आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं. बल्क ऑर्डर ऑफर अब आपके लिए मान्य नहीं होगा.");
           }
         } else {
-          ToastService().show("आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं.");
+          ToastService().show(
+              "आप बल्क ऑर्डर ऑफर का फायदा पहले ही ले चुके हैं. एक रुपए ऑफर अब आपके लिए मान्य नहीं होगा.");
+        }
+      } else if (type == "bulkOffer") {
+        if (!addCart.contains("oneRupeeOffer")) {
+          if (product.bulkOfferEnable == 1) {
+            for (ProductData listProduct in bulkOfferProductList) {
+              if (listProduct.id == product.id) {
+                listProduct.appliedBulkRupee = true;
+                listProduct.appliedUnit = unit;
+                listProduct.appliedBulkRupeeCount = totalCount;
+                listProduct.totalAddedWeight =
+                    double.parse(product.quantity!) * totalCount!.toDouble();
+                addCart.add("bulkOffer");
+                Provider.of<CartProvider>(Get.context!, listen: false)
+                    .addOfferCartItem(
+                  product: product,
+                  totalUnit:
+                  double.parse(product.quantity!) * totalCount.toDouble(),
+                  totalPrice: totalCount * double.parse(product.price!),
+                  totalDiscount: double.parse(product.discount!),
+                  itemPrice: totalCount *
+                      double.parse(product.marketPrice!.toStringAsFixed(1)),
+                  gstPrice: product.tax!.toDouble(),
+                  deliveryCharge: 0.0,
+                  offerPrice: double.parse(product.price!),
+                );
+              }
+            }
+          }
+        } else {
+          ToastService().show(
+              "आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं. बल्क ऑर्डर ऑफर अब आपके लिए मान्य नहीं होगा.");
         }
       } else {
-        for (ProductData listProduct in _categoryAllProductList) {
-          if (listProduct.id == product.id) {
-            if (totalCount! *
-                    double.parse(product.variations![index!].quantity!) <=
-                listProduct.totalStock!.toDouble()) {
-              listProduct.variations![index].addCount = totalCount;
-              listProduct.variations![index].isSelected = true;
-              listProduct.totalAddedWeight = totalCount *
-                  double.parse(product.variations![index].quantity!);
-              listProduct.appliedUnit = unit;
-              Provider.of<CartProvider>(Get.context!, listen: false)
-                  .addCartItem(
-                product: product,
-                totalUnit: totalCount *
-                    double.parse(product.variations![index].quantity!),
-                totalPrice: totalCount *
-                    double.parse(product.variations![index].offerPrice!),
-                totalDiscount:
-                    double.parse(product.variations![index].discount!),
-                itemPrice: totalCount *
-                    double.parse(product.variations![index].marketPrice!
-                        .toStringAsFixed(2)),
-                gstPrice: product.tax!.toDouble(),
-                deliveryCharge: 0.0,
-                offerPrice:
-                    double.parse(product.variations![index].offerPrice!),
-              );
-            } else {
-              ToastService().show("Out of Stock");
-            }
+        ToastService().show("आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं.");
+      }
+    } else {
+      for (ProductData listProduct in _categoryAllProductList) {
+        if (listProduct.id == product.id) {
+          if (totalCount! *
+              double.parse(product.variations![index!].quantity!) <=
+              listProduct.totalStock!.toDouble()) {
+            listProduct.variations![index].addCount = totalCount;
+            listProduct.variations![index].isSelected = true;
+            listProduct.totalAddedWeight = totalCount *
+                double.parse(product.variations![index].quantity!);
+            listProduct.appliedUnit = unit;
+            Provider.of<CartProvider>(Get.context!, listen: false)
+                .addCartItem(
+              product: product,
+              totalUnit: totalCount *
+                  double.parse(product.variations![index].quantity!),
+              totalPrice: totalCount *
+                  double.parse(product.variations![index].offerPrice!),
+              totalDiscount:
+              double.parse(product.variations![index].discount!),
+              itemPrice: totalCount *
+                  double.parse(product.variations![index].marketPrice!
+                      .toStringAsFixed(2)),
+              gstPrice: product.tax!.toDouble(),
+              deliveryCharge: 0.0,
+              offerPrice:
+              double.parse(product.variations![index].offerPrice!),
+            );
+          } else {
+            ToastService().show("Out of Stock");
           }
         }
       }
     }
-    else{
-      ToastService().show("Please login for use this functionality");
-    }
+
+
+
+    // bool? isLoggedIn = Provider.of<AuthProvider>(Get.context!, listen: false).isLoggedIn();
+    //
+    //
+    // if(isLoggedIn){
+    //   if (type!.isNotEmpty) {
+    //     if (!addCart.contains("oneRupeeOffer") && type == "oneRupeeOffer") {
+    //       if (!addCart.contains("bulkOffer")) {
+    //         if (product.oneRsOfferEnable == 1) {
+    //           for (ProductData listProduct in oneRupeeProductList) {
+    //             if (listProduct.id == product.id) {
+    //               listProduct.appliedOneRupee = true;
+    //               listProduct.appliedUnit = unit;
+    //               listProduct.totalAddedWeight = totalCount!.toDouble();
+    //               addCart.add("oneRupeeOffer");
+    //               Provider.of<CartProvider>(Get.context!, listen: false)
+    //                   .addOfferCartItem(
+    //                 product: product,
+    //                 totalUnit: 1.0,
+    //                 totalPrice: 1.0,
+    //                 totalDiscount: double.parse(product.discount!),
+    //                 itemPrice:
+    //                 double.parse(product.marketPrice!.toStringAsFixed(1)),
+    //                 gstPrice: product.tax!.toDouble(),
+    //                 deliveryCharge: 0.0,
+    //                 offerPrice: double.parse(product.price!),
+    //               );
+    //             }
+    //           }
+    //         }
+    //       } else {
+    //         ToastService().show(
+    //             "आप बल्क ऑर्डर ऑफर का फायदा पहले ही ले चुके हैं. एक रुपए ऑफर अब आपके लिए मान्य नहीं होगा.");
+    //       }
+    //     } else if (type == "bulkOffer") {
+    //       if (!addCart.contains("oneRupeeOffer")) {
+    //         if (product.bulkOfferEnable == 1) {
+    //           for (ProductData listProduct in bulkOfferProductList) {
+    //             if (listProduct.id == product.id) {
+    //               listProduct.appliedBulkRupee = true;
+    //               listProduct.appliedUnit = unit;
+    //               listProduct.appliedBulkRupeeCount = totalCount;
+    //               listProduct.totalAddedWeight =
+    //                   double.parse(product.quantity!) * totalCount!.toDouble();
+    //               addCart.add("bulkOffer");
+    //               Provider.of<CartProvider>(Get.context!, listen: false)
+    //                   .addOfferCartItem(
+    //                 product: product,
+    //                 totalUnit:
+    //                 double.parse(product.quantity!) * totalCount.toDouble(),
+    //                 totalPrice: totalCount * double.parse(product.price!),
+    //                 totalDiscount: double.parse(product.discount!),
+    //                 itemPrice: totalCount *
+    //                     double.parse(product.marketPrice!.toStringAsFixed(1)),
+    //                 gstPrice: product.tax!.toDouble(),
+    //                 deliveryCharge: 0.0,
+    //                 offerPrice: double.parse(product.price!),
+    //               );
+    //             }
+    //           }
+    //         }
+    //       } else {
+    //         ToastService().show(
+    //             "आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं. बल्क ऑर्डर ऑफर अब आपके लिए मान्य नहीं होगा.");
+    //       }
+    //     } else {
+    //       ToastService().show("आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं.");
+    //     }
+    //   } else {
+    //     for (ProductData listProduct in _categoryAllProductList) {
+    //       if (listProduct.id == product.id) {
+    //         if (totalCount! *
+    //             double.parse(product.variations![index!].quantity!) <=
+    //             listProduct.totalStock!.toDouble()) {
+    //           listProduct.variations![index].addCount = totalCount;
+    //           listProduct.variations![index].isSelected = true;
+    //           listProduct.totalAddedWeight = totalCount *
+    //               double.parse(product.variations![index].quantity!);
+    //           listProduct.appliedUnit = unit;
+    //           Provider.of<CartProvider>(Get.context!, listen: false)
+    //               .addCartItem(
+    //             product: product,
+    //             totalUnit: totalCount *
+    //                 double.parse(product.variations![index].quantity!),
+    //             totalPrice: totalCount *
+    //                 double.parse(product.variations![index].offerPrice!),
+    //             totalDiscount:
+    //             double.parse(product.variations![index].discount!),
+    //             itemPrice: totalCount *
+    //                 double.parse(product.variations![index].marketPrice!
+    //                     .toStringAsFixed(2)),
+    //             gstPrice: product.tax!.toDouble(),
+    //             deliveryCharge: 0.0,
+    //             offerPrice:
+    //             double.parse(product.variations![index].offerPrice!),
+    //           );
+    //         } else {
+    //           ToastService().show("Out of Stock");
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // else{
+    //   ToastService().show("Please login for use this functionality");
+    // }
 
     notifyListeners();
   }

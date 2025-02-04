@@ -88,7 +88,7 @@ class _RateReviewScreenState extends State<RateReviewScreen>
                       orderDetailsList: widget.orderDetailsList),
                   DeliveryManReviewWidget(
                       deliveryMan: widget.deliveryMan,
-                      orderID: widget.orderDetailsList[0].orderId.toString()),
+                      orderID: widget.orderDetailsList[0].id.toString()),
                 ]
               : [
                   ProductReviewWidget(

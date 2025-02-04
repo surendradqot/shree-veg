@@ -223,7 +223,7 @@ class OrderProvider extends ChangeNotifier {
           _orderDetails!.add(OrderDetailsModel.fromJson(orderDetail)));
       for (var element in _orderDetails!) {
         try {
-          subTotal += double.parse(element.productDetails!.price.toString());
+          // subTotal += double.parse(element.productDetails!.price.toString());
           discount += double.parse(element.productDetails!.discount.toString());
           totalPrice += double.parse(element.price.toString());
         } catch (e) {
