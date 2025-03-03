@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GroFresh</string>
+    <string name="facebook_app_id">7230247030385736</string>
+    <string name="fb_login_protocol_scheme">105eca26d7d59fe0f23156593f35902f</string>
+    <string name="facebook_client_token">4b951b965f8ef1767b42da3fd6be4003</string>
+</resources>
