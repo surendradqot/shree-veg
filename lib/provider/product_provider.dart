@@ -437,7 +437,8 @@ class ProductProvider extends ChangeNotifier {
         if (!whereFrom) {
           tabList.add(product.name!);
         }
-        if (product.oneRsOfferEnable == 0 && product.bulkOfferEnable == 0) {
+        // if (product.oneRsOfferEnable == 0 && product.bulkOfferEnable == 0) {
+
           if (cartProvider.newCartList.isNotEmpty) {
             CartModalNew? cartItem = cartProvider.newCartList.firstWhere(
               (item) => item.productData!.id == product.id,
@@ -454,7 +455,7 @@ class ProductProvider extends ChangeNotifier {
             _categoryProductList.add(product);
             _categoryAllProductList.add(product);
           }
-        }
+
         if (product.oneRsOfferEnable == 1) {
           if (cartProvider.newOfferCartList.isNotEmpty) {
             CartModalNew? cartItem = cartProvider.newOfferCartList.firstWhere(
@@ -527,14 +528,14 @@ class ProductProvider extends ChangeNotifier {
               if (listProduct.id == product.id) {
                 listProduct.appliedOneRupee = true;
                 listProduct.appliedUnit = unit;
-                listProduct.totalAddedWeight = totalCount!.toDouble();
+                listProduct.totalAddedWeight = totalCount!;
                 addCart.add("oneRupeeOffer");
                 Provider.of<CartProvider>(Get.context!, listen: false)
                     .addOfferCartItem(
                   product: product,
                   totalUnit: 1.0,
                   totalPrice: 1.0,
-                  totalDiscount: double.parse(product.discount!),
+                  totalDiscount: double.parse(product.discount!.toString()),
                   itemPrice:
                   double.parse(product.marketPrice!.toStringAsFixed(1)),
                   gstPrice: product.tax!.toDouble(),
@@ -552,27 +553,42 @@ class ProductProvider extends ChangeNotifier {
         if (!addCart.contains("oneRupeeOffer")) {
           if (product.bulkOfferEnable == 1) {
             for (ProductData listProduct in bulkOfferProductList) {
-              if (listProduct.id == product.id) {
-                listProduct.appliedBulkRupee = true;
-                listProduct.appliedUnit = unit;
-                listProduct.appliedBulkRupeeCount = totalCount;
-                listProduct.totalAddedWeight =
-                    double.parse(product.quantity!) * totalCount!.toDouble();
-                addCart.add("bulkOffer");
-                Provider.of<CartProvider>(Get.context!, listen: false)
-                    .addOfferCartItem(
-                  product: product,
-                  totalUnit:
-                  double.parse(product.quantity!) * totalCount.toDouble(),
-                  totalPrice: totalCount * double.parse(product.price!),
-                  totalDiscount: double.parse(product.discount!),
-                  itemPrice: totalCount *
-                      double.parse(product.marketPrice!.toStringAsFixed(1)),
-                  gstPrice: product.tax!.toDouble(),
-                  deliveryCharge: 0.0,
-                  offerPrice: double.parse(product.price!),
-                );
-              }
+              if (totalCount! *
+                  double.parse(product.quantity!) <=
+                  listProduct.totalStock!.toDouble()) {
+                if (listProduct.id == product.id) {
+                  listProduct.appliedBulkRupee = true;
+                  listProduct.appliedUnit = unit;
+                  listProduct.appliedBulkRupeeCount = totalCount;
+                  listProduct.totalAddedWeight =
+                      (double.parse(product.quantity!) *
+                                      totalCount.toDouble()) %
+                                  1 ==
+                              0
+                          ? (double.parse(product.quantity!) *
+                                  totalCount.toDouble())
+                              .toInt()
+                          : (double.parse(product.quantity!) *
+                              totalCount.toDouble());
+                  addCart.add("bulkOffer");
+                  Provider.of<CartProvider>(Get.context!, listen: false)
+                      .addOfferCartItem(
+                    product: product,
+                    totalUnit:
+                        double.parse(product.quantity!) * totalCount.toDouble(),
+                    totalPrice: totalCount * double.parse(product.amount!),
+                    totalDiscount: double.parse(product.discount!.toString()),
+                    itemPrice: double.parse(product.quantity!) *
+                        totalCount *
+                        double.parse(
+                            double.parse(product.customerPrice!.toString())
+                                .toStringAsFixed(2)),
+                    gstPrice: product.tax!.toDouble(),
+                    deliveryCharge: 0.0,
+                    offerPrice: double.parse(product.price!),
+                  );
+                }
+              }else{ToastService().show("Out of Stock");}
             }
           }
         } else {
@@ -590,16 +606,34 @@ class ProductProvider extends ChangeNotifier {
               listProduct.totalStock!.toDouble()) {
             listProduct.variations![index].addCount = totalCount;
             listProduct.variations![index].isSelected = true;
-            listProduct.totalAddedWeight = totalCount *
-                double.parse(product.variations![index].quantity!);
+            double? totalAddedWeight = 0.0;
+            for(Variation variation in listProduct.variations!){
+              if(variation.isSelected!){
+                totalAddedWeight = totalAddedWeight!+variation.addCount! *
+                    double.parse(variation.quantity!);
+              }
+
+            }
+            double? totalPrice = 0.0;
+            if(double.parse(listProduct.variations![1].quantity!)<=totalAddedWeight!){
+              totalPrice = totalPrice + totalAddedWeight*(double.parse(listProduct.variations![1].offerPrice!)/double.parse(listProduct.variations![1].quantity!));
+            }
+            else{
+              for (Variation variation in listProduct.variations!) {
+                if (variation.isSelected!) {
+                    totalPrice = totalPrice! +
+                        variation.addCount! *
+                            double.parse(variation.offerPrice!);
+                }
+              }
+            }
+            listProduct.totalAddedWeight = (totalAddedWeight % 1 == 0)?totalAddedWeight.toInt():totalAddedWeight;
             listProduct.appliedUnit = unit;
             Provider.of<CartProvider>(Get.context!, listen: false)
                 .addCartItem(
               product: product,
-              totalUnit: totalCount *
-                  double.parse(product.variations![index].quantity!),
-              totalPrice: totalCount *
-                  double.parse(product.variations![index].offerPrice!),
+              totalUnit: totalAddedWeight,
+              totalPrice: totalPrice,
               totalDiscount:
               double.parse(product.variations![index].discount!),
               itemPrice: totalCount *
@@ -616,8 +650,6 @@ class ProductProvider extends ChangeNotifier {
         }
       }
     }
-
-
 
     // bool? isLoggedIn = Provider.of<AuthProvider>(Get.context!, listen: false).isLoggedIn();
     //
@@ -753,14 +785,28 @@ class ProductProvider extends ChangeNotifier {
         }
       }
     } else {
+      bool? checkVariations = false;
       for (ProductData listProduct in _categoryAllProductList) {
         if (listProduct.id == product.id) {
           listProduct.variations![index!].addCount = 0;
           listProduct.variations![index].isSelected = false;
-          listProduct.totalAddedWeight = 0;
-          listProduct.appliedUnit = "";
-          Provider.of<CartProvider>(Get.context!, listen: false)
-              .removeCartItem(product);
+          for(Variation variation in listProduct.variations!){
+            if(variation.isSelected!){
+              checkVariations = true;
+            }
+          }
+
+          if(!checkVariations!){
+            listProduct.totalAddedWeight = 0;
+            listProduct.appliedUnit = "";
+            Provider.of<CartProvider>(Get.context!, listen: false)
+                .removeCartItem(product);
+          }
+          else{
+            listProduct.totalAddedWeight = listProduct.totalAddedWeight!-double.parse(listProduct.variations![index].quantity!);
+          }
+
+
         }
       }
     }

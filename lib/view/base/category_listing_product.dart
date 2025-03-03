@@ -40,7 +40,7 @@ class CategoryListingProduct extends StatelessWidget {
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
         double? price = 0;
-        int? stock = 0;
+        num? stock = 0;
         // double? priceWithQuantity = 0;
         CartModel? cartModel;
         bool isExistInCart = false;
@@ -113,7 +113,7 @@ class CategoryListingProduct extends StatelessWidget {
               double.parse(product
                   .variations![product.selectedVariation ?? 0].quantity!),
               product.unit,
-              stock,
+              stock!.toInt(),
               product);
 
           isExistInCart = Provider.of<CartProvider>(context, listen: false)
@@ -148,7 +148,7 @@ class CategoryListingProduct extends StatelessWidget {
                     price, product.tax, product.taxType)!),
             product.capacity,
             product.unit,
-            stock,
+            stock.toInt(),
             product,
           );
           isExistInCart = Provider.of<CartProvider>(context, listen: false)

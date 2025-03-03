@@ -145,7 +145,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                     price = double.parse(product.variations!.isNotEmpty
                         ? product.variations![index].offerPrice ?? "0.0"
                         : product.price!);
-                    stock = product.totalStock;
+                    stock = product.totalStock!.toInt();
                     cartModel = CartModelForPlaceOrder(
                       product.id,
                       // product Id
@@ -161,11 +161,13 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                           double.parse(product.discount!),
                           product.discountType),
                       // Discount Price
-                      cartData.productData!.variations!
-                          .where((test) => test.isSelected!)
-                          .fold(0.0, (oldValue, newValue) => newValue.addCount),
+                      // cartData.productData!.totalAddedWeight!>=double.parse(cartData.productData!.variations![1].quantity!)?cartData.productData!.totalAddedWeight!/double.parse(cartData.productData!.variations![1].quantity!):cartData.productData!.totalAddedWeight!,
+                      cartData.productData!.totalAddedWeight!,
+                      // cartData.productData!.variations!
+                      //     .where((test) => test.isSelected!)
+                      //     .fold(0.0, (oldValue, newValue) => newValue.addCount!+oldValue!.abs()),
                       //quantity
-                      cartData.productData!.variations!
+                      cartData.productData!.totalAddedWeight!>=double.parse(cartData.productData!.variations![1].quantity!)?cartData.productData!.variations![1]:cartData.productData!.variations!
                           .firstWhere((test) => test.isSelected!),
                       (price -
                           PriceConverter.convertWithDiscount(
@@ -201,7 +203,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                     double.parse(cartData.productData!.tax!.toString()),
                     double.parse(cartData.productData!.capacity!),
                     cartData.productData!.unit!,
-                    cartData.productData!.totalStock!,
+                    cartData.productData!.totalStock!.toInt(),
                     cartData.productData!,
                   );
                   if (widget.amount! >= 100 &&

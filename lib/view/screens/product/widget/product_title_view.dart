@@ -38,7 +38,7 @@ class ProductTitleView extends StatelessWidget {
     if (product!.variations!.isNotEmpty) {
       List<double?> priceList = [];
       for (var variation in product!.variations!) {
-        priceList.add(double.parse(variation.offerPrice!));
+        priceList.add(double.parse(variation.offerPrice!.isNotEmpty?variation.offerPrice!:"0.0"));
       }
       priceList.sort((a, b) => a!.compareTo(b!));
       startingPrice = priceList[0];
@@ -49,11 +49,11 @@ class ProductTitleView extends StatelessWidget {
       startingPrice = double.parse(product!.price!);
     }
     startingPriceWithDiscount = PriceConverter.convertWithDiscount(
-        startingPrice, double.parse(product!.discount!), product!.discountType);
+        startingPrice, double.parse(product!.discount!.toString()), product!.discountType);
 
     if (endingPrice != null) {
       endingPriceWithDiscount = PriceConverter.convertWithDiscount(
-          endingPrice, double.parse(product!.discount!), product!.discountType);
+          endingPrice, double.parse(product!.discount!.toString()), product!.discountType);
     }
 
     if (startingPriceWithCategoryDiscount != null &&

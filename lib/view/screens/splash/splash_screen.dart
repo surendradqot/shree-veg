@@ -2,14 +2,18 @@ import 'dart:async';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shreeveg/data/model/response/config_model.dart';
 import 'package:shreeveg/data/model/response/userinfo_model.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/localization/app_localization.dart';
 import 'package:shreeveg/main.dart';
 import 'package:shreeveg/provider/auth_provider.dart';
+import 'package:shreeveg/provider/banner_provider.dart';
 import 'package:shreeveg/provider/cart_provider.dart';
 import 'package:shreeveg/provider/category_provider.dart';
+import 'package:shreeveg/provider/flash_deal_provider.dart';
 import 'package:shreeveg/provider/profile_provider.dart';
 import 'package:shreeveg/provider/splash_provider.dart';
 import 'package:shreeveg/helper/route_helper.dart';
@@ -94,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen> {
         .then((bool isSuccess) {
       if (isSuccess) {
         Timer(const Duration(seconds: 1), () async {
-          double minimumVersion = 0.0;
+          String? minimumVersion = "1.0.0";
           if (Platform.isAndroid) {
             if (Provider.of<SplashProvider>(context, listen: false)
                     .configModel!
@@ -106,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           .configModel!
                           .playStoreConfig!
                           .minVersion ??
-                      6.0;
+                      "1.0.0";
             }
           } else if (Platform.isIOS) {
             if (Provider.of<SplashProvider>(context, listen: false)
@@ -119,11 +123,21 @@ class _SplashScreenState extends State<SplashScreen> {
                           .configModel!
                           .appStoreConfig!
                           .minVersion ??
-                      6.0;
+                      "1.0.0";
             }
           }
+          PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-          if (AppConstants.appVersion < minimumVersion &&
+          String appName = packageInfo.appName;
+          String packageName = packageInfo.packageName;
+          String version = packageInfo.version.replaceAll(".", "");
+          String buildNumber = minimumVersion.replaceAll(".", "");
+          print('App Name: $appName');
+          print('Package Name: $packageName');
+          print('Version: $version');
+          print('Build Number: $buildNumber');
+
+          if (double.parse(version) < double.parse(buildNumber) &&
               !ResponsiveHelper.isWeb()) {
             Navigator.pushNamedAndRemoveUntil(
                 context, RouteHelper.getUpdateRoute(), (route) => false);
@@ -233,7 +247,7 @@ void showCityDialog(BuildContext context) {
                         onTap: () async {
                           Navigator.of(Get.context!).pop();
                           provider.selectItem(provider.items[index].warehousesId!,provider.items[index]);
-                          await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
+                          Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
                             context,
                             "en",
                             false,
@@ -241,6 +255,11 @@ void showCityDialog(BuildContext context) {
                           ).then((onValue){
 
                           });
+                          ConfigModel config =
+                          Provider.of<SplashProvider>(context, listen: false).configModel!;
+                          if (config.flashDealProductStatus!) {
+                            await Provider.of<FlashDealProvider>(context, listen: false).getFlashDealList(true, false);
+                          }
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,

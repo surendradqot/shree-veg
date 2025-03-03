@@ -117,7 +117,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscureText: widget.isPassword ? _obscureText : false,
       inputFormatters: widget.inputType == TextInputType.phone
           ? <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp('[0-9+]')),
+              FilteringTextInputFormatter.allow(RegExp('[0-9]')),
               LengthLimitingTextInputFormatter(10),
             ]
           : null,

@@ -14,8 +14,11 @@ class SearchRepo {
   Future<ApiResponse> getSearchProductList(
       String query, String languageCode) async {
     try {
+      SharedPreferences? sharedPreferences  = await SharedPreferences.getInstance();
+      int? whId = sharedPreferences.getInt(AppConstants.selectedCityId);
+      // warehouse_id=
       final response = await dioClient!.get(
-        '${AppConstants.searchUri + query}&limit=50&&offset=1',
+        '${AppConstants.searchUri + query}&warehouse_id=$whId&limit=500&&offset=1',
         options: Options(headers: {'X-localization': languageCode}),
       );
       return ApiResponse.withSuccess(response);

@@ -57,7 +57,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
 
   // String _currentImage = "assets/image/ellipse.png";
   Color _textColor = Colors.white;
-  double? fontSize = 5;
+  double? fontSize = 7;
   ColorFilter? _imageColorFilter;
 
   @override
@@ -82,7 +82,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
       setState(() {
         _currentText = _currentText == "99.99%" ? "Discount" : "99.99%";
         _textColor = _textColor == Colors.white ? Colors.black : Colors.white;
-        fontSize = fontSize == 5 ? 4 : 5;
+        fontSize = fontSize == 5 ? 4 : 8;
         _imageColorFilter = _imageColorFilter == null
             ? ColorFilter.mode(Color(0xffFDC94C), BlendMode.srcATop)
             : null;
@@ -92,8 +92,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
-    Variation? variation;
-
     return Scaffold(
       appBar: ResponsiveHelper.isDesktop(context)
           ? const PreferredSize(
@@ -107,10 +105,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
           double? priceWithQuantity = 0;
           CartModalNew? cartModel;
 
+          double? totalAmount = 0.0;
+          for(int index = 0;
+          index < widget.product!.variations!.length;
+          index++){
+            if(widget.product!.variations![index].isSelected!){
+              totalAmount = totalAmount!+widget.product!.variations![index].addCount!*double.parse(widget.product!.variations![index].offerPrice!);
+            }
+          }
+
           price = widget.product!.variations!.isNotEmpty
-              ? double.parse(widget.product!.variations![0].offerPrice!)
+              ? double.parse(widget.product!.variations![0].offerPrice!.isNotEmpty?widget.product!.variations![0].offerPrice!:"0.00")
               : 0.00;
-          stock = widget.product!.totalStock;
+          stock = widget.product!.totalStock!.toInt();
 
           if (widget.product!.variations != null) {
             for (int index = 0;
@@ -119,7 +126,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
               if (widget.product!.variations![index].isSelected!) {
                 price = double.parse(
                     widget.product!.variations![index].offerPrice!);
-                variation = widget.product!.variations![index];
+                // variation = widget.product!.variations![index];
                 break;
               }
             }
@@ -138,7 +145,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
           // }
           priceWithDiscount = PriceConverter.convertWithDiscount(
               price,
-              double.parse(widget.product!.discount!),
+              double.parse(widget.product!.discount!.toString()),
               widget.product!.discountType);
 
           if (categoryDiscountAmount != null &&
@@ -224,7 +231,31 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        for(Variation variation in widget.product!.variations!)variation.isSelected!?Container(
+                                        totalAmount != 0.0?Container(
+                                          color: const Color(0xFFFFE1CE),
+                                          child: Padding(
+                                            padding:
+                                            const EdgeInsets.all(Dimensions.paddingSizeSmall),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text('${getTranslated('Total Weight', context)}:',
+                                                    style: poppinsMedium.copyWith(
+                                                        fontSize: Dimensions.fontSizeLarge)),
+                                                const SizedBox(
+                                                    width: Dimensions.paddingSizeExtraSmall),
+                                                CustomDirectionality(
+                                                  child: Text(
+                                                    "${widget.product!.totalAddedWeight!.toStringAsFixed(0)} ${widget.product!.unit}",
+                                                    style: poppinsBold.copyWith(
+                                                      color: Colors.black,
+                                                      fontSize: Dimensions.fontSizeLarge,
+                                                    ),
+                                                  ),),
+                                              ],),
+                                          ),
+                                        ):SizedBox(),
+                                        totalAmount != 0.0?Container(
                                           color: const Color(0xFFFFE1CE),
                                           child: Padding(
                                             padding:
@@ -241,14 +272,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                       child: Text(
                                                         PriceConverter.convertPrice(
                                                             context,
-                                                            double.parse(variation.offerPrice!) *
-                                                                variation.addCount!),
+                                                          totalAmount,),
                                                         style: poppinsBold.copyWith(
                                                           color: Colors.black,
                                                           fontSize: Dimensions.fontSizeLarge,
                                                         ),
-                                                      )),
-                                                ]),
+                                                      ),),
+                                                ],),
                                           ),
                                         ):SizedBox(),
                                       ],
@@ -811,14 +841,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                           Row(
                             children: [
                               Text(
-                                "₹${categoryProductList.variations![subIndex].offerPrice!.isNotEmpty ? categoryProductList.variations![subIndex].offerPrice : ""}",
+                                "₹${categoryProductList.variations![subIndex].offerPrice!.isNotEmpty ? categoryProductList.variations![subIndex].offerPrice : "--"}",
                                 style: poppinsRegular.copyWith(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black),
                               ),
                               Text(
-                                "MRP ₹${categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0).isNotEmpty ? categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0) : ""}",
+                                "MRP ",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff828282),
+                                    decorationColor: Color(0xff828282)),
+                              ),
+                              Text(
+                                "₹${categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0).isNotEmpty ? categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0) : ""}",
                                 style: poppinsRegular.copyWith(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w500,
@@ -842,7 +880,282 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                         ],
                       ),
                       Spacer(),
-                      Container(
+                      categoryProductList.variations![subIndex].quantity!
+                          .isNotEmpty&& categoryProductList
+                          .variations![subIndex].offerPrice!.isNotEmpty &&
+                          categoryProductList.totalStock != null &&
+                          double.parse(categoryProductList.totalStock!
+                              .toString()) >=
+                              double.parse(categoryProductList
+                                  .variations![subIndex]
+                                  .quantity!
+                                  .isNotEmpty
+                                  ? categoryProductList
+                                  .variations![subIndex].quantity!
+                                  : "0.0")
+                          ? Container(
+                        alignment: Alignment.center,
+                        height: 45,
+                        width: 45,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image:
+                            AssetImage("assets/image/discount.png"),
+                            fit: BoxFit.fill,
+                            colorFilter: _imageColorFilter,
+                          ),
+                        ),
+                        child: Text(
+                          _currentText != "Discount"
+                              ? "${categoryProductList.variations![subIndex].discount!.toString().replaceAll("-", " ")}%"
+                              : "OFF",
+                          style: poppinsRegular.copyWith(
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.w500,
+                              color: _textColor),
+                        ),
+                      )
+                          : SizedBox(),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      categoryProductList
+                          .variations![subIndex].quantity!.isNotEmpty && categoryProductList
+                          .variations![subIndex].offerPrice!.isNotEmpty
+                          ? categoryProductList.totalStock != null &&
+                          double.parse(categoryProductList.totalStock!
+                              .toString()) >=
+                              double.parse(categoryProductList
+                                  .variations![subIndex]
+                                  .quantity!
+                                  .isNotEmpty
+                                  ? categoryProductList
+                                  .variations![subIndex].quantity!
+                                  : "0.0")
+                          ? categoryProductList
+                          .variations![subIndex].isSelected!
+                          ? Container(
+                        alignment: Alignment.center,
+                        height: 30,
+                        width: 75,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(3),
+                          // color: Color(0xff0C4619),
+                          border: Border.all(
+                            color: Color(0xff0C4619),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (categoryProductList
+                                      .variations![
+                                  subIndex]
+                                      .addCount !=
+                                      1 &&
+                                      categoryProductList
+                                          .variations![
+                                      subIndex]
+                                          .addCount! <=
+                                          10) {
+                                    Provider.of<ProductProvider>(
+                                        context,
+                                        listen: false)
+                                        .addToCart(
+                                      categoryProductList,
+                                      categoryProductList
+                                          .variations![
+                                      subIndex]
+                                          .addCount! -
+                                          1,
+                                      "",
+                                      weightBox(categoryProductList
+                                          .variations![
+                                      subIndex]
+                                          .quantity!)
+                                          .contains("gm")
+                                          ? "gm"
+                                          : "Kg",
+                                      index: subIndex,
+                                    );
+                                  } else {
+                                    Provider.of<ProductProvider>(
+                                        context,
+                                        listen: false)
+                                        .removeFromCart(
+                                      categoryProductList,
+                                      "",
+                                      index: subIndex,
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffDAEEDF),
+                                    borderRadius:
+                                    BorderRadius.only(
+                                      topLeft:
+                                      Radius.circular(3),
+                                      bottomLeft:
+                                      Radius.circular(3),
+                                    ),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.remove,
+                                    color: Color(0xff0C4619),
+                                    size: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  "${categoryProductList.variations![subIndex].addCount}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff0C4619),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (categoryProductList
+                                      .variations![subIndex]
+                                      .addCount! <
+                                      10) {
+                                    Provider.of<ProductProvider>(
+                                        context,
+                                        listen: false)
+                                        .addToCart(
+                                      categoryProductList,
+                                      categoryProductList
+                                          .variations![
+                                      subIndex]
+                                          .addCount! +
+                                          1,
+                                      "",
+                                      weightBox(categoryProductList
+                                          .variations![
+                                      subIndex]
+                                          .quantity!)
+                                          .contains("gm")
+                                          ? "gm"
+                                          : "Kg",
+                                      index: subIndex,
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffDAEEDF),
+                                    borderRadius:
+                                    BorderRadius.only(
+                                      topRight:
+                                      Radius.circular(3),
+                                      bottomRight:
+                                      Radius.circular(3),
+                                    ),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Color(0xff0C4619),
+                                    size: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          : GestureDetector(
+                        onTap: () {
+                          Provider.of<ProductProvider>(context,
+                              listen: false)
+                              .addToCart(
+                            categoryProductList,
+                            categoryProductList
+                                .variations![subIndex]
+                                .addCount! +
+                                1,
+                            "",
+                            weightBox(categoryProductList
+                                .variations![subIndex]
+                                .quantity!)
+                                .contains("gm")
+                                ? "gm"
+                                : "Kg",
+                            index: subIndex,
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 30,
+                          width: 75,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                              BorderRadius.circular(3),
+                              color: Color(0xff0C4619)),
+                          child: Text(
+                            "ADD",
+                            style: poppinsRegular.copyWith(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          ),
+                        ),
+                      )
+                          : Container(
+                        alignment: Alignment.center,
+                        height: 20,
+                        padding:
+                        EdgeInsets.symmetric(horizontal: 05),
+                        // width: 63,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          color: Color(0xff4a9e60),
+                          border: Border.all(
+                            color: Color(0xff4a9e60),
+                          ),
+                        ),
+                        child: Text(
+                          "Out Of Stock",
+                          style: poppinsRegular.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
+                        ),
+                      )
+                          : Container(
+                        alignment: Alignment.center,
+                        height: 20,
+                        padding: EdgeInsets.symmetric(horizontal: 05),
+                        // width: 63,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          // color: Color(0xff4a9e60),
+                          border: Border.all(
+                            color: Color(0xff4a9e60),
+                          ),
+                        ),
+                        child: Text(
+                          "Coming Soon..",
+                          style: poppinsRegular.copyWith(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                      /*Container(
                         alignment: Alignment.center,
                         height: 35,
                         width: 35,
@@ -856,9 +1169,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                         child: Text(
                           _currentText != "Discount"
                               ? "${categoryProductList.variations![subIndex].discount!.replaceAll("-", " ")}%"
-                              : "Discount",
+                              : "OFF",
                           style: poppinsRegular.copyWith(
-                              fontSize: fontSize,
+                              fontSize: 7,
                               fontWeight: FontWeight.w500,
                               color: _textColor),
                         ),
@@ -1026,7 +1339,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                       color: Colors.white),
                                 ),
                               ),
-                            ),
+                            ),*/
                       SizedBox(
                         width: 5,
                       ),

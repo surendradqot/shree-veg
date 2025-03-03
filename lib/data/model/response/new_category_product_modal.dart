@@ -70,12 +70,12 @@ class ProductData {
   String? storePrice;
   DateTime? storePriceUpdatedDate;
   int? marketPrice;
-  String? discount;
+  dynamic? discount;
   String? discountType;
   int? maximumOrderQuantity;
   int? sequence;
   int? defaultUnit;
-  int? totalStock;
+  num? totalStock;
   String? productDetails;
   DateTime? productRateUpdatedDate;
   String? lastUpdatedPrices;
@@ -114,7 +114,7 @@ class ProductData {
   int? catParentId;
   String? catName;
   String? catCategoryCode;
-  double? totalAddedWeight = 0.0;
+  num? totalAddedWeight = 0.0;
   bool? appliedOneRupee = false;
   bool? appliedBulkRupee = false;
   int? appliedBulkRupeeCount = 0;

@@ -5,7 +5,7 @@ import 'images.dart';
 
 class AppConstants {
   static const String appName = 'Shree Veg';
-  static const double appVersion = 7.0;
+  static const double appVersion = 0.0;
   static const AppMode appMode = AppMode.release;
   static const String baseUrl =
       // 'http://192.168.29.160/shreeveg';

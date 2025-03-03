@@ -193,7 +193,7 @@ class OrderDetailsModel {
   String? variation;
   dynamic discountOnProduct;
   String? discountType;
-  int? quantity;
+  num? quantity;
   int? taxAmount;
   dynamic variant;
   String? unit;

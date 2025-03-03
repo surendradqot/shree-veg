@@ -79,7 +79,7 @@ class ProductWidget extends StatelessWidget {
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
         double? price = 0;
-        int? stock = 0;
+        num? stock = 0;
         bool isExistInCart = false;
         int? cardIndex;
         CartModel? cartModel;
@@ -112,7 +112,7 @@ class ProductWidget extends StatelessWidget {
                         price, product.tax, product.taxType)!),
                 product.capacity,
                 product.unit,
-                stock,
+                stock!.toInt(),
                 product);
             isExistInCart = Provider.of<CartProvider>(context, listen: false)
                     .isExistInCart(cartModel) !=
@@ -140,7 +140,7 @@ class ProductWidget extends StatelessWidget {
                   price, double.parse(product.discount!), product.discountType),
               1,
               product.variations!.isNotEmpty ? product.variations![0] : null,
-              (price! -
+              (price -
                   PriceConverter.convertWithDiscount(price,
                       double.parse(product.discount!), product.discountType)!),
               (price -
@@ -148,7 +148,7 @@ class ProductWidget extends StatelessWidget {
                       price, product.tax, product.taxType)!),
               product.capacity,
               product.unit,
-              stock,
+              stock.toInt(),
               product);
           isExistInCart = Provider.of<CartProvider>(context, listen: false)
                   .isExistInCart(cartModel) !=
@@ -160,11 +160,11 @@ class ProductWidget extends StatelessWidget {
         return ResponsiveHelper.isDesktop(context)
             ? OnHover(
                 isItem: true,
-                child: _productGridView(context, isExistInCart, stock,
+                child: _productGridView(context, isExistInCart, stock!.toInt(),
                     cartModel, cardIndex, priceWithDiscount!),
               )
             : isGrid
-                ? _productGridView(context, isExistInCart, stock, cartModel,
+                ? _productGridView(context, isExistInCart, stock!.toInt(), cartModel,
                     cardIndex, priceWithDiscount!)
                 : CategoryListingProduct(
                     product: product, productType: productType);

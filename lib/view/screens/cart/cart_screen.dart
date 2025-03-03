@@ -42,7 +42,7 @@ class _CartListScreenState extends State<CartListScreen>
   late AnimationController controller;
   String _currentText = "99.99%";
   Color _textColor = Colors.white;
-  double? fontSize = 5;
+  double? fontSize = 7;
   ColorFilter? _imageColorFilter;
   bool isFirstVerticalItemUpdated = false;
   Timer? timer;
@@ -61,7 +61,7 @@ class _CartListScreenState extends State<CartListScreen>
       setState(() {
         _currentText = _currentText == "99.99%" ? "Discount" : "99.99%";
         _textColor = _textColor == Colors.white ? Colors.black : Colors.white;
-        fontSize = fontSize == 5 ? 4 : 5;
+        // fontSize = fontSize == 5 ? 4 : 5;
         _imageColorFilter = _imageColorFilter == null
             ? ColorFilter.mode(Color(0xffFDC94C), BlendMode.srcATop)
             : null;
@@ -209,420 +209,403 @@ class _CartListScreenState extends State<CartListScreen>
         if (totalDiscount != 0.0) {
           totalDiscount = totalDiscount! / cartProvider.cartLength!;
         }
-        return
-             cartProvider.cartLength != 0
-                ? Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: cartProvider.newCartList.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4.0),
-                                        child: productList(cartProvider
-                                            .newCartList[index].productData!),
-                                      );
-                                    }),
-                                cartProvider.newOfferCartList.isNotEmpty
-                                    ? Text(
-                                        "OFFER",
-                                        style: poppinsRegular.copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black),
-                                      )
-                                    : SizedBox(),
-                                ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount:
-                                        cartProvider.newOfferCartList.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4.0),
-                                        child: cartProvider
-                                                    .newOfferCartList[index]
-                                                    .productData!
-                                                    .oneRsOfferEnable ==
-                                                1
-                                            ? oneRupeeOfferBox(
-                                                cartProvider
-                                                    .newOfferCartList[index]
-                                                    .productData!,
-                                                totalOfferPrice)
-                                            : bulkOfferBox(cartProvider
+        return cartProvider.cartLength != 0
+            ? Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: cartProvider.newCartList.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: productList(cartProvider
+                                        .newCartList[index].productData!),
+                                  );
+                                }),
+                            cartProvider.newOfferCartList.isNotEmpty
+                                ? Text(
+                                    "OFFER",
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black),
+                                  )
+                                : SizedBox(),
+                            ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: cartProvider.newOfferCartList.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: cartProvider
                                                 .newOfferCartList[index]
-                                                .productData!),
-                                      );
-                                    }),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                DottedLine(
-                                  direction: Axis.horizontal,
-                                  alignment: WrapAlignment.center,
-                                  lineLength: double.infinity,
-                                  lineThickness: 1.0,
-                                  dashLength: 4.0,
-                                  dashColor: Color(0xFFB5B5B5),
-                                  // Updated color
-                                  dashGradient: null,
-                                  // Ensure no gradient overrides the dashColor
-                                  dashRadius: 0.0,
-                                  dashGapLength: 4.0,
-                                  dashGapColor: Colors.transparent,
-                                  dashGapGradient: null,
-                                  // Ensure no gradient overrides the dashGapColor
-                                  dashGapRadius: 0.0,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Bill Details",
-                                      style: poppinsRegular.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
-                                          color: Colors.black),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 3),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          color: Color(0xffF64A4D)),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "MRP ",
-                                            style: poppinsRegular.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.white),
-                                          ),
-                                          Text(
-                                            "₹${totalMarketPrice!.toStringAsFixed(0)}",
-                                            style: poppinsRegular.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.white,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                                decorationColor: Colors.white),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Total Items (in unit)",
-                                      style: poppinsRegular.copyWith(
-                                          fontSize: 14,
-                                          color: Color(0xff37474F)),
-                                    ),
-                                    Text(
-                                      "${totalUnit}kg",
-                                      style: poppinsRegular.copyWith(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xff3C3C3C)),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Shree Veg Price",
-                                      style: poppinsRegular.copyWith(
-                                          fontSize: 14,
-                                          color: Color(0xff37474F)),
-                                    ),
-                                    Text(
-                                      "₹${totalOfferPrice!.toStringAsFixed(1)}",
-                                      style: poppinsRegular.copyWith(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xff14A236)),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Delivery Charge",
-                                      style: poppinsRegular.copyWith(
-                                          fontSize: 14,
-                                          color: Color(0xff37474F)),
-                                    ),
-                                    Text(
-                                      "₹$totalDeliveryCharges",
-                                      style: poppinsRegular.copyWith(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xff14A236)),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Delivery Fee",
-                                      style: poppinsRegular.copyWith(
-                                          fontSize: 14,
-                                          color: Color(0xff37474F)),
-                                    ),
-                                    Text(
-                                      "₹Free",
-                                      style: poppinsRegular.copyWith(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xff14A236)),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
+                                                .productData!
+                                                .oneRsOfferEnable ==
+                                            1
+                                        ? oneRupeeOfferBox(
+                                            cartProvider.newOfferCartList[index]
+                                                .productData!,
+                                            totalOfferPrice)
+                                        : bulkOfferBox(cartProvider
+                                            .newOfferCartList[index]
+                                            .productData!),
+                                  );
+                                }),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            DottedLine(
+                              direction: Axis.horizontal,
+                              alignment: WrapAlignment.center,
+                              lineLength: double.infinity,
+                              lineThickness: 1.0,
+                              dashLength: 4.0,
+                              dashColor: Color(0xFFB5B5B5),
+                              // Updated color
+                              dashGradient: null,
+                              // Ensure no gradient overrides the dashColor
+                              dashRadius: 0.0,
+                              dashGapLength: 4.0,
+                              dashGapColor: Colors.transparent,
+                              dashGapGradient: null,
+                              // Ensure no gradient overrides the dashGapColor
+                              dashGapRadius: 0.0,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Bill Details",
+                                  style: poppinsRegular.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      color: Colors.black),
                                 ),
                                 Container(
-                                  padding: EdgeInsets.all(8),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 3),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: Color(0xffDAEEDF),
-                                      border: Border.all(
-                                          color: Color(0xff0C4619)
-                                              .withOpacity(0.37))),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                      color: Color(0xffF64A4D)),
+                                  child: Row(
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Additional Discount",
-                                            style: poppinsRegular.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                          ),
-                                          Text(
-                                            "₹${0}",
-                                            style: poppinsRegular.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                color: Color(0xff14A236)),
-                                          )
-                                        ],
+                                      Text(
+                                        "MRP ",
+                                        style: poppinsRegular.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white),
                                       ),
                                       Text(
-                                        "(*Applicable on Advance Payment or Self Pick-Up)",
+                                        "₹${totalMarketPrice!.toStringAsFixed(0)}",
                                         style: poppinsRegular.copyWith(
-                                            fontSize: 9,
-                                            color: Color(0xff4E4E4E)),
-                                      )
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                            decorationColor: Colors.white),
+                                      ),
                                     ],
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                DottedLine(
-                                  direction: Axis.horizontal,
-                                  alignment: WrapAlignment.center,
-                                  lineLength: double.infinity,
-                                  lineThickness: 1.0,
-                                  dashLength: 4.0,
-                                  dashColor: Color(0xFFB5B5B5),
-                                  // Updated color
-                                  dashGradient: null,
-                                  // Ensure no gradient overrides the dashColor
-                                  dashRadius: 0.0,
-                                  dashGapLength: 4.0,
-                                  dashGapColor: Colors.transparent,
-                                  dashGapGradient: null,
-                                  // Ensure no gradient overrides the dashGapColor
-                                  dashGapRadius: 0.0,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  "Select Stores",
-                                  style: poppinsRegular.copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                CartStoreOptions(),
-                                CartDeliveryTimeSlot(),
                               ],
                             ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(5),
-                                topRight: Radius.circular(5))),
-                        child: Column(
-                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Total Items (in unit)",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 14, color: Color(0xff37474F)),
+                                ),
+                                Text(
+                                  "${totalUnit}kg",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff3C3C3C)),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Shree Veg Price",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 14, color: Color(0xff37474F)),
+                                ),
+                                Text(
+                                  "₹${totalOfferPrice!.toStringAsFixed(2)}",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff14A236)),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Delivery Charge",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 14, color: Color(0xff37474F)),
+                                ),
+                                Text(
+                                  "₹$totalDeliveryCharges",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff14A236)),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Delivery Fee",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 14, color: Color(0xff37474F)),
+                                ),
+                                Text(
+                                  "₹Free",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff14A236)),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 3),
-                              width: double.infinity,
+                              padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(5),
-                                      topRight: Radius.circular(5)),
-                                  color: Color(0xff0C4619)),
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Color(0xffDAEEDF),
+                                  border: Border.all(
+                                      color:
+                                          Color(0xff0C4619).withOpacity(0.37))),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Total Discount",
+                                        "Additional Discount",
                                         style: poppinsRegular.copyWith(
-                                            fontSize: 16, color: Colors.white),
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                            color: Colors.black),
                                       ),
                                       Text(
-                                        "${totalDiscount!.toStringAsFixed(2)}%",
+                                        "₹${(totalMarketPrice-totalOfferPrice).toStringAsFixed(2)}",
                                         style: poppinsRegular.copyWith(
-                                            fontSize: 18,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700),
-                                      ),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xff14A236)),
+                                      )
                                     ],
+                                  ),
+                                  Text(
+                                    "(*Applicable on Advance Payment or Self Pick-Up)",
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 9, color: Color(0xff4E4E4E)),
                                   )
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    // flex:2,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Grand Total: ₹${totalOfferPrice.toStringAsFixed(2)}",
-                                          maxLines: 1,
-                                          overflow: TextOverflow.visible,
-                                          style: poppinsRegular.copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                              color: Colors.black),
-                                        ),
-                                        Text(
-                                          "(Incl. of all taxes)",
-                                          style: poppinsRegular.copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 10,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      if (cartProvider.selectedStoreId ==
-                                          null) {
-                                        ToastService().show(
-                                            'Please select store to pickup');
-                                      } else if (cartProvider
-                                              .selectedDeliveryTimeSlot ==
-                                          null) {
-                                        ToastService().show(
-                                            'Please select upcoming delivery time slot');
-                                      } else {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                CheckoutScreen(
-                                              amount: totalOfferPrice!,
-                                              orderType: "self_pickup",
-                                              discount: totalDiscount,
-                                              couponCode: "",
-                                              freeDeliveryType: "",
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 08, vertical: 5),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          color: Color(0xff14A236)),
-                                      child: Text(
-                                        "Place Your Order",
-                                        style: poppinsRegular.copyWith(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
+                            SizedBox(
+                              height: 15,
+                            ),
+                            DottedLine(
+                              direction: Axis.horizontal,
+                              alignment: WrapAlignment.center,
+                              lineLength: double.infinity,
+                              lineThickness: 1.0,
+                              dashLength: 4.0,
+                              dashColor: Color(0xFFB5B5B5),
+                              // Updated color
+                              dashGradient: null,
+                              // Ensure no gradient overrides the dashColor
+                              dashRadius: 0.0,
+                              dashGapLength: 4.0,
+                              dashGapColor: Colors.transparent,
+                              dashGapGradient: null,
+                              // Ensure no gradient overrides the dashGapColor
+                              dashGapRadius: 0.0,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "Select Stores",
+                              style: poppinsRegular.copyWith(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                            CartStoreOptions(),
+                            CartDeliveryTimeSlot(),
                           ],
                         ),
                       ),
-                    ],
-                  )
-                : Center(
-                    child: const NoDataScreen(isCart: true),
-                  )
-            ;
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(5),
+                            topRight: Radius.circular(5))),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(5),
+                                  topRight: Radius.circular(5)),
+                              color: Color(0xff0C4619)),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Total Discount",
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 16, color: Colors.white),
+                                  ),
+                                  Text(
+                                    "${totalDiscount!.toStringAsFixed(2)}%",
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                // flex:2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Grand Total: ₹${totalOfferPrice.toStringAsFixed(2)}",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.visible,
+                                      style: poppinsRegular.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          color: Colors.black),
+                                    ),
+                                    Text(
+                                      "(Incl. of all taxes)",
+                                      style: poppinsRegular.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 10,
+                                          color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  if(isLoggedIn!){
+                                    if (cartProvider.selectedStoreId == null) {
+                                      ToastService().show(
+                                          'Please select store to pickup');
+                                    } else if (cartProvider
+                                            .selectedDeliveryTimeSlot ==
+                                        null) {
+                                      ToastService().show(
+                                          'Please select upcoming delivery time slot');
+                                    } else {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => CheckoutScreen(
+                                            amount: totalOfferPrice!,
+                                            orderType: "self_pickup",
+                                            discount: totalDiscount,
+                                            couponCode: "",
+                                            freeDeliveryType: "",
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }else{
+                                    ToastService().show(
+                                        'Login first for the place your order');
+                                  }
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 08, vertical: 5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Color(0xff14A236)),
+                                  child: Text(
+                                    "Place Your Order",
+                                    style: poppinsRegular.copyWith(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : Center(
+                child: const NoDataScreen(isCart: true),
+              );
       }),
     );
   }
@@ -1194,8 +1177,8 @@ class _CartListScreenState extends State<CartListScreen>
                           ),
                           Container(
                             alignment: Alignment.center,
-                            height: 22,
-                            width: 60,
+                            height: 25,
+                            width: 63,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(3),
                                 color: Color(0xff0C4619)),
@@ -1349,9 +1332,9 @@ class _CartListScreenState extends State<CartListScreen>
   oneRupeeOfferBox(ProductData oneRupeeProductList, double? totalPrice) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                ProductDetailsScreen(product: oneRupeeProductList)));
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) =>
+        //         ProductDetailsScreen(product: oneRupeeProductList)));
       },
       child: Container(
         width: double.infinity,
@@ -1375,6 +1358,8 @@ class _CartListScreenState extends State<CartListScreen>
                   ? "${Provider.of<SplashProvider>(context, listen: false).baseUrls!.productImageUrl}/single/${oneRupeeProductList.singleImage![0]}"
                   : "",
               totalItemsPrice: totalPrice,
+              oneRupeeProductList.hnName,
+              productMinimumPrice: double.parse(oneRupeeProductList.minPurchaseAmount.toString().split(" ").first)
             ),
             Expanded(
               child: Column(
@@ -1388,7 +1373,7 @@ class _CartListScreenState extends State<CartListScreen>
                       SizedBox(
                         child: Text(
                           oneRupeeProductList.name!.isNotEmpty
-                              ? "${oneRupeeProductList.name!} ${oneRupeeProductList.hnName}"
+                              ? "${oneRupeeProductList.name!}"
                               : "",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -1417,7 +1402,7 @@ class _CartListScreenState extends State<CartListScreen>
                                   Text(
                                     "Total ",
                                     style: poppinsMedium.copyWith(
-                                        fontSize: 08, color: Colors.white),
+                                        fontSize: 10, color: Colors.white),
                                   ),
                                   Container(
                                     padding:
@@ -1556,8 +1541,17 @@ class _CartListScreenState extends State<CartListScreen>
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black),
                               ),
+
                               Text(
-                                "MRP ₹${oneRupeeProductList.marketPrice}",
+                                " MRP ",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff828282),
+                                    decorationColor: Color(0xff828282)),
+                              ),
+                              Text(
+                                "₹${oneRupeeProductList.marketPrice}",
                                 style: poppinsRegular.copyWith(
                                     fontSize: 9,
                                     fontWeight: FontWeight.w500,
@@ -1583,7 +1577,7 @@ class _CartListScreenState extends State<CartListScreen>
                         ),
                         child: Text(
                           _currentText == "Discount"
-                              ? "Discount"
+                              ? "OFF"
                               : "${oneRupeeProductList.discount.toString()}%",
                           style: poppinsRegular.copyWith(
                               fontSize: fontSize,
@@ -1595,77 +1589,87 @@ class _CartListScreenState extends State<CartListScreen>
                         width: 5,
                       ),
                       oneRupeeProductList.appliedOneRupee!
-                          ? Container(
-                              alignment: Alignment.center,
-                              height: 22,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                // color: Color(0xff0C4619),
-                                border: Border.all(
-                                  color: Color(0xff0C4619),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "ADDED",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff0C4619),
-                                    fontSize: 12,
+                          ? GestureDetector(
+                              onTap: () {
+                                Provider.of<ProductProvider>(context,
+                                        listen: false)
+                                    .removeFromCart(
+                                  oneRupeeProductList,
+                                  "oneRupeeOffer",
+                                );
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 25,
+                                width: 63,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  color: Color(0xffa54e4e),
+                                  border: Border.all(
+                                    color: Color(0xffa54e4e),
                                   ),
                                 ),
+                                child: Center(
+                                  child: Text(
+                                    "REMOVE",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xffececec),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                // child: Row(
+                                //   children: [
+                                //     Expanded(
+                                //       child: Container(
+                                //         decoration: BoxDecoration(
+                                //           color: Color(0xffDAEEDF),
+                                //           borderRadius: BorderRadius.only(
+                                //             topLeft: Radius.circular(3),
+                                //             bottomLeft: Radius.circular(3),
+                                //           ),
+                                //         ),
+                                //         alignment: Alignment.center,
+                                //         child: Icon(
+                                //           Icons.remove,
+                                //           color: Color(0xff0C4619),
+                                //           size: 15,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     Expanded(
+                                //       child: Center(
+                                //         child: Text(
+                                //           "20",
+                                //           style: TextStyle(
+                                //             fontWeight: FontWeight.w500,
+                                //             color: Color(0xff0C4619),
+                                //             fontSize: 12,
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     Expanded(
+                                //       child: Container(
+                                //         decoration: BoxDecoration(
+                                //           color: Color(0xffDAEEDF),
+                                //           borderRadius: BorderRadius.only(
+                                //             topRight: Radius.circular(3),
+                                //             bottomRight: Radius.circular(3),
+                                //           ),
+                                //         ),
+                                //         alignment: Alignment.center,
+                                //         child: Icon(
+                                //           Icons.add,
+                                //           color: Color(0xff0C4619),
+                                //           size: 15,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                               ),
-                              // child: Row(
-                              //   children: [
-                              //     Expanded(
-                              //       child: Container(
-                              //         decoration: BoxDecoration(
-                              //           color: Color(0xffDAEEDF),
-                              //           borderRadius: BorderRadius.only(
-                              //             topLeft: Radius.circular(3),
-                              //             bottomLeft: Radius.circular(3),
-                              //           ),
-                              //         ),
-                              //         alignment: Alignment.center,
-                              //         child: Icon(
-                              //           Icons.remove,
-                              //           color: Color(0xff0C4619),
-                              //           size: 15,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     Expanded(
-                              //       child: Center(
-                              //         child: Text(
-                              //           "20",
-                              //           style: TextStyle(
-                              //             fontWeight: FontWeight.w500,
-                              //             color: Color(0xff0C4619),
-                              //             fontSize: 12,
-                              //           ),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     Expanded(
-                              //       child: Container(
-                              //         decoration: BoxDecoration(
-                              //           color: Color(0xffDAEEDF),
-                              //           borderRadius: BorderRadius.only(
-                              //             topRight: Radius.circular(3),
-                              //             bottomRight: Radius.circular(3),
-                              //           ),
-                              //         ),
-                              //         alignment: Alignment.center,
-                              //         child: Icon(
-                              //           Icons.add,
-                              //           color: Color(0xff0C4619),
-                              //           size: 15,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
                             )
                           : GestureDetector(
                               onTap: () {
@@ -1679,8 +1683,8 @@ class _CartListScreenState extends State<CartListScreen>
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                height: 22,
-                                width: 60,
+                                height: 25,
+                                width: 63,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(3),
                                     color: Color(0xff0C4619)),
@@ -1699,7 +1703,8 @@ class _CartListScreenState extends State<CartListScreen>
                     ],
                   ),
                   Text(
-                    "* ₹${oneRupeeProductList.minPurchaseAmount} minimum purchase to claim the offer",
+                    // "* ₹${oneRupeeProductList.minPurchaseAmount} minimum purchase to claim the offer",
+                    "*₹${oneRupeeProductList.minPurchaseAmount}",
                     style: poppinsRegular.copyWith(
                       fontWeight: FontWeight.w500,
                       fontSize: 9,
@@ -1718,9 +1723,9 @@ class _CartListScreenState extends State<CartListScreen>
   bulkOfferBox(ProductData bulkOfferProductList) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                ProductDetailsScreen(product: bulkOfferProductList)));
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) =>
+        //         ProductDetailsScreen(product: bulkOfferProductList)));
       },
       child: Container(
         width: double.infinity,
@@ -1743,6 +1748,7 @@ class _CartListScreenState extends State<CartListScreen>
               bulkOfferProductList.singleImage!.isNotEmpty
                   ? "${Provider.of<SplashProvider>(context, listen: false).baseUrls!.productImageUrl}/single/${bulkOfferProductList.singleImage![0]}"
                   : "",
+                bulkOfferProductList.hnName,
             ),
             Expanded(
               child: Column(
@@ -1757,7 +1763,7 @@ class _CartListScreenState extends State<CartListScreen>
                         child: SizedBox(
                           child: Text(
                             bulkOfferProductList.name!.isNotEmpty
-                                ? "${bulkOfferProductList.name!} ${bulkOfferProductList.hnName}"
+                                ? "${bulkOfferProductList.name!}"
                                 : "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -1789,7 +1795,7 @@ class _CartListScreenState extends State<CartListScreen>
                                     Text(
                                       "Total ",
                                       style: poppinsMedium.copyWith(
-                                          fontSize: 08, color: Colors.white),
+                                          fontSize: 10, color: Colors.white),
                                     ),
                                     Container(
                                       padding:
@@ -1940,7 +1946,7 @@ class _CartListScreenState extends State<CartListScreen>
                           ),
                           // (Sree Veg - ₹30.00 Par kg)
                           Text(
-                            "(Shree Veg - ₹${double.parse(bulkOfferProductList.amount!) / double.parse(bulkOfferProductList.quantity!)}/${bulkOfferProductList.unit!})",
+                            "(Shree Veg - ₹${(double.parse(bulkOfferProductList.amount!) / double.parse(bulkOfferProductList.quantity!))%1==0?(double.parse(bulkOfferProductList.amount!) / double.parse(bulkOfferProductList.quantity!)).toStringAsFixed(0):(double.parse(bulkOfferProductList.amount!) / double.parse(bulkOfferProductList.quantity!)).toStringAsFixed(2)}/${bulkOfferProductList.unit!})",
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: poppinsRegular.copyWith(
@@ -1952,7 +1958,7 @@ class _CartListScreenState extends State<CartListScreen>
                             children: [
                               Text(
                                 bulkOfferProductList.quantity!.isNotEmpty
-                                    ? "₹${bulkOfferProductList.amount!}"
+                                    ? "₹${double.parse(bulkOfferProductList.amount!)%1==0?double.parse(bulkOfferProductList.amount!).toStringAsFixed(0):double.parse(bulkOfferProductList.amount!).toStringAsFixed(2)}"
                                     : "",
                                 style: poppinsRegular.copyWith(
                                     fontSize: 11,
@@ -1960,7 +1966,16 @@ class _CartListScreenState extends State<CartListScreen>
                                     color: Colors.black),
                               ),
                               Text(
-                                "MRP ₹${(double.parse(bulkOfferProductList.quantity!) * double.parse(bulkOfferProductList.marketPrice!.toStringAsFixed(2))).toStringAsFixed(0)}",
+                                " MRP ",
+                                style: poppinsRegular.copyWith(
+                                  fontSize: 08,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff828282),
+                                  decorationColor: Color(0xff828282),
+                                ),
+                              ),
+                              Text(
+                                "₹${(double.parse(bulkOfferProductList.quantity!) * double.parse(bulkOfferProductList.customerPrice!)).toStringAsFixed(0)}",
                                 style: poppinsRegular.copyWith(
                                   fontSize: 08,
                                   fontWeight: FontWeight.w500,
@@ -1986,7 +2001,9 @@ class _CartListScreenState extends State<CartListScreen>
                           ),
                         ),
                         child: Text(
-                          _currentText,
+                          _currentText == "Discount"
+                              ? "OFF"
+                              : "${bulkOfferProductList.discount.toString()}%",
                           style: poppinsRegular.copyWith(
                               fontSize: fontSize,
                               fontWeight: FontWeight.w500,
@@ -1999,8 +2016,8 @@ class _CartListScreenState extends State<CartListScreen>
                       bulkOfferProductList.appliedBulkRupee!
                           ? Container(
                               alignment: Alignment.center,
-                              height: 22,
-                              width: 60,
+                        height: 25,
+                        width: 63,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(3),
                                 // color: Color(0xff0C4619),
@@ -2109,8 +2126,8 @@ class _CartListScreenState extends State<CartListScreen>
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                height: 22,
-                                width: 60,
+                                height: 25,
+                                width: 63,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(3),
                                     color: Color(0xff0C4619)),
@@ -2172,12 +2189,13 @@ class _CartListScreenState extends State<CartListScreen>
               categoryProductList.leftTitle!.isNotEmpty
                   ? categoryProductList.leftTitle!
                   : "",
-              categoryProductList.leftTitle!.isNotEmpty
-                  ? categoryProductList.leftTitle!
+              categoryProductList.rightTile!.isNotEmpty
+                  ? categoryProductList.rightTile!
                   : "",
               categoryProductList.singleImage!.isNotEmpty
                   ? "${Provider.of<SplashProvider>(context, listen: false).baseUrls!.productImageUrl}/single/${categoryProductList.singleImage![0]}"
                   : "",
+                categoryProductList.hnName,
             ),
             productDetailBox(categoryProductList),
           ],
@@ -2186,8 +2204,8 @@ class _CartListScreenState extends State<CartListScreen>
     );
   }
 
-  productImageBox(String leftTitle, String rightTitle, String imageUrl,
-      {double? totalItemsPrice}) {
+  productImageBox(String leftTitle, String rightTitle, String imageUrl, String? hindiName,
+      {double? totalItemsPrice, double? productMinimumPrice}) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.15,
       width: MediaQuery.of(context).size.height * 0.15,
@@ -2212,7 +2230,7 @@ class _CartListScreenState extends State<CartListScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               leftTitle.isNotEmpty
-                  ? Container(
+                  ? Container(//7466810440
                       margin: EdgeInsets.only(top: 05),
                       alignment: Alignment.center,
                       width: 50,
@@ -2255,7 +2273,34 @@ class _CartListScreenState extends State<CartListScreen>
                   : SizedBox(),
             ],
           ),
-          totalItemsPrice != null && totalItemsPrice < 100
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: hindiName != null
+                ? Container(
+              padding: EdgeInsets.all(02),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Text(
+                hindiName,
+                style: poppinsMedium.copyWith(
+                  fontSize: Dimensions.fontSizeSmall,
+                  color: Colors.white,
+                ),
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+                : const SizedBox.shrink(),
+          ),
+          totalItemsPrice != null && totalItemsPrice < productMinimumPrice!
               ? Positioned(
                   bottom: 0,
                   right: 0,
@@ -2297,7 +2342,7 @@ class _CartListScreenState extends State<CartListScreen>
                 child: SizedBox(
                   // width: MediaQuery.of(context).size.width * 0.32,
                   child: Text(
-                    "${categoryProductList.name} ${categoryProductList.hnName}",
+                    "${categoryProductList.name}",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: poppinsRegular.copyWith(
@@ -2324,7 +2369,7 @@ class _CartListScreenState extends State<CartListScreen>
                             Text(
                               "Total ",
                               style: poppinsMedium.copyWith(
-                                  fontSize: 08, color: Colors.white),
+                                  fontSize: 10, color: Colors.white),
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(horizontal: 08),
@@ -2402,7 +2447,7 @@ class _CartListScreenState extends State<CartListScreen>
                                             .variations![subIndex].quantity!)
                                         .contains("gm")
                                     ? Text(
-                                        "(₹${approxBox(categoryProductList.variations![subIndex].quantity!, categoryProductList.variations![subIndex].offerPrice!).toStringAsFixed(0)}/Kg)",
+                                        "(₹${approxBox(categoryProductList.variations![subIndex].quantity!, categoryProductList.variations![subIndex].offerPrice!).toStringAsFixed(2)}/Kg)",
                                         style: poppinsRegular.copyWith(
                                             fontSize: 06,
                                             fontWeight: FontWeight.w500,
@@ -2421,7 +2466,7 @@ class _CartListScreenState extends State<CartListScreen>
                                                         .quantity!) !=
                                                     "1 Kg"
                                         ? Text(
-                                            "(₹${approxBox(categoryProductList.variations![subIndex].quantity!, categoryProductList.variations![subIndex].offerPrice!).toStringAsFixed(0)}/Kg)",
+                                            "(₹${approxBox(categoryProductList.variations![subIndex].quantity!, categoryProductList.variations![subIndex].offerPrice!).toStringAsFixed(2)}/Kg)",
                                             style: poppinsRegular.copyWith(
                                                 fontSize: 06,
                                                 fontWeight: FontWeight.w500,
@@ -2433,14 +2478,22 @@ class _CartListScreenState extends State<CartListScreen>
                             Row(
                               children: [
                                 Text(
-                                  "₹${categoryProductList.variations![subIndex].offerPrice!.isNotEmpty ? categoryProductList.variations![subIndex].offerPrice : ""}",
+                                  "₹${categoryProductList.variations![subIndex].offerPrice!.isNotEmpty ? categoryProductList.variations![subIndex].offerPrice : "--"}",
                                   style: poppinsRegular.copyWith(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.black),
                                 ),
                                 Text(
-                                  "MRP ₹${categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0).isNotEmpty ? categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0) : ""}",
+                                  " MRP ",
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xff828282),
+                                      decorationColor: Color(0xff828282)),
+                                ),
+                                Text(
+                                  "₹${categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0).isNotEmpty ? categoryProductList.variations![subIndex].marketPrice!.toStringAsFixed(0) : ""}",
                                   style: poppinsRegular.copyWith(
                                       fontSize: 9,
                                       fontWeight: FontWeight.w500,
@@ -2464,195 +2517,281 @@ class _CartListScreenState extends State<CartListScreen>
                           ],
                         ),
                         Spacer(),
-                        Container(
+                        categoryProductList.variations![subIndex].quantity!
+                            .isNotEmpty&& categoryProductList
+                            .variations![subIndex].offerPrice!.isNotEmpty &&
+                            categoryProductList.totalStock != null &&
+                            double.parse(categoryProductList.totalStock!
+                                .toString()) >=
+                                double.parse(categoryProductList
+                                    .variations![subIndex]
+                                    .quantity!
+                                    .isNotEmpty
+                                    ? categoryProductList
+                                    .variations![subIndex].quantity!
+                                    : "0.0")
+                            ? Container(
                           alignment: Alignment.center,
-                          height: 27,
-                          width: 27,
+                          height: 30,
+                          width: 30,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage("assets/image/discount.png"),
+                              image:
+                              AssetImage("assets/image/discount.png"),
                               fit: BoxFit.fill,
                               colorFilter: _imageColorFilter,
                             ),
                           ),
                           child: Text(
                             _currentText != "Discount"
-                                ? "${categoryProductList.variations![subIndex].discount!.replaceAll("-", " ")}%"
-                                : "Discount",
+                                ? "${categoryProductList.variations![subIndex].discount!.toString().replaceAll("-", " ")}%"
+                                : "OFF",
                             style: poppinsRegular.copyWith(
                                 fontSize: fontSize,
                                 fontWeight: FontWeight.w500,
                                 color: _textColor),
                           ),
-                        ),
+                        )
+                            : SizedBox(),
                         SizedBox(
-                          width: 5,
+                          width: 3,
                         ),
-                        categoryProductList.variations![subIndex].isSelected!
+                        categoryProductList
+                            .variations![subIndex].quantity!.isNotEmpty && categoryProductList
+                            .variations![subIndex].offerPrice!.isNotEmpty
+                            ? categoryProductList.totalStock != null &&
+                            double.parse(categoryProductList.totalStock!
+                                .toString()) >=
+                                double.parse(categoryProductList
+                                    .variations![subIndex]
+                                    .quantity!
+                                    .isNotEmpty
+                                    ? categoryProductList
+                                    .variations![subIndex].quantity!
+                                    : "0.0")
+                            ? categoryProductList
+                            .variations![subIndex].isSelected!
                             ? Container(
-                                alignment: Alignment.center,
-                                height: 22,
-                                width: 60,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  // color: Color(0xff0C4619),
-                                  border: Border.all(
-                                    color: Color(0xff0C4619),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          if (categoryProductList
-                                                      .variations![subIndex]
-                                                      .addCount !=
-                                                  1 &&
-                                              categoryProductList
-                                                      .variations![subIndex]
-                                                      .addCount! <=
-                                                  10) {
-                                            Provider.of<ProductProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .addToCart(
-                                              categoryProductList,
-                                              categoryProductList
-                                                      .variations![subIndex]
-                                                      .addCount! -
-                                                  1,
-                                              "",
-                                              weightBox(categoryProductList
-                                                          .variations![subIndex]
-                                                          .quantity!)
-                                                      .contains("gm")
-                                                  ? "gm"
-                                                  : "Kg",
-                                              index: subIndex,
-                                            );
-                                          } else {
-                                            Provider.of<ProductProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .removeFromCart(
-                                              categoryProductList,
-                                              "",
-                                              index: subIndex,
-                                            );
-                                          }
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Color(0xffDAEEDF),
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(3),
-                                              bottomLeft: Radius.circular(3),
-                                            ),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Icon(
-                                            Icons.remove,
-                                            color: Color(0xff0C4619),
-                                            size: 15,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Center(
-                                        child: Text(
-                                          "${categoryProductList.variations![subIndex].addCount}",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Color(0xff0C4619),
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          if (categoryProductList
-                                                  .variations![subIndex]
-                                                  .addCount! <
-                                              10) {
-                                            Provider.of<ProductProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .addToCart(
-                                              categoryProductList,
-                                              categoryProductList
-                                                      .variations![subIndex]
-                                                      .addCount! +
-                                                  1,
-                                              "",
-                                              weightBox(categoryProductList
-                                                          .variations![subIndex]
-                                                          .quantity!)
-                                                      .contains("gm")
-                                                  ? "gm"
-                                                  : "Kg",
-                                              index: subIndex,
-                                            );
-                                          }
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Color(0xffDAEEDF),
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(3),
-                                              bottomRight: Radius.circular(3),
-                                            ),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Color(0xff0C4619),
-                                            size: 15,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : GestureDetector(
-                                onTap: () {
-                                  Provider.of<ProductProvider>(context,
+                          alignment: Alignment.center,
+                          height: 25,
+                          width: 63,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                            BorderRadius.circular(3),
+                            // color: Color(0xff0C4619),
+                            border: Border.all(
+                              color: Color(0xff0C4619),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (categoryProductList
+                                        .variations![
+                                    subIndex]
+                                        .addCount !=
+                                        1 &&
+                                        categoryProductList
+                                            .variations![
+                                        subIndex]
+                                            .addCount! <=
+                                            10) {
+                                      Provider.of<ProductProvider>(
+                                          context,
                                           listen: false)
-                                      .addToCart(
-                                    categoryProductList,
-                                    categoryProductList
-                                            .variations![subIndex].addCount! +
-                                        1,
-                                    "",
-                                    weightBox(categoryProductList
-                                                .variations![subIndex]
-                                                .quantity!)
+                                          .addToCart(
+                                        categoryProductList,
+                                        categoryProductList
+                                            .variations![
+                                        subIndex]
+                                            .addCount! -
+                                            1,
+                                        "",
+                                        weightBox(categoryProductList
+                                            .variations![
+                                        subIndex]
+                                            .quantity!)
                                             .contains("gm")
-                                        ? "gm"
-                                        : "Kg",
-                                    index: subIndex,
-                                  );
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 22,
-                                  width: 60,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: Color(0xff0C4619)),
-                                  child: Text(
-                                    "ADD",
-                                    style: poppinsRegular.copyWith(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white),
+                                            ? "gm"
+                                            : "Kg",
+                                        index: subIndex,
+                                      );
+                                    } else {
+                                      Provider.of<ProductProvider>(
+                                          context,
+                                          listen: false)
+                                          .removeFromCart(
+                                        categoryProductList,
+                                        "",
+                                        index: subIndex,
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffDAEEDF),
+                                      borderRadius:
+                                      BorderRadius.only(
+                                        topLeft:
+                                        Radius.circular(3),
+                                        bottomLeft:
+                                        Radius.circular(3),
+                                      ),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      Icons.remove,
+                                      color: Color(0xff0C4619),
+                                      size: 15,
+                                    ),
                                   ),
                                 ),
                               ),
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    "${categoryProductList.variations![subIndex].addCount}",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xff0C4619),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (categoryProductList
+                                        .variations![subIndex]
+                                        .addCount! <
+                                        10) {
+                                      Provider.of<ProductProvider>(
+                                          context,
+                                          listen: false)
+                                          .addToCart(
+                                        categoryProductList,
+                                        categoryProductList
+                                            .variations![
+                                        subIndex]
+                                            .addCount! +
+                                            1,
+                                        "",
+                                        weightBox(categoryProductList
+                                            .variations![
+                                        subIndex]
+                                            .quantity!)
+                                            .contains("gm")
+                                            ? "gm"
+                                            : "Kg",
+                                        index: subIndex,
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffDAEEDF),
+                                      borderRadius:
+                                      BorderRadius.only(
+                                        topRight:
+                                        Radius.circular(3),
+                                        bottomRight:
+                                        Radius.circular(3),
+                                      ),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Color(0xff0C4619),
+                                      size: 15,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                            : GestureDetector(
+                          onTap: () {
+                            Provider.of<ProductProvider>(context,
+                                listen: false)
+                                .addToCart(
+                              categoryProductList,
+                              categoryProductList
+                                  .variations![subIndex]
+                                  .addCount! +
+                                  1,
+                              "",
+                              weightBox(categoryProductList
+                                  .variations![subIndex]
+                                  .quantity!)
+                                  .contains("gm")
+                                  ? "gm"
+                                  : "Kg",
+                              index: subIndex,
+                            );
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 25,
+                            width: 63,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius.circular(3),
+                                color: Color(0xff0C4619)),
+                            child: Text(
+                              "ADD",
+                              style: poppinsRegular.copyWith(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        )
+                            : Container(
+                          alignment: Alignment.center,
+                          height: 20,
+                          padding:
+                          EdgeInsets.symmetric(horizontal: 05),
+                          // width: 63,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: Color(0xff4a9e60),
+                            border: Border.all(
+                              color: Color(0xff4a9e60),
+                            ),
+                          ),
+                          child: Text(
+                            "Out Of Stock",
+                            style: poppinsRegular.copyWith(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          ),
+                        )
+                            : Container(
+                          alignment: Alignment.center,
+                          height: 20,
+                          padding: EdgeInsets.symmetric(horizontal: 05),
+                          // width: 63,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            // color: Color(0xff4a9e60),
+                            border: Border.all(
+                              color: Color(0xff4a9e60),
+                            ),
+                          ),
+                          child: Text(
+                            "Coming Soon..",
+                            style: poppinsRegular.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
                         SizedBox(
                           width: 5,
                         ),

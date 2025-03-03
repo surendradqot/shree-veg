@@ -224,9 +224,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       isShowSuffixIcon: false,
                       isloginWithPhone: authProvider.isLoginWithPhone,
                       islogin: true,
+                      maxLength: 10,
                       inputType: !authProvider.isLoginWithPhone
-                          ? TextInputType.emailAddress
-                          : TextInputType.emailAddress,
+                          ? TextInputType.phone
+                          : TextInputType.phone,
                       // onSuffixTap: () async {
                       //   authProvider.phoneEmailController.clear();
                       //   if (authProvider.isLoginWithPhone) {
@@ -503,9 +504,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               minimumSize: const Size(1, 40),
                             ),
                             onPressed: () async {
-                              await Provider.of<AuthProvider>(Get.context!,
-                                      listen: false)
-                                  .loginGuest();
+                              // await Provider.of<AuthProvider>(Get.context!,
+                              //         listen: false)
+                              //     .loginGuest();
                               Navigator.of(Get.context!).pushReplacementNamed(
                                   RouteHelper.splash,
                                   arguments: const SplashScreen());

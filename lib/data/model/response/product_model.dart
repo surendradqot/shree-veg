@@ -76,7 +76,7 @@ class Product {
   String? _taxType;
   String? _unit;
   double? _capacity;
-  int? _totalStock;
+  num? _totalStock;
   List<Rating>? _rating;
   List<ActiveReview>? _activeReviews;
   int? _maximumOrderQuantity;
@@ -184,7 +184,7 @@ class Product {
   String? get taxType => _taxType;
   String? get unit => _unit;
   double? get capacity => _capacity;
-  int? get totalStock => _totalStock;
+  num? get totalStock => _totalStock;
   List<Rating>? get rating => _rating;
   List<ActiveReview>? get activeReviews => _activeReviews;
   int? get maximumOrderQuantity => _maximumOrderQuantity;

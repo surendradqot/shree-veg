@@ -99,7 +99,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           if (order.orderDetails != null) {
             deliveryCharge = order.trackModel?.deliveryCharge;
             for (OrderDetailsModel orderDetails in order.orderDetails!) {
-              itemsPrice = orderDetails.price!+itemsPrice;
+              // double.parse(order.orderDetails![index].price!.toString())/double.parse(jsonDecode(
+              //     order
+              //         .orderDetails![index]
+              //         .variation!)["quantity"])
+              itemsPrice = (orderDetails.price!/double.parse(jsonDecode(
+                  orderDetails.variation!)["quantity"]))+itemsPrice;
               // itemsPrice =
               //     itemsPrice + (orderDetails.price! * orderDetails.quantity!);
               discount = discount;
@@ -610,8 +615,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                           ),
                                                           Text(order
                                                               .orderDetails![index]
-                                                              .quantity
-                                                              .toString(),
+                                                              .quantity!
+                                                              .round().toStringAsFixed(1),
                                                               style: poppinsRegular
                                                                   .copyWith(
                                                                   color: Theme
@@ -1653,12 +1658,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                           "${double.parse(order
                                                               .orderDetails![index]
                                                               .quantity!
-                                                              .toString()) *
-                                                              double.parse(
-                                                                  (jsonDecode(
-                                                                      order
-                                                                          .orderDetails![index]
-                                                                          .variation!))["quantity"])} ${order
+                                                              .toString())} ${order
                                                               .orderDetails![index]
                                                               .productDetails!
                                                               .unit!.title
@@ -1757,7 +1757,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                       Text(
                                                         PriceConverter
                                                             .convertPrice(
-                                                            context, double.parse(order.orderDetails![index].price!.toString())),
+                                                            context, double.parse(order.orderDetails![index].price!.toString())/double.parse(jsonDecode(
+                                                        order
+                                                            .orderDetails![index]
+                                                            .variation!)["quantity"])),
                                                         style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                                                       ),
                                                     ],

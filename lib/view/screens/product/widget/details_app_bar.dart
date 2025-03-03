@@ -81,11 +81,11 @@ class DetailsAppBarState extends State<DetailsAppBar>
                       padding: const EdgeInsets.all(05),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white),
+                          color: Colors.red),
                       child: Text(
                           '${Provider.of<CartProvider>(context).cartLength}',
                           style: TextStyle(
-                              color: Theme.of(context).primaryColor,
+                              color: Colors.white,
                               fontSize: 10)),
                     ),
                   ),
