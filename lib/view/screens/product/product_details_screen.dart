@@ -106,11 +106,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
           CartModalNew? cartModel;
 
           double? totalAmount = 0.0;
-          for(int index = 0;
-          index < widget.product!.variations!.length;
-          index++){
-            if(widget.product!.variations![index].isSelected!){
-              totalAmount = totalAmount!+widget.product!.variations![index].addCount!*double.parse(widget.product!.variations![index].offerPrice!);
+          if (double.parse(widget.product!.variations![1].quantity!) <=
+              widget.product!.totalAddedWeight!.toDouble()) {
+            totalAmount = totalAmount +
+                (widget.product!.totalAddedWeight! *
+                    double.parse(
+                        widget.product!.variations![1].offerPrice!)) /
+                    double.parse(
+                        widget.product!.variations![1].quantity!);
+          }else{
+            for (int index = 0;
+                index < widget.product!.variations!.length;
+                index++) {
+              if (widget.product!.variations![index].isSelected!) {
+                  totalAmount = totalAmount! +
+                      widget.product!.variations![index].addCount! *
+                          double.parse(
+                              widget.product!.variations![index].offerPrice!);
+              }
             }
           }
 
@@ -829,7 +842,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                                       .quantity!) !=
                                                   "1 Kg"
                                       ? Text(
-                                          "(₹${approxBox(categoryProductList.variations![subIndex].quantity!, categoryProductList.variations![subIndex].offerPrice!).toStringAsFixed(0)}/Kg)",
+                                          "(₹${approxBox(categoryProductList.variations![subIndex].quantity!, categoryProductList.variations![subIndex].offerPrice!).toStringAsFixed(2)}/Kg)",
                                           style: poppinsRegular.copyWith(
                                               fontSize: 08,
                                               fontWeight: FontWeight.w500,

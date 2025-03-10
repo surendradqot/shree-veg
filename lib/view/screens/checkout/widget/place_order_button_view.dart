@@ -158,7 +158,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                       price,
                       PriceConverter.convertWithDiscount(
                           price,
-                          double.parse(product.discount!),
+                          double.parse(product.discount!.toString()),
                           product.discountType),
                       // Discount Price
                       // cartData.productData!.totalAddedWeight!>=double.parse(cartData.productData!.variations![1].quantity!)?cartData.productData!.totalAddedWeight!/double.parse(cartData.productData!.variations![1].quantity!):cartData.productData!.totalAddedWeight!,
@@ -172,7 +172,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                       (price -
                           PriceConverter.convertWithDiscount(
                               price,
-                              double.parse(product.discount!),
+                              double.parse(product.discount!.toString()),
                               product.discountType)!),
                       (price -
                           PriceConverter.convertWithDiscount(price,
@@ -199,7 +199,7 @@ class _PlaceOrderButtonViewState extends State<PlaceOrderButtonView> {
                         : cartData.productData!.appliedBulkRupeeCount!.toInt(),
                     cartData.productData!.variations!
                         .firstWhere((test) => test.isSelected!),
-                    double.parse(cartData.productData!.discount!),
+                    double.parse(cartData.productData!.discount!.toString()),
                     double.parse(cartData.productData!.tax!.toString()),
                     double.parse(cartData.productData!.capacity!),
                     cartData.productData!.unit!,

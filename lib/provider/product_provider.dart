@@ -598,7 +598,8 @@ class ProductProvider extends ChangeNotifier {
       } else {
         ToastService().show("आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं.");
       }
-    } else {
+    }
+    else {
       for (ProductData listProduct in _categoryAllProductList) {
         if (listProduct.id == product.id) {
           if (totalCount! *

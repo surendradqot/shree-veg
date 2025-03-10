@@ -70,7 +70,7 @@ class ProductData {
   String? storePrice;
   DateTime? storePriceUpdatedDate;
   int? marketPrice;
-  dynamic? discount;
+  dynamic discount;
   String? discountType;
   int? maximumOrderQuantity;
   int? sequence;
