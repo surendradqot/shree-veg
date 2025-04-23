@@ -22,7 +22,6 @@ import 'package:shreeveg/utill/modify_date_times.dart';
 import 'package:shreeveg/utill/styles.dart';
 import 'package:shreeveg/view/base/app_bar_base.dart';
 import 'package:shreeveg/view/base/no_data_screen.dart';
-import 'package:shreeveg/view/base/not_login_screen.dart';
 import 'package:shreeveg/view/base/web_app_bar/web_app_bar.dart';
 import 'package:shreeveg/view/screens/cart/widget/cart_stores_view.dart';
 import 'package:shreeveg/view/screens/checkout/checkout_screen.dart';
@@ -42,7 +41,7 @@ class _CartListScreenState extends State<CartListScreen>
   late AnimationController controller;
   String _currentText = "99.99%";
   Color _textColor = Colors.white;
-  double? fontSize = 7;
+  double? fontSize = 6;
   ColorFilter? _imageColorFilter;
   bool isFirstVerticalItemUpdated = false;
   Timer? timer;
@@ -107,12 +106,10 @@ class _CartListScreenState extends State<CartListScreen>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            const CircleAvatar(
-                              backgroundColor: Colors.white,
-                              child: Icon(
-                                Icons.location_on_outlined,
-                                color: Color(0xFF0B4619),
-                              ),
+                            Icon(
+                              Icons.location_on_outlined,
+                              color: Color(0xFF0B4619),
+                              size: 20,
                             ),
                             Text(
                               sharedPreferences!.getString(
@@ -120,7 +117,7 @@ class _CartListScreenState extends State<CartListScreen>
                                   "Select City",
                               style: poppinsRegular.copyWith(
                                   color: Colors.grey,
-                                  fontSize: 14,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w500),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -190,7 +187,7 @@ class _CartListScreenState extends State<CartListScreen>
           for (CartModalNew cartData in cartProvider.newCartList) {
             totalDiscount = cartData.totalDiscount! + totalDiscount!;
             totalUnit = cartData.totalUnit! + totalUnit!;
-            totalMarketPrice = cartData.itemPrice! + totalMarketPrice!;
+            totalMarketPrice = (cartData.productData!.marketPrice!*cartData.totalUnit!) + totalMarketPrice!;
             totalOfferPrice = cartData.totalPrice! + totalOfferPrice!;
             totalDeliveryCharges =
                 cartData.deliveryCharge! + totalDeliveryCharges!;
@@ -200,7 +197,7 @@ class _CartListScreenState extends State<CartListScreen>
           for (CartModalNew cartData in cartProvider.newOfferCartList) {
             totalDiscount = cartData.totalDiscount! + totalDiscount!;
             totalUnit = cartData.totalUnit! + totalUnit!;
-            totalMarketPrice = cartData.itemPrice! + totalMarketPrice!;
+            totalMarketPrice = (cartData.itemPrice!*cartData.totalUnit!) + totalMarketPrice!;
             totalOfferPrice = cartData.totalPrice! + totalOfferPrice!;
             totalDeliveryCharges =
                 cartData.deliveryCharge! + totalDeliveryCharges!;
@@ -2758,9 +2755,9 @@ class _CartListScreenState extends State<CartListScreen>
                           // width: 63,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(3),
-                            color: Color(0xff4a9e60),
+                            color: Color(0xffa54e4e),
                             border: Border.all(
-                              color: Color(0xff4a9e60),
+                              color: Color(0xffa54e4e),
                             ),
                           ),
                           child: Text(

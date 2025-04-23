@@ -2,7 +2,7 @@ name: shreeveg
 description: A new Flutter application.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.3+4
+version: 1.0.5+6
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -26,7 +26,8 @@ dependencies:
   image_cropper:
   pin_code_fields:
   google_maps_flutter_web:
-  google_maps_flutter:
+#  google_maps_flutter:
+  google_maps_flutter: ^2.10.0
   geocoding:
   geolocator:
   shimmer_animation:

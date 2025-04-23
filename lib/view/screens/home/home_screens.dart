@@ -1,13 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shreeveg/data/model/new_flash_modal.dart';
 import 'package:shreeveg/data/model/response/config_model.dart';
-import 'package:shreeveg/data/model/response/userinfo_model.dart';
-import 'package:shreeveg/helper/product_type.dart';
 import 'package:shreeveg/helper/responsive_helper.dart';
 import 'package:shreeveg/helper/route_helper.dart';
-import 'package:shreeveg/localization/language_constraints.dart';
 import 'package:shreeveg/main.dart';
 import 'package:shreeveg/provider/auth_provider.dart';
 import 'package:shreeveg/provider/banner_provider.dart';
@@ -20,15 +16,10 @@ import 'package:shreeveg/utill/app_constants.dart';
 import 'package:shreeveg/utill/dimensions.dart';
 import 'package:shreeveg/utill/styles.dart';
 import 'package:shreeveg/view/base/footer_view.dart';
-import 'package:shreeveg/view/base/title_row.dart';
 import 'package:shreeveg/view/base/web_app_bar/web_app_bar.dart';
 import 'package:shreeveg/view/screens/home/widget/banners_view.dart';
 import 'package:shreeveg/view/screens/home/widget/category_view.dart';
-import 'package:shreeveg/view/screens/home/widget/home_item_view.dart';
-import 'package:shreeveg/view/screens/home/widget/location_view.dart';
-import 'package:shreeveg/view/screens/home/widget/search_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:shreeveg/view/screens/home_items_screen/widget/flash_deals_view.dart';
 import 'package:shreeveg/view/screens/splash/splash_screen.dart';
 import '../../../provider/profile_provider.dart';
 import '../../../utill/images.dart';
@@ -196,15 +187,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: Icon(Icons.location_on_outlined,
-                              color: Color(0xFF0B4619),),),
+                          Icon(Icons.location_on_outlined,
+                            color: Color(0xFF0B4619),
+                            size: 20,
+                          ),
                           Text(
                             sharedPreferences!.getString(AppConstants.selectedCityName)??"Select City",
                             style: poppinsRegular.copyWith(
                                 color: Colors.grey,
-                                fontSize: 14,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w500),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

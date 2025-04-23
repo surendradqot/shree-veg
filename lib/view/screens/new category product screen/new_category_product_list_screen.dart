@@ -208,9 +208,9 @@ class _CategoryListScreenState extends State<CategoryListScreen>
                     SizedBox(height: 5),
                     tabBox(snapshot.tabList),
                     // SizedBox(height: 5),
-                    snapshot.marqueeText!.isNotEmpty
+                    snapshot.marqueeText!.isNotEmpty && (DateTime.now().isAfter(DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day, 19, 30)) || DateTime.now().isBefore(DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day, 06, 00)))
                         ? marqueeBox(snapshot.marqueeText!)
-                        : SizedBox(),
+                        : SizedBox(height: 5),
                     // SizedBox(height: 15),
                     Expanded(
                       child: SingleChildScrollView(
@@ -1850,9 +1850,9 @@ class _CategoryListScreenState extends State<CategoryListScreen>
                                     // width: 63,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
-                                      color: Color(0xff4a9e60),
+                                      color: Color(0xffa54e4e),
                                       border: Border.all(
-                                        color: Color(0xff4a9e60),
+                                        color: Color(0xffa54e4e),
                                       ),
                                     ),
                                     child: Text(

@@ -234,16 +234,25 @@ void showCityDialog(BuildContext context) {
                       height: 80,
                       child: Center(child: CircularProgressIndicator()));
                 }
+                else if(provider.items.isEmpty){
+                  return SizedBox(
+                    height: 80,
+                    child: Text("No city added till now. Please try after sometime.",
+                    textAlign: TextAlign.center,style: TextStyle(
+                        color: Colors.red,
+                      ),),
+                  );
+                }
                 return ListView.separated(
                   itemCount: provider.items.length,
                     // itemCount: 50,
                     shrinkWrap: true,
                     physics: ClampingScrollPhysics(),
                     separatorBuilder: (context, index) {
-                      return Divider();
+                      return provider.items[index].warehousesCity!=null?Divider():SizedBox();
                     },
                     itemBuilder: (context, index) {
-                      return GestureDetector(
+                      return provider.items[index].warehousesCity!=null?GestureDetector(
                         onTap: () async {
                           Navigator.of(Get.context!).pop();
                           provider.selectItem(provider.items[index].warehousesId!,provider.items[index]);
@@ -287,7 +296,7 @@ void showCityDialog(BuildContext context) {
                             ),
                           ],
                         ),
-                      );
+                      ):SizedBox();
                     });
                 // return DropdownButtonFormField<WarehouseCityList>(
                 //   items: provider.items.map((WarehouseCityList city) {

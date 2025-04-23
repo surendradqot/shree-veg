@@ -2267,9 +2267,9 @@ class _SearchScreenState extends State<SearchScreen>
                           // width: 63,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(3),
-                            color: Color(0xff4a9e60),
+                            color: Color(0xffa54e4e),
                             border: Border.all(
-                              color: Color(0xff4a9e60),
+                              color: Color(0xffa54e4e),
                             ),
                           ),
                           child: Text(

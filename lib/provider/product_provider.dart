@@ -394,7 +394,7 @@ class ProductProvider extends ChangeNotifier {
 
   int? selectedVariation = 0;
 
-  updateVariation(int? index){
+  updateVariation(int? index) {
     selectedVariation = index;
     notifyListeners();
   }
@@ -439,22 +439,22 @@ class ProductProvider extends ChangeNotifier {
         }
         // if (product.oneRsOfferEnable == 0 && product.bulkOfferEnable == 0) {
 
-          if (cartProvider.newCartList.isNotEmpty) {
-            CartModalNew? cartItem = cartProvider.newCartList.firstWhere(
-              (item) => item.productData!.id == product.id,
-              orElse: () => CartModalNew(),
-            );
-            if (cartItem.productData != null) {
-              _categoryProductList.add(cartItem.productData!);
-              _categoryAllProductList.add(cartItem.productData!);
-            } else {
-              _categoryProductList.add(product);
-              _categoryAllProductList.add(product);
-            }
+        if (cartProvider.newCartList.isNotEmpty) {
+          CartModalNew? cartItem = cartProvider.newCartList.firstWhere(
+            (item) => item.productData!.id == product.id,
+            orElse: () => CartModalNew(),
+          );
+          if (cartItem.productData != null) {
+            _categoryProductList.add(cartItem.productData!);
+            _categoryAllProductList.add(cartItem.productData!);
           } else {
             _categoryProductList.add(product);
             _categoryAllProductList.add(product);
           }
+        } else {
+          _categoryProductList.add(product);
+          _categoryAllProductList.add(product);
+        }
 
         if (product.oneRsOfferEnable == 1) {
           if (cartProvider.newOfferCartList.isNotEmpty) {
@@ -519,7 +519,6 @@ class ProductProvider extends ChangeNotifier {
 
   addToCart(ProductData product, int? totalCount, String? type, String? unit,
       {int? index}) {
-
     if (type!.isNotEmpty) {
       if (!addCart.contains("oneRupeeOffer") && type == "oneRupeeOffer") {
         if (!addCart.contains("bulkOffer")) {
@@ -537,7 +536,7 @@ class ProductProvider extends ChangeNotifier {
                   totalPrice: 1.0,
                   totalDiscount: double.parse(product.discount!.toString()),
                   itemPrice:
-                  double.parse(product.marketPrice!.toStringAsFixed(1)),
+                      double.parse(product.marketPrice!.toStringAsFixed(1)),
                   gstPrice: product.tax!.toDouble(),
                   deliveryCharge: 0.0,
                   offerPrice: double.parse(product.price!),
@@ -553,8 +552,7 @@ class ProductProvider extends ChangeNotifier {
         if (!addCart.contains("oneRupeeOffer")) {
           if (product.bulkOfferEnable == 1) {
             for (ProductData listProduct in bulkOfferProductList) {
-              if (totalCount! *
-                  double.parse(product.quantity!) <=
+              if (totalCount! * double.parse(product.quantity!) <=
                   listProduct.totalStock!.toDouble()) {
                 if (listProduct.id == product.id) {
                   listProduct.appliedBulkRupee = true;
@@ -588,7 +586,9 @@ class ProductProvider extends ChangeNotifier {
                     offerPrice: double.parse(product.price!),
                   );
                 }
-              }else{ToastService().show("Out of Stock");}
+              } else {
+                ToastService().show("Out of Stock");
+              }
             }
           }
         } else {
@@ -598,52 +598,51 @@ class ProductProvider extends ChangeNotifier {
       } else {
         ToastService().show("आप एक रुपए ऑफर का लाभ पहले ही ले चुके हैं.");
       }
-    }
-    else {
+    } else {
       for (ProductData listProduct in _categoryAllProductList) {
         if (listProduct.id == product.id) {
           if (totalCount! *
-              double.parse(product.variations![index!].quantity!) <=
+                  double.parse(product.variations![index!].quantity!) <=
               listProduct.totalStock!.toDouble()) {
             listProduct.variations![index].addCount = totalCount;
             listProduct.variations![index].isSelected = true;
             double? totalAddedWeight = 0.0;
-            for(Variation variation in listProduct.variations!){
-              if(variation.isSelected!){
-                totalAddedWeight = totalAddedWeight!+variation.addCount! *
-                    double.parse(variation.quantity!);
+            for (Variation variation in listProduct.variations!) {
+              if (variation.isSelected!) {
+                totalAddedWeight = totalAddedWeight! +
+                    variation.addCount! * double.parse(variation.quantity!);
               }
-
             }
             double? totalPrice = 0.0;
-            if(double.parse(listProduct.variations![1].quantity!)<=totalAddedWeight!){
-              totalPrice = totalPrice + totalAddedWeight*(double.parse(listProduct.variations![1].offerPrice!)/double.parse(listProduct.variations![1].quantity!));
-            }
-            else{
+            if (double.parse(listProduct.variations![1].quantity!) <=
+                totalAddedWeight!) {
+              totalPrice = totalPrice +
+                  totalAddedWeight *
+                      (double.parse(listProduct.variations![1].offerPrice!) /
+                          double.parse(listProduct.variations![1].quantity!));
+            } else {
               for (Variation variation in listProduct.variations!) {
                 if (variation.isSelected!) {
-                    totalPrice = totalPrice! +
-                        variation.addCount! *
-                            double.parse(variation.offerPrice!);
+                  totalPrice = totalPrice! +
+                      variation.addCount! * double.parse(variation.offerPrice!);
                 }
               }
             }
-            listProduct.totalAddedWeight = (totalAddedWeight % 1 == 0)?totalAddedWeight.toInt():totalAddedWeight;
+            listProduct.totalAddedWeight = (totalAddedWeight % 1 == 0)
+                ? totalAddedWeight.toInt()
+                : totalAddedWeight;
             listProduct.appliedUnit = unit;
-            Provider.of<CartProvider>(Get.context!, listen: false)
-                .addCartItem(
+            Provider.of<CartProvider>(Get.context!, listen: false).addCartItem(
               product: product,
               totalUnit: totalAddedWeight,
               totalPrice: totalPrice,
-              totalDiscount:
-              double.parse(product.variations![index].discount!),
+              totalDiscount: double.parse(product.variations![index].discount!),
               itemPrice: totalCount *
                   double.parse(product.variations![index].marketPrice!
                       .toStringAsFixed(2)),
               gstPrice: product.tax!.toDouble(),
               deliveryCharge: 0.0,
-              offerPrice:
-              double.parse(product.variations![index].offerPrice!),
+              offerPrice: double.parse(product.variations![index].offerPrice!),
             );
           } else {
             ToastService().show("Out of Stock");
@@ -791,27 +790,75 @@ class ProductProvider extends ChangeNotifier {
         if (listProduct.id == product.id) {
           listProduct.variations![index!].addCount = 0;
           listProduct.variations![index].isSelected = false;
-          for(Variation variation in listProduct.variations!){
-            if(variation.isSelected!){
+          for (Variation variation in listProduct.variations!) {
+            if (variation.isSelected!) {
               checkVariations = true;
             }
           }
 
-          if(!checkVariations!){
+          if (!checkVariations!) {
             listProduct.totalAddedWeight = 0;
             listProduct.appliedUnit = "";
             Provider.of<CartProvider>(Get.context!, listen: false)
                 .removeCartItem(product);
+          } else {
+            listProduct.totalAddedWeight = listProduct.totalAddedWeight! -
+                double.parse(listProduct.variations![index].quantity!);
+            Provider.of<CartProvider>(Get.context!, listen: false)
+                .updateProvider(product);
+            // Provider.of<ProductProvider>(Get.context!, listen: false).addToCart(
+            //   product,
+            //   product.variations![index].addCount!,
+            //   "",
+            //   weightBox(product.variations![index].quantity!)
+            //           .contains("gm")
+            //       ? "gm"
+            //       : "Kg",
+            //   index: index,
+            // );
           }
-          else{
-            listProduct.totalAddedWeight = listProduct.totalAddedWeight!-double.parse(listProduct.variations![index].quantity!);
-          }
-
-
         }
       }
     }
     notifyListeners();
+  }
+
+  String weightBox(String weight) {
+    String fixedWeight = "";
+    if (weight.contains(".")) {
+      if (double.parse(double.parse(weight)
+          .toStringAsFixed(3)
+          .toString()
+          .split(".")
+          .last) <=
+          500 &&
+          double.parse(double.parse(weight)
+              .toStringAsFixed(3)
+              .toString()
+              .split(".")
+              .first) <
+              1) {
+        fixedWeight =
+        "${double.parse(weight).toStringAsFixed(3).toString().split(".").last}gm";
+      } else if (double.parse(double.parse(weight)
+          .toStringAsFixed(3)
+          .toString()
+          .split(".")
+          .last) <=
+          500 &&
+          double.parse(double.parse(weight)
+              .toStringAsFixed(3)
+              .toString()
+              .split(".")
+              .first) >=
+              1) {
+        fixedWeight =
+        "${double.parse(weight).toStringAsFixed(3).toString().split(".").first}Kg ${double.parse(weight).toStringAsFixed(3).toString().split(".").last}gm";
+      }
+    } else {
+      fixedWeight = "$weight Kg";
+    }
+    return fixedWeight;
   }
 
   void filterGroupCategoryProductList(String groupId) {

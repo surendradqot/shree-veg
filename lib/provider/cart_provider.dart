@@ -122,6 +122,20 @@ class CartProvider extends ChangeNotifier {
     cartLength = newCartList.length + newOfferCartList.length;
     notifyListeners();
   }
+  updateProvider(ProductData? product){
+    for(CartModalNew cartData in newCartList){
+      if(cartData.productData!.productId==product!.productId){
+        print(cartData);
+        cartData.totalUnit=cartData.totalUnit!-1;
+        for(Variation variation in product.variations!){
+          if(variation.isSelected!){
+            cartData.totalPrice=cartData.totalPrice!-(double.parse(variation.offerPrice!)/double.parse(variation.quantity!));
+          }
+        }
+      }
+    }
+    notifyListeners();
+  }
 
   removeOfferCartItem(ProductData product) {
     CartModalNew? addedProduct;
